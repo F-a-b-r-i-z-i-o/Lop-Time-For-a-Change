@@ -23,7 +23,7 @@ Problem::Problem(const string &fileName){
 	}else{
 		f >> size_m; 
 		while(i<size_m){
-			vector <int> tmp;
+			vector <double> tmp;
 			for (int j = 1; j <= size_m; j++) {
 				f >> val;
 				tmp.push_back(val);
