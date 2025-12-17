@@ -14,22 +14,18 @@ class GurobySolver:
                 row = list(map(float, line.split()))
                 self.matrix.append(row)
     
-    def save_solution(self, perm, objval, out_dir=None, out_name="solution.txt"):
+    def save_solution(self, perm, objval, out_file="output/solution.txt"):
         """
-        Save objvalue and best permutation 
+        Save objvalue and best permutation in a single output file.
         """
-        if out_dir is None:
-            out_dir = self.filename  
-
+        out_dir = os.path.dirname(out_file) or "."
         os.makedirs(out_dir, exist_ok=True)
-        out_path = os.path.join(out_dir, out_name)
 
-        with open(out_path, "w") as f:
+        with open(out_file, "w", encoding="utf-8") as f:
             f.write(f"obj={objval}\n")
-            f.write("perm_0based=" + " ".join(map(str, perm)) + "\n")
-            f.write("perm_1based=" + " ".join(str(i + 1) for i in perm) + "\n")
+            f.write("perm_=" + " ".join(map(str, perm)) + "\n")
+        return out_file
 
-        return out_path
     
     def solve_lop(self, timelimit: int = None, threads:int = None, verbose:bool = True) -> list[int] | float | object:
         
@@ -101,7 +97,7 @@ if __name__ == "__main__":
     print(perm)
     print(mobjval)
     print(m)
-    saved_path = solver.save_solution(perm, mobjval)
+    saved_path = solver.save_solution(perm, mobjval, out_file="output/solution.txt")
     print("Saved to:", saved_path)
 
 
