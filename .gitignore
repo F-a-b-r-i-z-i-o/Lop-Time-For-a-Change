@@ -1,0 +1,12 @@
+.venv 
+Compact-data/
+Dataset/
+*.o
+*.obj
+*.a
+*.so
+*.dll
+*.dylib
+*.exe
+*.out
+a.out
