@@ -60,30 +60,33 @@ class LoadInstance:
         self._check("Z.columns", Z.columns, "A.columns", A.columns, normalize=normalize)
 
 
-def compare_across_folders(folders, normalize: bool = True):
-    instances = []
-    for f in folders:
-        print(f"\n--- Loading: {f} ---")
-        inst = LoadInstance(file_path=f)
-        print(f"--- Loaded: {f} ---")
-        inst.check_internal_matrices(normalize=normalize)
-        instances.append(inst)
+import gc
+import pymrio
+import pandas as pd
 
-    base = instances[0]
+def compare_across_folders(folders, normalize: bool = True):
+    # ---- Load base only once ----
+    print(f"\n--- Loading base: {folders[0]} ---")
+    base = LoadInstance(file_path=folders[0])
+    base.check_internal_matrices(normalize=normalize)
+
+    # Copy only labels so we can delete the huge matrices later if we want
+    base_Zi = base.matrix.Z.index.copy()
+    base_Zc = base.matrix.Z.columns.copy()
+    base_Ai = base.matrix.A.index.copy()
+    base_Ac = base.matrix.A.columns.copy()
+    base_Yi = base.matrix.Y.index.copy()
+    base_xi = base.matrix.x.index.copy()
+
     base_name = folders[0]
 
-    print(f"\n\n#############################")
-    print(f"### {base_name}")
-    print(f"#############################")
+    # Compare one file at a time 
+    for name in folders[1:]:
+        print(f"\n--- Loading: {name} ---")
+        inst = LoadInstance(file_path=name)
+        inst.check_internal_matrices(normalize=normalize)
 
-    base_Zi, base_Zc = base.matrix.Z.index, base.matrix.Z.columns
-    base_Ai, base_Ac = base.matrix.A.index, base.matrix.A.columns
-    base_Yi = base.matrix.Y.index
-    base_xi = base.matrix.x.index
-
-    for inst, name in zip(instances[1:], folders[1:]):
         print(f"\n=== Comparing {name} vs {base_name} ===")
-
         inst._check(f"{base_name} Z.index", base_Zi, f"{name} Z.index", inst.matrix.Z.index, normalize=normalize)
         inst._check(f"{base_name} Z.columns", base_Zc, f"{name} Z.columns", inst.matrix.Z.columns, normalize=normalize)
 
@@ -92,6 +95,15 @@ def compare_across_folders(folders, normalize: bool = True):
 
         inst._check(f"{base_name} Y.index", base_Yi, f"{name} Y.index", inst.matrix.Y.index, normalize=normalize)
         inst._check(f"{base_name} x.index", base_xi, f"{name} x.index", inst.matrix.x.index, normalize=normalize)
+
+        # FREE MEMORY of this instance 
+        inst.matrix = None
+        del inst
+        gc.collect()
+    
+    base.matrix = None
+    del base
+    gc.collect()
 
 
 if __name__ == "__main__":
