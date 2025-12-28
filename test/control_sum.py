@@ -1,73 +1,60 @@
 import pymrio
 import pandas as pd
 import contextlib
+import gc
 from pathlib import Path
 
 
 class LoadInstance:
     def __init__(self, file_path: str) -> None:
         self.file_path = file_path
-        self.matrix = pymrio.parse_exiobase3(self.file_path)
-
 
     def check_x(self, show_examples: int = 20):
-        Z = self.matrix.Z
-        Y = self.matrix.Y
-        x_off = self.matrix.x.sum(axis=1)
+        matrix = pymrio.parse_exiobase3(self.file_path)
+        try:
+            Z = matrix.Z
+            Y = matrix.Y
+            x_off = matrix.x.sum(axis=1)
 
-        # x_calc = sum rows Z + sum rows Y
-        x_calc = Z.sum(axis=1) + Y.sum(axis=1)
+            x_calc = Z.sum(axis=1) + Y.sum(axis=1)
 
-        print("\n============================================================")
-        print(f"FILE: {self.file_path}")
-        print("CHECK: x_off ?= Z.sum(axis=1) + Y.sum(axis=1)                ")
-        print("============================================================")
+            print("\n============================================================")
+            print(f"FILE: {self.file_path}")
+            print("CHECK: x_off ?= Z.sum(axis=1) + Y.sum(axis=1)                ")
+            print("============================================================")
 
-        # Index check
-        same_index = x_off.index.equals(x_calc.index)
-        print("\n[INDEX]")
-        print(f"same_index: {same_index}")
-        print(f"len(x_off):  {len(x_off)}")
-        print(f"len(x_calc): {len(x_calc)}")
+            same_index = x_off.index.equals(x_calc.index)
+            print("\n[INDEX]")
+            print(f"same_index: {same_index}")
+            print(f"len(x_off):  {len(x_off)}")
+            print(f"len(x_calc): {len(x_calc)}")
 
-        x_off = x_off.reindex(x_calc.index)
-        diff = x_off - x_calc
+            x_off = x_off.reindex(x_calc.index)
+            diff = x_off - x_calc
 
-        neq_rows = diff != 0
-        eq_rows  = diff == 0
+            n_neq = int((diff != 0).sum())
+            n_eq  = int((diff == 0).sum())
 
-        n_neq = int(neq_rows.sum())
-        n_eq  = int(eq_rows.sum())
+            print("\n[TOTALS]")
+            print(f"sum(x_off) :  {float(x_off.sum())}")
+            print(f"sum(x_calc):  {float(x_calc.sum())}")
+            print(f"TOTAL DIFF (off - calc): {float(x_off.sum() - x_calc.sum())}")
+            print(f"sum(diff)              : {float(diff.sum())}")
 
-        sum_x_off  = float(x_off.sum())
-        sum_x_calc = float(x_calc.sum())
-        total_diff = sum_x_off - sum_x_calc
+            print("\n[ROW-BY-ROW EXACT]")
+            print(f"rows equal (diff==0): {n_eq}")
+            print(f"rows diff  (diff!=0): {n_neq}")
 
-        sum_diff = float(diff.sum())
-
-        print("\n[TOTALS]")
-        print(f"sum(x_off) :  {sum_x_off}")
-        print(f"sum(x_calc):  {sum_x_calc}")
-        print(f"TOTAL DIFF (off - calc): {total_diff}")
-        print(f"sum(diff)              : {sum_diff}")
-
-        print("\n[ROW-BY-ROW EXACT]")
-        print(f"rows equal (diff==0): {n_eq}")
-        print(f"rows diff  (diff!=0): {n_neq}")
-
-        print("\n[NOTE]")
-        print("- IF rows diff == 0, TOTAL DIFF MUST be 0.")
-        print("- IF TOTAL DIFF != 0, Sum of rows NOT EQUAL.")
-
-        if n_neq > 0:
-            table = pd.DataFrame({"x_off": x_off, "x_calc": x_calc, "diff": diff})
-            table["abs_diff"] = table["diff"].abs()
-            worst = table.sort_values("abs_diff", ascending=False).head(show_examples)
-
-            print(f"\n[WORST {show_examples} rows by |diff|]")
-            print(worst.drop(columns=["abs_diff"]).to_string())
-        else:
-            print("\nAll rows match exactly (diff==0) and no NaNs.")
+            if n_neq > 0:
+                table = pd.DataFrame({"x_off": x_off, "x_calc": x_calc, "diff": diff})
+                table["abs_diff"] = table["diff"].abs()
+                worst = table.sort_values("abs_diff", ascending=False).head(show_examples)
+                print(f"\n[WORST {show_examples} rows by |diff|]")
+                print(worst.drop(columns=["abs_diff"]).to_string())
+        finally:
+            # deallocate RAM
+            del matrix
+            gc.collect()
 
 
 def compare_across_folders(folders, title: str, show_examples: int = 20):
@@ -76,11 +63,10 @@ def compare_across_folders(folders, title: str, show_examples: int = 20):
     print("#############################")
 
     for fp in folders:
-        print(f"\n--- Loading: {fp} ---")
         inst = LoadInstance(fp)
-        print(f"--- Loaded:  {fp} ---")
         inst.check_x(show_examples=show_examples)
-
+        del inst
+        gc.collect()
 
 if __name__ == "__main__":
 

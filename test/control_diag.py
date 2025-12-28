@@ -2,11 +2,11 @@ import pymrio
 import pandas as pd
 import numpy as np
 import contextlib
+import gc
 
 class LoadInstance:
     def __init__(self, file_path: str) -> None:
         self.file_path = file_path
-        self.matrix = self._load_matrix()
 
     def _load_matrix(self):
         return pymrio.parse_exiobase3(self.file_path)
@@ -21,107 +21,110 @@ class LoadInstance:
         """
         Verify for country A == Z @ diag(1/x) and print mismatch
         """
-
-        A_ref = self.matrix.A
-      
-        # --- Z ---
-        Z = self.matrix.Z
+        matrix = pymrio.parse_exiobase3(self.file_path)
+        try:
+            A_ref = matrix.A
         
-        # --- x ---
-        x = self.matrix.x
-        x_np = np.asarray(x, dtype=np.float64).reshape(-1)
+            # --- Z ---
+            Z = matrix.Z
+            
+            # --- x ---
+            x = matrix.x
+            x_np = np.asarray(x, dtype=np.float64).reshape(-1)
 
-        assert Z.shape[1] == x_np.shape[0], (
-            f"Dimension mismatch: Z ha {Z.shape[1]} colonne, x ha lunghezza {x_np.shape[0]} "
-            f"(serve x globale allineato alle colonne di Z)."
-        )
-
-        # recix = 1/x con x=0 -> 0 
-        recix = np.zeros_like(x_np)
-        mask = x_np != 0
-        recix[mask] = 1.0 / x_np[mask]
-
-        # calculate A_calc on full matrix maintaining label of Z
-        Z_np = Z.to_numpy(dtype=np.float64)
-        A_calc_np = Z_np @ np.diag(recix)
-        
-        A_calc = pd.DataFrame(A_calc_np, index=Z.index, columns=Z.columns)
-
-        regions = sorted(set(A_ref.index.get_level_values(0)))
-
-        print(f"\n== Check A == Z @ diag(1/x) for file: {self.file_path} ==")
-        print(f"rtol={rtol} atol={atol} topk_cells={topk_cells} method={'matmul_diag'}")
-        print(f"regions={len(regions)}")
-
-        bad_regions = []
-
-        for region in regions:
-            idx_r = A_ref.index[A_ref.index.get_level_values(0) == region]
-            if len(idx_r) == 0:
-                continue
-
-            # block reference
-            Ar_ref = A_ref.loc[idx_r, idx_r]
-
-            # block calculate: reindex for KeyError
-            Ar_calc = A_calc.reindex(index=Ar_ref.index, columns=Ar_ref.columns)
-
-            # shape check
-            if Ar_calc.shape != Ar_ref.shape:
-                print(f"[{region}] SHAPE MISMATCH: calc={Ar_calc.shape} ref={Ar_ref.shape}")
-                bad_regions.append(region)
-                continue
-
-            ok = np.allclose(
-                Ar_calc.to_numpy(dtype=np.float64),
-                Ar_ref.to_numpy(dtype=np.float64),
-                rtol=rtol,
-                atol=atol,
-                equal_nan=True,
+            assert Z.shape[1] == x_np.shape[0], (
+                f"Dimension mismatch: Z ha {Z.shape[1]} colonne, x ha lunghezza {x_np.shape[0]} "
+                f"(serve x globale allineato alle colonne di Z)."
             )
 
-            if ok:
-                print(f"[{region}] OK")
-                continue
+            # recix = 1/x con x=0 -> 0 
+            recix = np.zeros_like(x_np)
+            mask = x_np != 0
+            recix[mask] = 1.0 / x_np[mask]
 
-            bad_regions.append(region)
+            # calculate A_calc on full matrix maintaining label of Z
+            Z_np = Z.to_numpy(dtype=np.float64)
+            A_calc_np = Z_np @ np.diag(recix)
+            
+            A_calc = pd.DataFrame(A_calc_np, index=Z.index, columns=Z.columns)
 
-            diff = (Ar_calc - Ar_ref).abs()
-            arr = diff.to_numpy(dtype=np.float64)
+            regions = sorted(set(A_ref.index.get_level_values(0)))
 
-            flat_i = np.nanargmax(arr)
-            i, j = np.unravel_index(flat_i, arr.shape)
-            max_val = float(arr[i, j])
+            print(f"\n== Check A == Z @ diag(1/x) for file: {self.file_path} ==")
+            print(f"rtol={rtol} atol={atol} topk_cells={topk_cells} method={'matmul_diag'}")
+            print(f"regions={len(regions)}")
 
-            row_key = diff.index[i]
-            col_key = diff.columns[j]
-            print(f"\n[{region}] MISMATCH: max diff={max_val:.6e} at row={row_key} col={col_key}")
+            bad_regions = []
 
-            flat = arr.ravel()
-            flat2 = np.where(np.isnan(flat), -np.inf, flat)
-            top_idx = np.argsort(flat2)[-topk_cells:][::-1]
+            for region in regions:
+                idx_r = A_ref.index[A_ref.index.get_level_values(0) == region]
+                if len(idx_r) == 0:
+                    continue
 
-            print(f"[{region}] Top {topk_cells} mismatches:")
-            for k in top_idx:
-                ii, jj = np.unravel_index(k, arr.shape)
-                dval = float(arr[ii, jj])
-                r_i = diff.index[ii]
-                c_j = diff.columns[jj]
-                v_ref = Ar_ref.loc[r_i, c_j]
-                v_cal = Ar_calc.loc[r_i, c_j]
-                print(f"  {r_i} -> {c_j} | ref={v_ref:.18e} calc={v_cal:.18e} diff={dval:.6e}")
+                # block reference
+                Ar_ref = A_ref.loc[idx_r, idx_r]
 
-        print(f"\nDone. Bad regions: {bad_regions}")
+                # block calculate: reindex for KeyError
+                Ar_calc = A_calc.reindex(index=Ar_ref.index, columns=Ar_ref.columns)
 
-        assert not bad_regions, f"Mismatch in regions: {bad_regions}"
+                # shape check
+                if Ar_calc.shape != Ar_ref.shape:
+                    print(f"[{region}] SHAPE MISMATCH: calc={Ar_calc.shape} ref={Ar_ref.shape}")
+                    bad_regions.append(region)
+                    continue
 
+                ok = np.allclose(
+                    Ar_calc.to_numpy(dtype=np.float64),
+                    Ar_ref.to_numpy(dtype=np.float64),
+                    rtol=rtol,
+                    atol=atol,
+                    equal_nan=True,
+                )
+
+                if ok:
+                    print(f"[{region}] OK")
+                    continue
+
+                bad_regions.append(region)
+
+                diff = (Ar_calc - Ar_ref).abs()
+                arr = diff.to_numpy(dtype=np.float64)
+
+                flat_i = np.nanargmax(arr)
+                i, j = np.unravel_index(flat_i, arr.shape)
+                max_val = float(arr[i, j])
+
+                row_key = diff.index[i]
+                col_key = diff.columns[j]
+                print(f"\n[{region}] MISMATCH: max diff={max_val:.6e} at row={row_key} col={col_key}")
+
+                flat = arr.ravel()
+                flat2 = np.where(np.isnan(flat), -np.inf, flat)
+                top_idx = np.argsort(flat2)[-topk_cells:][::-1]
+
+                print(f"[{region}] Top {topk_cells} mismatches:")
+                for k in top_idx:
+                    ii, jj = np.unravel_index(k, arr.shape)
+                    dval = float(arr[ii, jj])
+                    r_i = diff.index[ii]
+                    c_j = diff.columns[jj]
+                    v_ref = Ar_ref.loc[r_i, c_j]
+                    v_cal = Ar_calc.loc[r_i, c_j]
+                    print(f"  {r_i} -> {c_j} | ref={v_ref:.18e} calc={v_cal:.18e} diff={dval:.6e}")
+
+            print(f"\nDone. Bad regions: {bad_regions}")
+
+            assert not bad_regions, f"Mismatch in regions: {bad_regions}"
+        
+        finally:
+            del matrix
+            gc.collect()
 
 def compare_across_folders(folders, topk_cells=10):
     failures = []
     for f in folders:
-        print(f"\n--- Loading: {f} ---")
+        print(f"\n--- Loading+Check: {f} ---")
         inst = LoadInstance(file_path=f)
-        print(f"--- Loaded: {f} ---")
 
         try:
             inst.check_all_countries_A_equals_Z_diag_x_exact(topk_cells=topk_cells)
@@ -134,6 +137,9 @@ def compare_across_folders(folders, topk_cells=10):
             print(f"--- DONE ERROR: {f} ---")
             print(f"{type(e).__name__}: {e}")
             failures.append((f, f"{type(e).__name__}: {e}"))
+        finally:
+            del inst
+            gc.collect()
 
     print("\n=== SUMMARY ===")
     if not failures:
@@ -143,6 +149,7 @@ def compare_across_folders(folders, topk_cells=10):
             print(f"- {f}: {msg}")
 
     return failures
+
 
 
 if __name__ == "__main__":

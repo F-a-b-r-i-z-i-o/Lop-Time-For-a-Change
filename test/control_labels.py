@@ -70,7 +70,7 @@ def compare_across_folders(folders, normalize: bool = True):
     base = LoadInstance(file_path=folders[0])
     base.check_internal_matrices(normalize=normalize)
 
-    # Copy only labels so we can delete the huge matrices later if we want
+    # Copy only labels
     base_Zi = base.matrix.Z.index.copy()
     base_Zc = base.matrix.Z.columns.copy()
     base_Ai = base.matrix.A.index.copy()
