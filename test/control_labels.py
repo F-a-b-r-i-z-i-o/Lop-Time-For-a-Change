@@ -1,6 +1,8 @@
 import pymrio
 import pandas as pd
 import contextlib
+import gc
+from collections import defaultdict
 
 
 class LoadInstance:
@@ -60,50 +62,108 @@ class LoadInstance:
         self._check("Z.columns", Z.columns, "A.columns", A.columns, normalize=normalize)
 
 
-import gc
-import pymrio
-import pandas as pd
+def _extract_labels(inst: LoadInstance):
+    m = inst.matrix
+    return {
+        "Z.index": m.Z.index.copy(),
+        "Z.columns": m.Z.columns.copy(),
+        "A.index": m.A.index.copy(),
+        "A.columns": m.A.columns.copy(),
+        "Y.index": m.Y.index.copy(),
+        "x.index": m.x.index.copy(),
+    }
 
-def compare_across_folders(folders, normalize: bool = True):
-    # ---- Load base only once ----
-    print(f"\n--- Loading base: {folders[0]} ---")
-    base = LoadInstance(file_path=folders[0])
-    base.check_internal_matrices(normalize=normalize)
 
-    # Copy only labels
-    base_Zi = base.matrix.Z.index.copy()
-    base_Zc = base.matrix.Z.columns.copy()
-    base_Ai = base.matrix.A.index.copy()
-    base_Ac = base.matrix.A.columns.copy()
-    base_Yi = base.matrix.Y.index.copy()
-    base_xi = base.matrix.x.index.copy()
+def compare_all_years(folders, normalize: bool = True, pairwise: bool = False, show_examples: int = 10):
+    print("\n" + "=" * 100)
+    print(f"GLOBAL LABEL CHECK ({'PAIRWISE' if pairwise else 'REFERENCE'}) for {len(folders)} files")
+    print("=" * 100)
 
-    base_name = folders[0]
-
-    # Compare one file at a time 
-    for name in folders[1:]:
-        print(f"\n--- Loading: {name} ---")
-        inst = LoadInstance(file_path=name)
+    labels_by_file = {}
+    for fp in folders:
+        print(f"\n--- Loading: {fp} ---")
+        inst = LoadInstance(file_path=fp)
         inst.check_internal_matrices(normalize=normalize)
 
-        print(f"\n=== Comparing {name} vs {base_name} ===")
-        inst._check(f"{base_name} Z.index", base_Zi, f"{name} Z.index", inst.matrix.Z.index, normalize=normalize)
-        inst._check(f"{base_name} Z.columns", base_Zc, f"{name} Z.columns", inst.matrix.Z.columns, normalize=normalize)
+        labels_by_file[fp] = _extract_labels(inst)
 
-        inst._check(f"{base_name} A.index", base_Ai, f"{name} A.index", inst.matrix.A.index, normalize=normalize)
-        inst._check(f"{base_name} A.columns", base_Ac, f"{name} A.columns", inst.matrix.A.columns, normalize=normalize)
-
-        inst._check(f"{base_name} Y.index", base_Yi, f"{name} Y.index", inst.matrix.Y.index, normalize=normalize)
-        inst._check(f"{base_name} x.index", base_xi, f"{name} x.index", inst.matrix.x.index, normalize=normalize)
-
-        # FREE MEMORY of this instance 
+        # free
         inst.matrix = None
         del inst
         gc.collect()
-    
-    base.matrix = None
-    del base
-    gc.collect()
+
+    keys = ["Z.index", "Z.columns", "A.index", "A.columns", "Y.index", "x.index"]
+
+    if not pairwise:
+        ref_fp = folders[0]
+        ref = labels_by_file[ref_fp]
+
+        print("\n" + "-" * 100)
+        print(f"REFERENCE FILE: {ref_fp}")
+        print("-" * 100)
+
+        summary = {k: {"ok": [], "ko": []} for k in keys}
+
+        for fp in folders[1:]:
+            for k in keys:
+                idx_ref = ref[k]
+                idx_cur = labels_by_file[fp][k]
+                equals_ok, same_elements_ok = LoadInstance(ref_fp)._check(
+                    f"{ref_fp} {k}", idx_ref,
+                    f"{fp} {k}", idx_cur,
+                    normalize=normalize,
+                    show_examples=show_examples
+                )
+                if equals_ok and same_elements_ok:
+                    summary[k]["ok"].append(fp)
+                else:
+                    summary[k]["ko"].append(fp)
+
+        print("\n" + "=" * 100)
+        print("SUMMARY (vs reference)")
+        print("=" * 100)
+        for k in keys:
+            print(f"\n[{k}]")
+            print(f"  OK years: {len(summary[k]['ok'])}/{len(folders)-1}")
+            if summary[k]["ko"]:
+                print(f"  DIFFERENT years: {len(summary[k]['ko'])}")
+                for fp in summary[k]["ko"]:
+                    print(f"    - {fp}")
+            else:
+                print("  All years match reference.")
+
+    else:
+        print("\n" + "-" * 100)
+        print("PAIRWISE COMPARISON (all pairs)")
+        print("-" * 100)
+
+        fps = list(folders)
+        n = len(fps)
+
+        diff_count = defaultdict(int)
+
+        for i in range(n):
+            for j in range(i + 1, n):
+                fp1, fp2 = fps[i], fps[j]
+                for k in keys:
+                    idx1 = labels_by_file[fp1][k]
+                    idx2 = labels_by_file[fp2][k]
+                    equals_ok, same_elements_ok = LoadInstance(fp1)._check(
+                        f"{fp1} {k}", idx1,
+                        f"{fp2} {k}", idx2,
+                        normalize=normalize,
+                        show_examples=show_examples
+                    )
+                    if not (equals_ok and same_elements_ok):
+                        diff_count[k] += 1
+
+        print("\n" + "=" * 100)
+        print("PAIRWISE SUMMARY (#pairs that differ)")
+        print("=" * 100)
+        total_pairs = n * (n - 1) // 2
+        print(f"Total pairs: {total_pairs}")
+        for k in keys:
+            print(f"{k}: {diff_count[k]} differing pairs")
 
 
 if __name__ == "__main__":
@@ -171,7 +231,7 @@ if __name__ == "__main__":
 
     log_file = "test_labels_check.log"
     with open(log_file, "w", encoding="utf-8") as f, contextlib.redirect_stdout(f), contextlib.redirect_stderr(f):
-        compare_across_folders(folders_ixi, normalize=True)
-        compare_across_folders(folders_pxp, normalize=True)
+        compare_all_years(folders_ixi, normalize=True, pairwise=True)
+        compare_all_years(folders_pxp, normalize=True, pairwise=True)
 
     print(f"Log write in: {log_file}")
