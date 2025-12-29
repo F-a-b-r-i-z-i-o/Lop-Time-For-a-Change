@@ -1,0 +1,3389 @@
+
+--- Loading+Check: ../Compact-data/IOT_1995_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_1995_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_1995_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_1996_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_1996_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_1996_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_1997_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_1997_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_1997_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_1998_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_1998_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_1998_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_1999_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_1999_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_1999_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2000_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2000_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2000_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2001_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2001_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2001_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2002_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2002_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2002_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2003_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2003_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2003_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2004_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2004_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2004_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2005_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2005_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2005_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2006_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2006_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2006_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2007_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2007_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2007_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2008_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2008_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2008_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2009_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2009_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2009_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2010_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2010_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2010_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2011_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2011_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2011_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2012_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2012_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2012_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2013_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2013_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2013_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2014_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2014_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2014_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2015_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2015_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2015_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2016_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2016_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2016_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2017_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2017_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2017_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2018_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2018_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2018_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2019_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2019_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2019_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2020_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2020_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2020_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2021_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2021_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2021_ixi.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2022_ixi.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2022_ixi.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2022_ixi.zip ---
+
+=== SUMMARY ===
+ALL dataset OK.
+
+--- Loading+Check: ../Compact-data/IOT_1995_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_1995_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_1995_pxp.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_1996_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_1996_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+
+[GR] MISMATCH: max diff=7.425519e-01 at row=('GR', 'Naphtha') col=('GR', 'Gas Works Gas')
+[GR] Top 10 mismatches:
+  ('GR', 'Naphtha') -> ('GR', 'Gas Works Gas') | ref=7.425518877710000076e-01 calc=0.000000000000000000e+00 diff=7.425519e-01
+  ('GR', 'Wholesale trade and commission trade services, except of motor vehicles and motorcycles (51)') -> ('GR', 'Gas Works Gas') | ref=6.975320741370000244e-02 calc=0.000000000000000000e+00 diff=6.975321e-02
+  ('GR', 'Retail  trade services, except of motor vehicles and motorcycles; repair services of personal and household goods (52)') -> ('GR', 'Gas Works Gas') | ref=3.708728566010000005e-02 calc=0.000000000000000000e+00 diff=3.708729e-02
+  ('GR', 'Electrical machinery and apparatus n.e.c. (31)') -> ('GR', 'Gas Works Gas') | ref=2.551702950069999892e-02 calc=0.000000000000000000e+00 diff=2.551703e-02
+  ('GR', 'Air transport services (62)') -> ('GR', 'Gas Works Gas') | ref=7.366899464539999887e-03 calc=0.000000000000000000e+00 diff=7.366899e-03
+  ('GR', 'Real estate services (70)') -> ('GR', 'Gas Works Gas') | ref=6.900155186780000151e-03 calc=0.000000000000000000e+00 diff=6.900155e-03
+  ('GR', 'Public administration and defence services; compulsory social security services (75)') -> ('GR', 'Gas Works Gas') | ref=5.455767326839999765e-03 calc=0.000000000000000000e+00 diff=5.455767e-03
+  ('GR', 'Sale, maintenance, repair of motor vehicles, motor vehicles parts, motorcycles, motor cycles parts and accessoiries') -> ('GR', 'Gas Works Gas') | ref=4.771233462399999958e-03 calc=0.000000000000000000e+00 diff=4.771233e-03
+  ('GR', 'Services auxiliary to financial intermediation (67)') -> ('GR', 'Gas Works Gas') | ref=2.398212859259999784e-03 calc=0.000000000000000000e+00 diff=2.398213e-03
+  ('GR', 'Post and telecommunication services (64)') -> ('GR', 'Gas Works Gas') | ref=2.202521205310000157e-03 calc=0.000000000000000000e+00 diff=2.202521e-03
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: ['GR']
+--- DONE FAIL: ../Compact-data/IOT_1996_pxp.zip ---
+AssertionError: Mismatch in regions: ['GR']
+
+--- Loading+Check: ../Compact-data/IOT_1997_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_1997_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_1997_pxp.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_1998_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_1998_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_1998_pxp.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_1999_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_1999_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+
+[ES] MISMATCH: max diff=1.373577e-01 at row=('ES', 'Motor Gasoline') col=('ES', 'Gasoline Type Jet Fuel')
+[ES] Top 10 mismatches:
+  ('ES', 'Motor Gasoline') -> ('ES', 'Gasoline Type Jet Fuel') | ref=1.373577279160000109e-01 calc=0.000000000000000000e+00 diff=1.373577e-01
+  ('ES', 'Gas/Diesel Oil') -> ('ES', 'Gasoline Type Jet Fuel') | ref=6.235305592559999693e-02 calc=0.000000000000000000e+00 diff=6.235306e-02
+  ('ES', 'Financial intermediation services, except insurance and pension funding services (65)') -> ('ES', 'Gasoline Type Jet Fuel') | ref=2.096719471209999852e-02 calc=0.000000000000000000e+00 diff=2.096719e-02
+  ('ES', 'Retail  trade services, except of motor vehicles and motorcycles; repair services of personal and household goods (52)') -> ('ES', 'Gasoline Type Jet Fuel') | ref=8.599415934830000746e-03 calc=0.000000000000000000e+00 diff=8.599416e-03
+  ('ES', 'Other land transportation services') -> ('ES', 'Gasoline Type Jet Fuel') | ref=8.395195867009999646e-03 calc=0.000000000000000000e+00 diff=8.395196e-03
+  ('ES', 'Supporting and auxiliary transport services; travel agency services (63)') -> ('ES', 'Gasoline Type Jet Fuel') | ref=7.313496642590000367e-03 calc=0.000000000000000000e+00 diff=7.313497e-03
+  ('ES', 'Refinery Feedstocks') -> ('ES', 'Gasoline Type Jet Fuel') | ref=6.513664856490000189e-03 calc=0.000000000000000000e+00 diff=6.513665e-03
+  ('ES', 'Machinery and equipment n.e.c. (29)') -> ('ES', 'Gasoline Type Jet Fuel') | ref=4.987815220969999720e-03 calc=0.000000000000000000e+00 diff=4.987815e-03
+  ('ES', 'Paraffin Waxes') -> ('ES', 'Gasoline Type Jet Fuel') | ref=4.766159214229999906e-03 calc=0.000000000000000000e+00 diff=4.766159e-03
+  ('ES', 'Distribution and trade services of electricity') -> ('ES', 'Gasoline Type Jet Fuel') | ref=4.192520115789999911e-03 calc=0.000000000000000000e+00 diff=4.192520e-03
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: ['ES']
+--- DONE FAIL: ../Compact-data/IOT_1999_pxp.zip ---
+AssertionError: Mismatch in regions: ['ES']
+
+--- Loading+Check: ../Compact-data/IOT_2000_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2000_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2000_pxp.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2001_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2001_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2001_pxp.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2002_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2002_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2002_pxp.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2003_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2003_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2003_pxp.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2004_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2004_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2004_pxp.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2005_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2005_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2005_pxp.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2006_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2006_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2006_pxp.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2007_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2007_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2007_pxp.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2008_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2008_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2008_pxp.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2009_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2009_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2009_pxp.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2010_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2010_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2010_pxp.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2011_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2011_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+
+[LV] MISMATCH: max diff=6.408840e-02 at row=('LV', 'Other business services (74)') col=('LV', 'Gas Works Gas')
+[LV] Top 10 mismatches:
+  ('LV', 'Other business services (74)') -> ('LV', 'Gas Works Gas') | ref=6.408839553589999738e-02 calc=0.000000000000000000e+00 diff=6.408840e-02
+  ('LV', 'Financial intermediation services, except insurance and pension funding services (65)') -> ('LV', 'Gas Works Gas') | ref=4.959475858699999989e-02 calc=0.000000000000000000e+00 diff=4.959476e-02
+  ('LV', 'Research and development services (73)') -> ('LV', 'Gas Works Gas') | ref=3.725069997580000153e-02 calc=0.000000000000000000e+00 diff=3.725070e-02
+  ('LV', 'Real estate services (70)') -> ('LV', 'Gas Works Gas') | ref=2.155416077270000050e-02 calc=0.000000000000000000e+00 diff=2.155416e-02
+  ('LV', 'Construction work (45)') -> ('LV', 'Gas Works Gas') | ref=1.793966409989999899e-02 calc=0.000000000000000000e+00 diff=1.793966e-02
+  ('LV', 'Public administration and defence services; compulsory social security services (75)') -> ('LV', 'Gas Works Gas') | ref=1.322513564640000021e-02 calc=0.000000000000000000e+00 diff=1.322514e-02
+  ('LV', 'Computer and related services (72)') -> ('LV', 'Gas Works Gas') | ref=1.216027720360000029e-02 calc=0.000000000000000000e+00 diff=1.216028e-02
+  ('LV', 'Post and telecommunication services (64)') -> ('LV', 'Gas Works Gas') | ref=9.307666925969999491e-03 calc=0.000000000000000000e+00 diff=9.307667e-03
+  ('LV', 'Distribution services of gaseous fuels through mains') -> ('LV', 'Gas Works Gas') | ref=7.165683236659999705e-03 calc=0.000000000000000000e+00 diff=7.165683e-03
+  ('LV', 'Distribution and trade services of electricity') -> ('LV', 'Gas Works Gas') | ref=6.683618068460000367e-03 calc=0.000000000000000000e+00 diff=6.683618e-03
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: ['LV']
+--- DONE FAIL: ../Compact-data/IOT_2011_pxp.zip ---
+AssertionError: Mismatch in regions: ['LV']
+
+--- Loading+Check: ../Compact-data/IOT_2012_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2012_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+
+[ES] MISMATCH: max diff=1.149034e-01 at row=('ES', 'Other business services (74)') col=('ES', 'Paper and wood waste for treatment: composting and land application')
+[ES] Top 10 mismatches:
+  ('ES', 'Other business services (74)') -> ('ES', 'Paper and wood waste for treatment: composting and land application') | ref=1.149033836170000045e-01 calc=0.000000000000000000e+00 diff=1.149034e-01
+  ('ES', 'Real estate services (70)') -> ('ES', 'Paper and wood waste for treatment: composting and land application') | ref=6.187299015369999988e-02 calc=0.000000000000000000e+00 diff=6.187299e-02
+  ('ES', 'Wholesale trade and commission trade services, except of motor vehicles and motorcycles (51)') -> ('ES', 'Paper and wood waste for treatment: composting and land application') | ref=4.741458232410000057e-02 calc=0.000000000000000000e+00 diff=4.741458e-02
+  ('ES', 'Supporting and auxiliary transport services; travel agency services (63)') -> ('ES', 'Paper and wood waste for treatment: composting and land application') | ref=4.318908527870000263e-02 calc=0.000000000000000000e+00 diff=4.318909e-02
+  ('ES', 'Retail  trade services, except of motor vehicles and motorcycles; repair services of personal and household goods (52)') -> ('ES', 'Paper and wood waste for treatment: composting and land application') | ref=1.941979745159999951e-02 calc=0.000000000000000000e+00 diff=1.941980e-02
+  ('ES', 'Sale, maintenance, repair of motor vehicles, motor vehicles parts, motorcycles, motor cycles parts and accessoiries') -> ('ES', 'Paper and wood waste for treatment: composting and land application') | ref=1.785883021730000006e-02 calc=0.000000000000000000e+00 diff=1.785883e-02
+  ('ES', 'Education services (80)') -> ('ES', 'Paper and wood waste for treatment: composting and land application') | ref=1.768829278829999949e-02 calc=0.000000000000000000e+00 diff=1.768829e-02
+  ('ES', 'Transportation services via pipelines') -> ('ES', 'Paper and wood waste for treatment: composting and land application') | ref=1.601514225150000095e-02 calc=0.000000000000000000e+00 diff=1.601514e-02
+  ('ES', 'Financial intermediation services, except insurance and pension funding services (65)') -> ('ES', 'Paper and wood waste for treatment: composting and land application') | ref=1.247738857870000009e-02 calc=0.000000000000000000e+00 diff=1.247739e-02
+  ('ES', 'Insurance and pension funding services, except compulsory social security services (66)') -> ('ES', 'Paper and wood waste for treatment: composting and land application') | ref=9.461906546040000504e-03 calc=0.000000000000000000e+00 diff=9.461907e-03
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: ['ES']
+--- DONE FAIL: ../Compact-data/IOT_2012_pxp.zip ---
+AssertionError: Mismatch in regions: ['ES']
+
+--- Loading+Check: ../Compact-data/IOT_2013_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2013_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+
+[HR] MISMATCH: max diff=6.588576e-02 at row=('HR', 'Other business services (74)') col=('HR', 'Ethane')
+[HR] Top 10 mismatches:
+  ('HR', 'Other business services (74)') -> ('HR', 'Ethane') | ref=6.588576426809999997e-02 calc=0.000000000000000000e+00 diff=6.588576e-02
+  ('HR', 'Rubber and plastic products (25)') -> ('HR', 'Sub-Bituminous Coal') | ref=6.504898542970000141e-02 calc=0.000000000000000000e+00 diff=6.504899e-02
+  ('HR', 'Other non-metallic mineral products') -> ('HR', 'Sub-Bituminous Coal') | ref=5.437376444679999782e-02 calc=0.000000000000000000e+00 diff=5.437376e-02
+  ('HR', 'Wood and products of wood and cork (except furniture); articles of straw and plaiting materials (20)') -> ('HR', 'Sub-Bituminous Coal') | ref=2.484151421920000047e-02 calc=0.000000000000000000e+00 diff=2.484151e-02
+  ('HR', 'Poultry') -> ('HR', 'Ethane') | ref=1.716333186219999932e-02 calc=0.000000000000000000e+00 diff=1.716333e-02
+  ('HR', 'Cement, lime and plaster') -> ('HR', 'Sub-Bituminous Coal') | ref=1.626616621040000155e-02 calc=0.000000000000000000e+00 diff=1.626617e-02
+  ('HR', 'Retail  trade services, except of motor vehicles and motorcycles; repair services of personal and household goods (52)') -> ('HR', 'Ethane') | ref=1.597858871070000075e-02 calc=0.000000000000000000e+00 diff=1.597859e-02
+  ('HR', 'Computer and related services (72)') -> ('HR', 'Ethane') | ref=1.455373255429999978e-02 calc=0.000000000000000000e+00 diff=1.455373e-02
+  ('HR', 'Wholesale trade and commission trade services, except of motor vehicles and motorcycles (51)') -> ('HR', 'Ethane') | ref=1.354108677640000064e-02 calc=0.000000000000000000e+00 diff=1.354109e-02
+  ('HR', 'Fish products') -> ('HR', 'Ethane') | ref=1.260615043749999976e-02 calc=0.000000000000000000e+00 diff=1.260615e-02
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+
+[SI] MISMATCH: max diff=9.791270e-02 at row=('SI', 'Other business services (74)') col=('SI', 'Coking Coal')
+[SI] Top 10 mismatches:
+  ('SI', 'Other business services (74)') -> ('SI', 'Coking Coal') | ref=9.791270399969999316e-02 calc=0.000000000000000000e+00 diff=9.791270e-02
+  ('SI', 'Real estate services (70)') -> ('SI', 'Coking Coal') | ref=8.030498971900000560e-02 calc=0.000000000000000000e+00 diff=8.030499e-02
+  ('SI', 'Plastics, basic') -> ('SI', 'Coking Coal') | ref=3.920597440439999720e-02 calc=0.000000000000000000e+00 diff=3.920597e-02
+  ('SI', 'Wholesale trade and commission trade services, except of motor vehicles and motorcycles (51)') -> ('SI', 'Coking Coal') | ref=2.442994578069999922e-02 calc=0.000000000000000000e+00 diff=2.442995e-02
+  ('SI', 'Other land transportation services') -> ('SI', 'Coking Coal') | ref=1.831581362630000168e-02 calc=0.000000000000000000e+00 diff=1.831581e-02
+  ('SI', 'Financial intermediation services, except insurance and pension funding services (65)') -> ('SI', 'Coking Coal') | ref=1.630784288539999932e-02 calc=0.000000000000000000e+00 diff=1.630784e-02
+  ('SI', 'Construction work (45)') -> ('SI', 'Coking Coal') | ref=1.421719685359999936e-02 calc=0.000000000000000000e+00 diff=1.421720e-02
+  ('SI', 'Computer and related services (72)') -> ('SI', 'Coking Coal') | ref=1.044586165349999964e-02 calc=0.000000000000000000e+00 diff=1.044586e-02
+  ('SI', 'Post and telecommunication services (64)') -> ('SI', 'Coking Coal') | ref=8.859623331369999646e-03 calc=0.000000000000000000e+00 diff=8.859623e-03
+  ('SI', 'Printed matter and recorded media (22)') -> ('SI', 'Coking Coal') | ref=8.702205254639999374e-03 calc=0.000000000000000000e+00 diff=8.702205e-03
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: ['HR', 'SI']
+--- DONE FAIL: ../Compact-data/IOT_2013_pxp.zip ---
+AssertionError: Mismatch in regions: ['HR', 'SI']
+
+--- Loading+Check: ../Compact-data/IOT_2014_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2014_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2014_pxp.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2015_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2015_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+
+[HR] MISMATCH: max diff=7.651685e-02 at row=('HR', 'Other business services (74)') col=('HR', 'Ethane')
+[HR] Top 10 mismatches:
+  ('HR', 'Other business services (74)') -> ('HR', 'Ethane') | ref=7.651685106920000368e-02 calc=0.000000000000000000e+00 diff=7.651685e-02
+  ('HR', 'Retail  trade services, except of motor vehicles and motorcycles; repair services of personal and household goods (52)') -> ('HR', 'Ethane') | ref=2.041550140879999989e-02 calc=0.000000000000000000e+00 diff=2.041550e-02
+  ('HR', 'Poultry') -> ('HR', 'Ethane') | ref=1.963083622339999862e-02 calc=0.000000000000000000e+00 diff=1.963084e-02
+  ('HR', 'Wholesale trade and commission trade services, except of motor vehicles and motorcycles (51)') -> ('HR', 'Ethane') | ref=1.931352027169999999e-02 calc=0.000000000000000000e+00 diff=1.931352e-02
+  ('HR', 'Fish products') -> ('HR', 'Ethane') | ref=1.515273987509999955e-02 calc=0.000000000000000000e+00 diff=1.515274e-02
+  ('HR', 'Other land transportation services') -> ('HR', 'Ethane') | ref=1.129163532169999949e-02 calc=0.000000000000000000e+00 diff=1.129164e-02
+  ('HR', 'Fabricated metal products, except machinery and equipment (28)') -> ('HR', 'Ethane') | ref=9.347520221109999888e-03 calc=0.000000000000000000e+00 diff=9.347520e-03
+  ('HR', 'Real estate services (70)') -> ('HR', 'Ethane') | ref=8.715387983940000444e-03 calc=0.000000000000000000e+00 diff=8.715388e-03
+  ('HR', 'Food products nec') -> ('HR', 'Ethane') | ref=7.828815238830000300e-03 calc=0.000000000000000000e+00 diff=7.828815e-03
+  ('HR', 'Education services (80)') -> ('HR', 'Ethane') | ref=7.749673331460000397e-03 calc=0.000000000000000000e+00 diff=7.749673e-03
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: ['HR']
+--- DONE FAIL: ../Compact-data/IOT_2015_pxp.zip ---
+AssertionError: Mismatch in regions: ['HR']
+
+--- Loading+Check: ../Compact-data/IOT_2016_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2016_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2016_pxp.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2017_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2017_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2017_pxp.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2018_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2018_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2018_pxp.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2019_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2019_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+
+[AT] MISMATCH: max diff=8.968541e-02 at row=('AT', 'Supporting and auxiliary transport services; travel agency services (63)') col=('AT', 'Electricity by nuclear')
+[AT] Top 10 mismatches:
+  ('AT', 'Supporting and auxiliary transport services; travel agency services (63)') -> ('AT', 'Electricity by nuclear') | ref=8.968541442869999714e-02 calc=0.000000000000000000e+00 diff=8.968541e-02
+  ('AT', 'Construction work (45)') -> ('AT', 'Electricity by nuclear') | ref=3.971208240889999991e-02 calc=0.000000000000000000e+00 diff=3.971208e-02
+  ('AT', 'Other business services (74)') -> ('AT', 'Electricity by nuclear') | ref=3.580652072409999664e-02 calc=0.000000000000000000e+00 diff=3.580652e-02
+  ('AT', 'Real estate services (70)') -> ('AT', 'Electricity by nuclear') | ref=2.519561098850000083e-02 calc=0.000000000000000000e+00 diff=2.519561e-02
+  ('AT', 'Kerosene Type Jet Fuel') -> ('AT', 'Electricity by nuclear') | ref=1.284480970860000029e-02 calc=0.000000000000000000e+00 diff=1.284481e-02
+  ('AT', 'Hotel and restaurant services (55)') -> ('AT', 'Electricity by nuclear') | ref=1.194264345989999934e-02 calc=0.000000000000000000e+00 diff=1.194264e-02
+  ('AT', 'Renting services of machinery and equipment without operator and of personal and household goods (71)') -> ('AT', 'Electricity by nuclear') | ref=8.854339918130000112e-03 calc=0.000000000000000000e+00 diff=8.854340e-03
+  ('AT', 'Air transport services (62)') -> ('AT', 'Electricity by nuclear') | ref=8.117379689560000333e-03 calc=0.000000000000000000e+00 diff=8.117380e-03
+  ('AT', 'Financial intermediation services, except insurance and pension funding services (65)') -> ('AT', 'Electricity by nuclear') | ref=7.870780223450000654e-03 calc=0.000000000000000000e+00 diff=7.870780e-03
+  ('AT', 'Post and telecommunication services (64)') -> ('AT', 'Electricity by nuclear') | ref=7.459995314759999829e-03 calc=0.000000000000000000e+00 diff=7.459995e-03
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: ['AT']
+--- DONE FAIL: ../Compact-data/IOT_2019_pxp.zip ---
+AssertionError: Mismatch in regions: ['AT']
+
+--- Loading+Check: ../Compact-data/IOT_2020_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2020_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+
+[DK] MISMATCH: max diff=6.736933e-02 at row=('DK', 'Machinery and equipment n.e.c. (29)') col=('DK', 'Plant-based fibers')
+[DK] Top 10 mismatches:
+  ('DK', 'Machinery and equipment n.e.c. (29)') -> ('DK', 'Plant-based fibers') | ref=6.736933209249999777e-02 calc=0.000000000000000000e+00 diff=6.736933e-02
+  ('DK', 'Wholesale trade and commission trade services, except of motor vehicles and motorcycles (51)') -> ('DK', 'Plant-based fibers') | ref=6.608745829520000503e-02 calc=0.000000000000000000e+00 diff=6.608746e-02
+  ('DK', 'Fabricated metal products, except machinery and equipment (28)') -> ('DK', 'Plant-based fibers') | ref=3.498209966949999972e-02 calc=0.000000000000000000e+00 diff=3.498210e-02
+  ('DK', 'Research and development services (73)') -> ('DK', 'Plant-based fibers') | ref=3.243870198760000212e-02 calc=0.000000000000000000e+00 diff=3.243870e-02
+  ('DK', 'Other business services (74)') -> ('DK', 'Plant-based fibers') | ref=1.881368172630000155e-02 calc=0.000000000000000000e+00 diff=1.881368e-02
+  ('DK', 'Inland water transportation services') -> ('DK', 'Plant-based fibers') | ref=1.416991870199999989e-02 calc=0.000000000000000000e+00 diff=1.416992e-02
+  ('DK', 'Real estate services (70)') -> ('DK', 'Plant-based fibers') | ref=6.874280761580000426e-03 calc=0.000000000000000000e+00 diff=6.874281e-03
+  ('DK', 'Sea and coastal water transportation services') -> ('DK', 'Plant-based fibers') | ref=2.572203890820000134e-03 calc=0.000000000000000000e+00 diff=2.572204e-03
+  ('DK', 'Rubber and plastic products (25)') -> ('DK', 'Plant-based fibers') | ref=2.459916122739999947e-03 calc=0.000000000000000000e+00 diff=2.459916e-03
+  ('DK', 'Other land transportation services') -> ('DK', 'Plant-based fibers') | ref=2.298741255019999888e-03 calc=0.000000000000000000e+00 diff=2.298741e-03
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+
+[HR] MISMATCH: max diff=1.438356e-01 at row=('HR', 'Additives/Blending Components') col=('HR', 'Oxygen Steel Furnace Gas')
+[HR] Top 10 mismatches:
+  ('HR', 'Additives/Blending Components') -> ('HR', 'Oxygen Steel Furnace Gas') | ref=1.438356208109999868e-01 calc=0.000000000000000000e+00 diff=1.438356e-01
+  ('HR', 'Crude petroleum and services related to crude oil extraction, excluding surveying') -> ('HR', 'Oxygen Steel Furnace Gas') | ref=5.229791905930000068e-02 calc=0.000000000000000000e+00 diff=5.229792e-02
+  ('HR', 'Financial intermediation services, except insurance and pension funding services (65)') -> ('HR', 'Oxygen Steel Furnace Gas') | ref=5.046109786220000226e-02 calc=0.000000000000000000e+00 diff=5.046110e-02
+  ('HR', 'Wholesale trade and commission trade services, except of motor vehicles and motorcycles (51)') -> ('HR', 'Oxygen Steel Furnace Gas') | ref=3.150521188250000187e-02 calc=0.000000000000000000e+00 diff=3.150521e-02
+  ('HR', 'Chemicals nec') -> ('HR', 'Oxygen Steel Furnace Gas') | ref=1.446443311150000070e-02 calc=0.000000000000000000e+00 diff=1.446443e-02
+  ('HR', 'Construction work (45)') -> ('HR', 'Oxygen Steel Furnace Gas') | ref=1.065772271970000067e-02 calc=0.000000000000000000e+00 diff=1.065772e-02
+  ('HR', 'Post and telecommunication services (64)') -> ('HR', 'Oxygen Steel Furnace Gas') | ref=7.609309131559999738e-03 calc=0.000000000000000000e+00 diff=7.609309e-03
+  ('HR', 'Other business services (74)') -> ('HR', 'Oxygen Steel Furnace Gas') | ref=5.407122702439999713e-03 calc=0.000000000000000000e+00 diff=5.407123e-03
+  ('HR', 'Natural Gas Liquids') -> ('HR', 'Oxygen Steel Furnace Gas') | ref=5.357952836830000287e-03 calc=0.000000000000000000e+00 diff=5.357953e-03
+  ('HR', 'Other Hydrocarbons') -> ('HR', 'Oxygen Steel Furnace Gas') | ref=4.979128117109999849e-03 calc=0.000000000000000000e+00 diff=4.979128e-03
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: ['DK', 'HR']
+--- DONE FAIL: ../Compact-data/IOT_2020_pxp.zip ---
+AssertionError: Mismatch in regions: ['DK', 'HR']
+
+--- Loading+Check: ../Compact-data/IOT_2021_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2021_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2021_pxp.zip ---
+
+--- Loading+Check: ../Compact-data/IOT_2022_pxp.zip ---
+
+== Check A == Z @ diag(1/x) for file: ../Compact-data/IOT_2022_pxp.zip ==
+rtol=1e-09 atol=1e-12 topk_cells=10 method=matmul_diag
+regions=49
+[AT] OK
+[AU] OK
+[BE] OK
+[BG] OK
+[BR] OK
+[CA] OK
+[CH] OK
+[CN] OK
+[CY] OK
+[CZ] OK
+[DE] OK
+[DK] OK
+[EE] OK
+[ES] OK
+[FI] OK
+[FR] OK
+[GB] OK
+[GR] OK
+[HR] OK
+[HU] OK
+[ID] OK
+[IE] OK
+[IN] OK
+[IT] OK
+[JP] OK
+[KR] OK
+[LT] OK
+[LU] OK
+[LV] OK
+[MT] OK
+[MX] OK
+[NL] OK
+[NO] OK
+[PL] OK
+[PT] OK
+[RO] OK
+[RU] OK
+[SE] OK
+[SI] OK
+[SK] OK
+[TR] OK
+[TW] OK
+[US] OK
+[WA] OK
+[WE] OK
+[WF] OK
+[WL] OK
+[WM] OK
+[ZA] OK
+
+Done. Bad regions: []
+--- DONE OK: ../Compact-data/IOT_2022_pxp.zip ---
+
+=== SUMMARY ===
+- ../Compact-data/IOT_1996_pxp.zip: Mismatch in regions: ['GR']
+- ../Compact-data/IOT_1999_pxp.zip: Mismatch in regions: ['ES']
+- ../Compact-data/IOT_2011_pxp.zip: Mismatch in regions: ['LV']
+- ../Compact-data/IOT_2012_pxp.zip: Mismatch in regions: ['ES']
+- ../Compact-data/IOT_2013_pxp.zip: Mismatch in regions: ['HR', 'SI']
+- ../Compact-data/IOT_2015_pxp.zip: Mismatch in regions: ['HR']
+- ../Compact-data/IOT_2019_pxp.zip: Mismatch in regions: ['AT']
+- ../Compact-data/IOT_2020_pxp.zip: Mismatch in regions: ['DK', 'HR']
