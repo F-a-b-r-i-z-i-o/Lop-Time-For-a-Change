@@ -49,43 +49,34 @@ vector<vector<double>> read_instances(const string& file_path)
     return instances;
 }
 
-bool sum_check(const vector<vector<double>>& M, unsigned long c, unsigned long& sum_out) {
-    const unsigned long UMAX = numeric_limits<unsigned long>::max();
-    unsigned long sum = 0;
-
-    for (const auto& row : M) {
-        for (double x : row) {
-            unsigned long add = (unsigned long) llround((long double)c * (long double)x);
-
-            if (UMAX - sum < add) {   // overflow
-                sum_out = UMAX;
-                return false;
-            }
-            sum += add;
-        }
-    }
-    sum_out = sum;
-    return true;
+long double matrix_sum(vector<vector<double>>& M) {
+    long double sum = 0.0L;
+    for (const auto& row : M)
+        for (double x : row)
+            sum += (long double) x;
+    return sum;
 }
 
-unsigned long find_c_by_increment(const vector<vector<double>>& M) {
-    unsigned long c = 10000;
-    unsigned long sum = 0;
+unsigned long find_c(vector<vector<double>>& M) {
+    const unsigned long UMAX = numeric_limits<unsigned long>::max();
+    const long double S = matrix_sum(M);
 
+    unsigned long c = 100;
     while (true) {
-        if (!sum_check(M, c, sum)) {
-            return c - 1; // last valid
-        }
-        
+        long double v = (long double)c * S;
+        long double r_ld = llround(v); 
+
         if (c % 100UL == 0) {
-            cout << "c=" << c << '\n' << flush;
-        }  
+            cout << "c=" << c << "  round(c*S)=" << (unsigned long long)r_ld << "\n";
+        }
+
+        // if round value over UMAX take last value
+        if (r_ld > (long double)UMAX) {
+            return (c == 0 ? 0 : c - 1);
+        }
 
         ++c;
-        // no infinite loop if ovwerflow 
-        if (c == 0) 
-            return numeric_limits<unsigned long>::max();
-    
+        if (c == 0) return UMAX; 
     }
 }
 
@@ -104,14 +95,16 @@ int main() {
     auto normalize_matrix = normalize(instances);
 
     auto norm = normalize(instances);
+    
+    unsigned long best_c = find_c(norm);
 
-    unsigned long best_c = find_c_by_increment(norm);
+    long double S = matrix_sum(norm);
+    unsigned long rounded_final = (unsigned long) llround((long double)best_c * S);
 
-    unsigned long final_sum;
-    sum_check(norm, best_c, final_sum);
+    cout << "BEST c = " << best_c << "\n";
+    cout << "round(BEST c * S) = " << rounded_final << "\n";
+    cout << "ULONG_MAX = " << numeric_limits<unsigned long>::max() << "\n";
 
-    cout << "best c = " << best_c << "\n";
-    cout << "sum = " << final_sum << "\n";
 
 
     // print_matrix(instances);
