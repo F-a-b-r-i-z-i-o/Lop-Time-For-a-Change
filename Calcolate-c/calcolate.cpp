@@ -3,13 +3,17 @@
 #include <vector>
 #include <string>
 #include <sstream>
-#include <algorithm> 
+#include <algorithm>
 #include <limits>
 #include <cmath>
+#include <iomanip>
+
 using namespace std;
 
-
-vector<vector<double>> normalize(vector<vector<double>> &matrix)
+/*
+    * Normalize matrix with: a_ij* = a_ij - min(a_ij, a_ji)
+*/
+vector<vector<double>> normalize(const vector<vector<double>> &matrix)
 {
     size_t n = matrix.size();
     auto norm = matrix; // copy
@@ -21,9 +25,9 @@ vector<vector<double>> normalize(vector<vector<double>> &matrix)
     return norm;
 }
 
-
 vector<vector<double>> read_instances(const string& file_path)
 {
+    // Read a whitespace-separated matrix from file, skipping the header
     ifstream file(file_path);
     string str;
     bool first = true;
@@ -31,92 +35,161 @@ vector<vector<double>> read_instances(const string& file_path)
 
     while (getline(file, str))
     {
-        if (first) { first = false; continue; }  // No header
+        if (first) { first = false; continue; }  // skip header
 
         istringstream iss(str);
         vector<double> row;
         double x;
 
-        while (iss >> x) {
-            row.push_back(x);
-        }
-
-        if (!row.empty()) {
-            instances.push_back(row); 
-        }
+        while (iss >> x) row.push_back(x);
+        if (!row.empty()) instances.push_back(row);
     }
 
     return instances;
 }
 
-long double matrix_sum(vector<vector<double>>& M) {
+long double matrix_sum(const vector<vector<double>>& matrix) {
+    // Compute sum of all entries of a matrix
     long double sum = 0.0L;
-    for (const auto& row : M)
+    for (const auto& row : matrix)
         for (double x : row)
-            sum += (long double) x;
+            sum += (long double)x;
     return sum;
 }
 
-unsigned long find_c(vector<vector<double>>& M) {
+// Round (like roundl) and clamp to ULONG_MAX; for x<=0 returns 0
+unsigned long round_ldouble_to_ulong(long double x) {
     const unsigned long UMAX = numeric_limits<unsigned long>::max();
-    const long double S = matrix_sum(M);
 
-    unsigned long c = 100;
-    while (true) {
-        long double v = (long double)c * S;
-        long double r_ld = llround(v); 
+    // Round to nearest integer (e.g., 68.5 -> 69)
+    long double round = roundl(x);
 
-        if (c % 100UL == 0) {
-            cout << "c=" << c << "  round(c*S)=" << (unsigned long long)r_ld << "\n";
-        }
+    // Clamp if it does not fit into unsigned long
+    if (round >= (long double)UMAX) 
+        return UMAX;
 
-        // if round value over UMAX take last value
-        if (r_ld > (long double)UMAX) {
-            return (c == 0 ? 0 : c - 1);
-        }
-
-        ++c;
-        if (c == 0) return UMAX; 
-    }
+    return (unsigned long)round;
 }
 
-void print_matrix(vector<vector<double>>& M)
-{
-    for (auto& row : M) {
-        for (size_t j = 0; j < row.size(); ++j) {
-            cout << row[j] << (j + 1 < row.size() ? ' ' : '\n');
+/*
+ * Return true if: SUM_{i,j} round(c * a_ij) > ULONG_MAX
+ * Early exit if overflow is detected.
+ */
+bool sum_round_overflows(const vector<vector<double>>& matrix, unsigned long c) {
+    const unsigned long UMAX = numeric_limits<unsigned long>::max();
+    unsigned long acc = 0UL;
+
+    for (const auto& row : matrix) {
+        for (double a : row) {
+            unsigned long term = round_ldouble_to_ulong((long double)c * (long double)a);
+
+            // If term is clamped to UMAX:
+            // - if acc != 0, then acc + UMAX must overflow
+            // - if acc == 0, we can set acc=UMAX
+            if (term == UMAX) {
+                if (acc != 0UL) 
+                    return true;
+                acc = UMAX;
+                continue;
+            }
+
+            // Safe overflow check for acc + term
+            if (acc > UMAX - term) 
+                return true;
+
+            acc += term;
         }
     }
+    return false; 
+}
+
+/*
+ * Find the maximum c such that sum_{i,j} round(c * a_ij) <= ULONG_MAX.
+ * Exponential search (doubling) to find an upper bound where overflow happens.
+ * Binary search between the last good value and the first overflowing value.
+ */
+unsigned long find_c(const vector<vector<double>>& matrix) {
+    const unsigned long UMAX = numeric_limits<unsigned long>::max();
+
+    // If it overflows already at c=1, then the maximum feasible c is 0
+    if (sum_round_overflows(matrix, 1UL)) 
+        return 0UL;
+
+    unsigned long lo = 1UL;
+    unsigned long hi = 2UL;
+
+    // Exponential search for an upper bound that overflows (or reach UMAX)
+    while (hi < UMAX && !sum_round_overflows(matrix, hi)) {
+        lo = hi;
+        if (hi > UMAX / 2) { hi = UMAX; break; } // avoid hi *= 2 overflow
+        hi *= 2;
+    }
+
+    // If even c=UMAX does not overflow value is UMAX
+    if (hi == UMAX && !sum_round_overflows(matrix, hi)) 
+        return UMAX;
+
+    // Binary search in (lo, hi], where lo is feasible and hi overflows
+    while (lo + 1 < hi) {
+        unsigned long mid = lo + (hi - lo) / 2;
+        if (sum_round_overflows(matrix, mid)) 
+            hi = mid;
+        else lo = mid;
+    }
+    return lo;
+}
+
+void test_sum_round(const vector<vector<double>>& matrix, unsigned long c) {
+    cout << "Check at c: " << (sum_round_overflows(matrix, c) ? "OVERFLOW" : "OK") << endl;
+    cout << "Check at c + 1: " << (sum_round_overflows(matrix, c + 1) ? "OVERFLOW" : "OK") << endl;
 }
 
 int main() {
+    fstream myfile;
     string path = "../Dataset/sub_matrix_IT_A";
+
     auto instances = read_instances(path);
-    auto normalize_matrix = normalize(instances);
+    if (instances.empty()) {
+        cerr << "Error: empty matrix or invalid file.\n";
+        return 1;
+    }
 
     auto norm = normalize(instances);
-    
+
     unsigned long best_c = find_c(norm);
-
     long double S = matrix_sum(norm);
-    unsigned long rounded_final = (unsigned long) llround((long double)best_c * S);
 
-    cout << "BEST c = " << best_c << "\n";
-    cout << "round(BEST c * S) = " << rounded_final << "\n";
-    cout << "ULONG_MAX = " << numeric_limits<unsigned long>::max() << "\n";
+    cout << setprecision(20);
+    cout << "BEST c = " << best_c << endl;
+    cout << "Sum of normalized matrix (S) = " << S << endl;
+    cout << "c*S = " << best_c * S << endl;
+    cout << "ULONG_MAX = " << numeric_limits<unsigned long>::max() << endl;
+    cout << "sizeof(unsigned long) = " << sizeof(unsigned long) << "\n\n";
 
+    test_sum_round(norm, best_c);
 
+    myfile.open("normalize_with_c",fstream::out);
+    for ( auto& row : norm) {
+        for (size_t j = 0; j < row.size(); ++j) {
+            unsigned long val = round_ldouble_to_ulong((long double)row[j] * (long double)best_c);
+            myfile << val << (j+1 < row.size() ? ' ' : '\n');
+        }
+    }
+    myfile.close();
+    
+
+    return 0;
 
     // print_matrix(instances);
 
-    // cout << "\n";
+    // cout << endl;
 
     // print_matrix(normalize_matrix);
 
     // fstream myfile;
 
     // myfile.open("original",fstream::out);
-    // for (const auto& row : instances) {
+    // for ( auto& row : instances) {
     //     for (size_t j = 0; j < row.size(); ++j) {
     //         myfile << row[j] << (j + 1 < row.size() ? ' ' : '\n');
     //     }
@@ -124,13 +197,5 @@ int main() {
     // myfile.close();
     
 
-    // myfile.open("normalize",fstream::out);
-    // for (const auto& row : normalize_matrix) {
-    //     for (size_t j = 0; j < row.size(); ++j) {
-    //         myfile << row[j] << (j + 1 < row.size() ? ' ' : '\n');
-    //     }
-    // }
-    // myfile.close();
-    
-    return 0;
+  
 }
