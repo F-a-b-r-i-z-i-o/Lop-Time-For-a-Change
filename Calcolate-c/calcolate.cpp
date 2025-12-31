@@ -48,7 +48,8 @@ vector<vector<double>> read_instances(const string& file_path)
     return instances;
 }
 
-long double matrix_sum(const vector<vector<double>>& matrix) {
+long double matrix_sum(const vector<vector<double>>& matrix) 
+{
     // Compute sum of all entries of a matrix
     long double sum = 0.0L;
     for (const auto& row : matrix)
@@ -57,8 +58,9 @@ long double matrix_sum(const vector<vector<double>>& matrix) {
     return sum;
 }
 
-// Round (like roundl) and clamp to ULONG_MAX; for x<=0 returns 0
-unsigned long round_ldouble_to_ulong(long double x) {
+// Round and clamp to ULONG_MAX; for x<=0 returns 0
+unsigned long round_ldouble_to_ulong(long double x) 
+{
     const unsigned long UMAX = numeric_limits<unsigned long>::max();
 
     // Round to nearest integer (e.g., 68.5 -> 69)
@@ -75,7 +77,8 @@ unsigned long round_ldouble_to_ulong(long double x) {
  * Return true if: SUM_{i,j} round(c * a_ij) > ULONG_MAX
  * Early exit if overflow is detected.
  */
-bool sum_round_overflows(const vector<vector<double>>& matrix, unsigned long c) {
+bool sum_round_overflows(const vector<vector<double>>& matrix, unsigned long c) 
+{
     const unsigned long UMAX = numeric_limits<unsigned long>::max();
     unsigned long acc = 0UL;
 
@@ -108,7 +111,8 @@ bool sum_round_overflows(const vector<vector<double>>& matrix, unsigned long c) 
  * Exponential search (doubling) to find an upper bound where overflow happens.
  * Binary search between the last good value and the first overflowing value.
  */
-unsigned long find_c(const vector<vector<double>>& matrix) {
+unsigned long find_c(const vector<vector<double>>& matrix) 
+{
     const unsigned long UMAX = numeric_limits<unsigned long>::max();
 
     // If it overflows already at c=1, then the maximum feasible c is 0
@@ -139,22 +143,33 @@ unsigned long find_c(const vector<vector<double>>& matrix) {
     return lo;
 }
 
-void test_sum_round(const vector<vector<double>>& matrix, unsigned long c) {
+void test_sum_round(const vector<vector<double>>& matrix, unsigned long c) 
+{
     cout << "Check at c: " << (sum_round_overflows(matrix, c) ? "OVERFLOW" : "OK") << endl;
     cout << "Check at c + 1: " << (sum_round_overflows(matrix, c + 1) ? "OVERFLOW" : "OK") << endl;
 }
 
-int main() {
+void save_round_matrix(vector<vector<double>> norm, string filename, unsigned long best_c)
+{
     fstream myfile;
+    myfile.open(filename,fstream::out);
+    myfile << norm.size() << endl;
+    for (auto &row : norm)
+    {
+        for (size_t j = 0; j < row.size(); ++j) {
+            unsigned long val = round_ldouble_to_ulong((long double)row[j] * (long double)best_c);
+            myfile << val << (j+1 < row.size() ? ' ' : '\n');
+        }
+        
+    }
+    myfile.close();
+}
+
+int main() {
     string path = "../Dataset/sub_matrix_IT_A";
 
-    auto instances = read_instances(path);
-    if (instances.empty()) {
-        cerr << "Error: empty matrix or invalid file.\n";
-        return 1;
-    }
-
-    auto norm = normalize(instances);
+    vector<vector<double>> instances = read_instances(path);
+    vector<vector<double>> norm = normalize(instances);
 
     unsigned long best_c = find_c(norm);
     long double S = matrix_sum(norm);
@@ -164,18 +179,12 @@ int main() {
     cout << "Sum of normalized matrix (S) = " << S << endl;
     cout << "c*S = " << best_c * S << endl;
     cout << "ULONG_MAX = " << numeric_limits<unsigned long>::max() << endl;
-    cout << "sizeof(unsigned long) = " << sizeof(unsigned long) << "\n\n";
+    cout << "sizeof(unsigned long) = " << sizeof(unsigned long) << endl;
 
     test_sum_round(norm, best_c);
-
-    myfile.open("normalize_with_c",fstream::out);
-    for ( auto& row : norm) {
-        for (size_t j = 0; j < row.size(); ++j) {
-            unsigned long val = round_ldouble_to_ulong((long double)row[j] * (long double)best_c);
-            myfile << val << (j+1 < row.size() ? ' ' : '\n');
-        }
-    }
-    myfile.close();
+    save_round_matrix(norm,"round_matrix",best_c);
+    // myfile.open("normalize_with_c",fstream::out);
+    // myfile.close();
     
 
     return 0;

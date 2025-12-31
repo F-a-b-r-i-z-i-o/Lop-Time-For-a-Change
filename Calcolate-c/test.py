@@ -1,5 +1,3 @@
-import pymrio
-import pandas as pd
 import numpy as np
 
 class LoadInstance:
@@ -11,8 +9,9 @@ class LoadInstance:
         return np.loadtxt(file_path, skiprows=1)
         
     def _calculate_sum(self):
-        return np.asarray(self.matrix).sum(dtype=np.float128)
-
+        arr = np.asarray(self.matrix)
+        return arr.sum(dtype=np.float128), arr.shape
+    
     def _calculate_sum_normalize(self): 
         self.matrix = np.asarray(self.matrix, dtype=np.float64)
         norm = self.matrix - np.minimum(self.matrix, self.matrix.T)
@@ -24,12 +23,13 @@ class LoadInstance:
 
 
 if __name__ == "__main__":
-    file_path = "Dataset/sub_matrix_IT_A"
+    file_path = "normalize_with_c"
     print("--LOAD MATRIX--")
     matrix = LoadInstance(file_path=file_path)
     print("---LOADED")
-    matrix_sum = matrix._calculate_sum()
-    print(f"SUM MATRIX = {matrix_sum}")
-    matrix_sum = matrix._calculate_sum_normalize()
-    print(f"SUM MATRIX NORMALIZE = {matrix_sum}")
+    matrix_sum, shape = matrix._calculate_sum()
+    print(f"SHAPE = {shape}")
+    print(f"SUM MATRIX = {matrix_sum:.10f}")
+    # matrix_sum = matrix._calculate_sum_normalize()
+    # print(f"SUM MATRIX NORMALIZE = {matrix_sum}")
     
