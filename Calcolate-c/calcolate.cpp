@@ -7,7 +7,9 @@
 #include <limits>
 #include <cmath>
 #include <iomanip>
+#include <filesystem>
 
+namespace fs = std::filesystem;
 using namespace std;
 
 /*
@@ -65,6 +67,9 @@ unsigned long round_ldouble_to_ulong(long double x)
 
     // Round to nearest integer (e.g., 68.5 -> 69)
     long double round = roundl(x);
+    
+    if (round <= 0)
+        return 0L;
 
     // Clamp if it does not fit into unsigned long
     if (round >= (long double)UMAX) 
@@ -149,7 +154,7 @@ void test_sum_round(const vector<vector<double>>& matrix, unsigned long c)
     cout << "Check at c + 1: " << (sum_round_overflows(matrix, c + 1) ? "OVERFLOW" : "OK") << endl;
 }
 
-void save_round_matrix(vector<vector<double>> norm, string filename, unsigned long best_c)
+void save_round_matrix(vector<vector<double>> &norm, string filename, unsigned long &best_global_c)
 {
     fstream myfile;
     myfile.open(filename,fstream::out);
@@ -157,7 +162,7 @@ void save_round_matrix(vector<vector<double>> norm, string filename, unsigned lo
     for (auto &row : norm)
     {
         for (size_t j = 0; j < row.size(); ++j) {
-            unsigned long val = round_ldouble_to_ulong((long double)row[j] * (long double)best_c);
+            unsigned long val = round_ldouble_to_ulong((long double)row[j] * (long double)best_global_c);
             myfile << val << (j+1 < row.size() ? ' ' : '\n');
         }
         
@@ -165,46 +170,65 @@ void save_round_matrix(vector<vector<double>> norm, string filename, unsigned lo
     myfile.close();
 }
 
-int main() {
-    string path = "../Dataset/sub_matrix_IT_A";
 
-    vector<vector<double>> instances = read_instances(path);
-    vector<vector<double>> norm = normalize(instances);
-
-    unsigned long best_c = find_c(norm);
-    long double S = matrix_sum(norm);
-
-    cout << setprecision(20);
-    cout << "BEST c = " << best_c << endl;
-    cout << "Sum of normalized matrix (S) = " << S << endl;
-    cout << "c*S = " << best_c * S << endl;
-    cout << "ULONG_MAX = " << numeric_limits<unsigned long>::max() << endl;
-    cout << "sizeof(unsigned long) = " << sizeof(unsigned long) << endl;
-
-    test_sum_round(norm, best_c);
-    save_round_matrix(norm,"round_matrix",best_c);
-    // myfile.open("normalize_with_c",fstream::out);
-    // myfile.close();
+unsigned long calcolate_global_c(fs::path &path, string name_output)
+{
+    fstream c_log;
+    c_log.open(name_output, fstream::out);
+    unsigned long global_c = numeric_limits<unsigned long>::max();
     
+    for (auto &entry : fs::directory_iterator(path))
+    {
+        string files = entry.path();
+        vector<vector<double>> instances = read_instances(files);
+        vector<vector<double>> norm = normalize(instances);
 
+        unsigned long best_c = find_c(norm);
+        long double S = matrix_sum(norm);
+        global_c = min(global_c, best_c);
+
+        cout << setprecision(20);
+        cout << "BEST c = " << best_c << endl;
+        cout << "Sum of normalized matrix (S) = " << S << endl;
+        cout << "c*S = " << best_c * S << endl;
+        cout << "ULONG_MAX = " << numeric_limits<unsigned long>::max() << endl;
+        cout << "sizeof(unsigned long) = " << sizeof(unsigned long) << endl;
+        c_log << best_c << "\n";
+        
+    }
+    
+    c_log << "Best global c found: " << global_c;
+    c_log.close();
+
+    return global_c;
+}
+
+
+int main() {
+    
+    fs::path in_dir = "../Dataset";
+    fs::path out_dir = "../pxp_it_2022_n200";
+    unsigned long best_global_c = calcolate_global_c(in_dir, "calculate_global_c.txt");
+    
+    cout << "GLOBAL BEST c = " << best_global_c << endl;
+
+    fs::create_directories(out_dir);
+
+    for (const auto& entry : fs::directory_iterator(in_dir)) {
+        if (!entry.is_regular_file()) continue;
+
+        auto instances = read_instances(entry.path().string());
+        auto norm = normalize(instances);
+
+        unsigned long best_c = find_c(norm);
+
+        fs::path out_file = out_dir / (entry.path().stem().string());
+        save_round_matrix(norm, out_file.string(), best_c);
+    }
+
+    
     return 0;
 
-    // print_matrix(instances);
-
-    // cout << endl;
-
-    // print_matrix(normalize_matrix);
-
-    // fstream myfile;
-
-    // myfile.open("original",fstream::out);
-    // for ( auto& row : instances) {
-    //     for (size_t j = 0; j < row.size(); ++j) {
-    //         myfile << row[j] << (j + 1 < row.size() ? ' ' : '\n');
-    //     }
-    // }
-    // myfile.close();
-    
 
   
 }
