@@ -4,7 +4,7 @@
 
 ### Examples - another way see help command
 
-`python construct_sub_matrix.py --file_path ../Compact-data/IOT_2022_ixi.zip -t A --regions IT -o ../Dataset`
+`python construct_sub_matrix.py --file_path ../Compact-data/IOT_2022_ixi.zip -t A --regions AT IT -o ../Dataset`
 
 [
  AT, BE, BG, CY, CZ, DE, DK, EE, ES, FI, FR, GR, 
