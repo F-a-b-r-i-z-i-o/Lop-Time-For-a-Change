@@ -45,14 +45,42 @@ class LoadInstance:
             print(f"rows equal (diff==0): {n_eq}")
             print(f"rows diff  (diff!=0): {n_neq}")
 
+            abs_diff = diff.abs()
+            if abs_diff.isna().all():
+                file_max_abs = 0.0
+                file_max_row = None
+                file_max_info = None
+            else:
+                file_max_abs = float(abs_diff.max())
+                file_max_row = abs_diff.idxmax()  # index label worst
+                file_max_info = {
+                    "file": self.file_path,
+                    "row": file_max_row,
+                    "x_off": float(x_off.loc[file_max_row]),
+                    "x_calc": float(x_calc.loc[file_max_row]),
+                    "diff": float(diff.loc[file_max_row]),
+                }
+
+            if file_max_info is None:
+                print(f"\n[FILE MAX ABS DIFF] {self.file_path}: 0.0")
+            else:
+                print(
+                    f"\n[FILE MAX ABS DIFF] {self.file_path}: {file_max_abs:.6e} "
+                    f"(row={file_max_info['row']}, x_off={file_max_info['x_off']}, "
+                    f"x_calc={file_max_info['x_calc']}, diff={file_max_info['diff']})"
+                )
+
             if n_neq > 0:
                 table = pd.DataFrame({"x_off": x_off, "x_calc": x_calc, "diff": diff})
                 table["abs_diff"] = table["diff"].abs()
                 worst = table.sort_values("abs_diff", ascending=False).head(show_examples)
                 print(f"\n[WORST {show_examples} rows by |diff|]")
                 print(worst.drop(columns=["abs_diff"]).to_string())
+
+
+            return file_max_abs, file_max_info
+
         finally:
-            # deallocate RAM
             del matrix
             gc.collect()
 
@@ -62,11 +90,31 @@ def compare_across_folders(folders, title: str, show_examples: int = 20):
     print(f"# {title} Sum log #")
     print("#############################")
 
+    group_max_abs = 0.0
+    group_max_info = None
+
     for fp in folders:
         inst = LoadInstance(fp)
-        inst.check_x(show_examples=show_examples)
+        file_max_abs, file_max_info = inst.check_x(show_examples=show_examples)
+
+        if file_max_abs > group_max_abs:
+            group_max_abs = file_max_abs
+            group_max_info = file_max_info
+
         del inst
         gc.collect()
+
+    if group_max_info is None:
+        print(f"\n[GROUP MAX ABS DIFF] {title}: 0.0")
+    else:
+        print(
+            f"\n[GROUP MAX ABS DIFF] {title}: {group_max_abs:.6e} "
+            f"(file={group_max_info['file']}, row={group_max_info['row']}, "
+            f"x_off={group_max_info['x_off']}, x_calc={group_max_info['x_calc']}, diff={group_max_info['diff']})"
+        )
+
+    return group_max_abs, group_max_info
+
 
 if __name__ == "__main__":
 
@@ -137,7 +185,28 @@ if __name__ == "__main__":
     Path(log_file).parent.mkdir(parents=True, exist_ok=True)
 
     with open(log_file, "w", encoding="utf-8") as f, contextlib.redirect_stdout(f):
-        compare_across_folders(folders_ixi, title="IXI", show_examples=10)
-        compare_across_folders(folders_pxp, title="PXP", show_examples=10)
+        max_ixi, info_ixi = compare_across_folders(folders_ixi, title="IXI", show_examples=10)
+        max_pxp, info_pxp = compare_across_folders(folders_pxp, title="PXP", show_examples=10)
+
+        # Max abs on log
+        if max_ixi >= max_pxp:
+            overall_max = max_ixi
+            overall_info = info_ixi
+        else:
+            overall_max = max_pxp
+            overall_info = info_pxp
+
+        print("\n=== OVERALL MAX ABS DIFF (ALL FILES IN LOG) ===")
+        if overall_info is None:
+            print("[OVERALL MAX ABS DIFF] 0.0")
+        else:
+            print(
+                f"[OVERALL MAX ABS DIFF] {overall_max:.6e} "
+                f"(file={overall_info['file']}, row={overall_info['row']}, "
+                f"x_off={overall_info['x_off']}, x_calc={overall_info['x_calc']}, diff={overall_info['diff']})"
+            )
+
+    # niente print a schermo
+
 
     print(f"Log write in: {log_file}")
