@@ -1,8 +1,8 @@
 CXX := g++
 CXXFLAGS := -std=c++17 -Wall -Wextra -O3
 
-TARGET := calcolate
-SRCS := calcolate.cpp
+TARGET := calcolate_standard
+SRCS := calcolate_standard.cpp
 OBJS := $(SRCS:.cpp=.o)
 
 all: $(TARGET)
