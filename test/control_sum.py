@@ -206,7 +206,4 @@ if __name__ == "__main__":
                 f"x_off={overall_info['x_off']}, x_calc={overall_info['x_calc']}, diff={overall_info['diff']})"
             )
 
-    # niente print a schermo
-
-
     print(f"Log write in: {log_file}")
