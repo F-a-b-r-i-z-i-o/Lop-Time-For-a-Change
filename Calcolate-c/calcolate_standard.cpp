@@ -154,7 +154,7 @@ int main()
             best_ok = c;
 
             if (c > UMAX / 10UL) {
-                cout << "  -> reached max representable c; chosen = " << best_ok << endl;
+                cout << " -> reached max representable c; chosen = " << best_ok << endl;
                 break;
             }
             c *= 10UL;
