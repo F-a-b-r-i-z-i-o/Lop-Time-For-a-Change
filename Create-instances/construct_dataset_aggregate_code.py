@@ -40,7 +40,7 @@ def build_names_by_index(sectors_df: pd.DataFrame):
     unique_codes = sorted(sectors_df["base_code"].unique(), key=_key)
 
     code2names = sectors_df.groupby("base_code")["ExioName"].apply(list).to_dict()
-    names_by_index = [code2names[c] for c in unique_codes]  # indice -> lista ExioName
+    names_by_index = [code2names[c] for c in unique_codes]  # index -> list ExioName
 
     return unique_codes, names_by_index
 

@@ -1,6 +1,5 @@
 import pymrio
 import numpy as np
-import argparse
 import os
 import pandas as pd
 
@@ -56,61 +55,38 @@ class LoadInstance:
 
         return numeric
 
+def save_matrix(out_path: str, mat: np.ndarray) -> None:
+    """
+    Save format:
+        n
+        <matrix n x n>
+    """
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
 
-def parse_args():
-    parser = argparse.ArgumentParser(
-        description="Extract regional sub-matrices from EXIOBASE3 after normalizing+scaling the full A matrix."
-    )
-    parser.add_argument(
-        "--file_path",
-        help="Path to EXIOBASE3 file (e.g. IOT_2022_ixi.zip)",
-        required=True
-    )
-    parser.add_argument(
-        "-r", "--regions",
-        nargs="+",
-        required=True,
-        help="Region codes (e.g. IT AT). You can pass one or more.",
-    )
-    parser.add_argument(
-        "--out-dir",
-        dest="out_dir",
-        default="out_submatrices",
-        help="Folder to save the dataset of sub-matrices (default: out_submatrices).",
-    )
-    parser.add_argument(
-        "--out-files-names",
-        dest="output_name_template",
-        default="sub_matrix_{regions}_A.txt",
-        help="Template for output filename. Default: sub_matrix_{regions}_A.txt",
-    )
-
-    return parser.parse_args()
+    with open(out_path, "w") as f:
+        f.write(f"{mat.shape[0]}\n")
+        np.savetxt(f, mat, fmt="%d", delimiter=" ")
 
 
 if __name__ == "__main__":
-    args = parse_args()
+    iot_path = "../Compact-data/IOT_2022_pxp.zip"
+    inst = LoadInstance(iot_path)
 
-    print("--- Start Load Matrix ---")
-    instance = LoadInstance(args.file_path)
-    print("--- Matrix Loaded + A normalized + scaled ---")
+    regions = [
+        "AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "ES", "FI", "FR", "GR", "HR", "HU",
+        "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK", "GB",
+        "US", "JP", "CN", "CA", "KR", "BR", "IN", "MX", "RU", "AU", "CH", "TR", "TW", "NO",
+        "ID", "ZA", "WA", "WL", "WE", "WF", "WM"
+    ]
 
-    os.makedirs(args.out_dir, exist_ok=True)
+    for region in regions:
+        mat = inst.construct_sub_matrix_regions_A(region)  # <-- this is already a numpy array
 
-    for region in args.regions:
-        numeric = instance.construct_sub_matrix_regions_A(region)
+        print("Shape matrix:", mat.shape)
 
-        rows, cols = numeric.shape
-        filename = args.output_name_template.format(
-            regions=region,
-            rows=rows,
-            cols=cols
-        )
+        out_dir = f"../Dataset/pxp_n_{mat.shape[0]}"
+        out_path = os.path.join(out_dir, f"cxc_{region}_2022_n{mat.shape[0]}")
 
-        saved_path = os.path.join(args.out_dir, filename)
-        header = str(rows)
-        numeric_to_save = np.rint(numeric)
-        numeric_to_save = numeric_to_save.astype(np.int64)
-        np.savetxt(saved_path, numeric_to_save, fmt="%d", delimiter=" ", header=header, comments="")
-        
-        print(f"Saved: {saved_path} (shape={numeric.shape}), name={filename}")
+        save_matrix(out_path, mat)
+
+        print("Saved in:", out_path)
