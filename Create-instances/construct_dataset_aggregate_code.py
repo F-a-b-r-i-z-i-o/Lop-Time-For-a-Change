@@ -124,6 +124,6 @@ if __name__ == "__main__":
 
         with open(out_path, "w") as f:
             f.write(f"{mat.shape[0]}\n")
-            np.savetxt(f, mat, fmt="%d", delimiter="\t")
+            np.savetxt(f, mat, fmt="%d", delimiter=" ")
 
         print("Save in:", out_path)

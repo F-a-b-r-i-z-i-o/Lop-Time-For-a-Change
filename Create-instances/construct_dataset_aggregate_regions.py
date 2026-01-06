@@ -27,7 +27,7 @@ def agg_region_region(df: pd.DataFrame, region_level_name: str = "region") -> pd
     # Rows
     lvl = region_level_name if region_level_name in df.index.names else 0
     df = df.groupby(level=lvl).sum()
-    
+
     # Cols
     lvl = region_level_name if region_level_name in df.columns.names else 0
     df = df.T.groupby(level=lvl).sum().T
@@ -60,7 +60,7 @@ def save_matrix(out_path: str, mat: np.ndarray) -> None:
     """
     with open(out_path, "w") as f:
         f.write(f"{mat.shape[0]}\n")
-        np.savetxt(f, mat, fmt="%d", delimiter="\t")
+        np.savetxt(f, mat, fmt="%d", delimiter=" ")
 
 
 if __name__ == "__main__":
