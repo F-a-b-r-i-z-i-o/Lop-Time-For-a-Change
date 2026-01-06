@@ -1,129 +1,124 @@
-import pymrio
-import numpy as np
 import os
-import pymrio.mrio_models.exio3_ixi as model
+import re
+import numpy as np
 import pandas as pd
+import pymrio
 
-class LoadInstance:
-    def __init__(self, file_path: str) -> None:
-        self.file_path = file_path
-        self.matrix = self._load_matrix()
-
-    def _load_matrix(self):
-        exio_matrix = pymrio.parse_exiobase3(self.file_path)
-        return exio_matrix
-    
-def load_sectors():
-    base_dir = os.path.dirname(model.__file__)
-    sectors = os.path.join(base_dir, "sectors.tsv")
-    df = pd.read_csv(sectors, sep="\t")
-    return df
 
 def normalize_square_df(A_df: pd.DataFrame) -> pd.DataFrame:
     """
-    Return the normalized matrix A* where:
+    Normalization with: 
         a*_ij = a_ij - min(a_ij, a_ji)
     """
-    vals = A_df.to_numpy(dtype=np.float128, copy=True)
-    # Element wise symmetric cancellation
+    vals = A_df.to_numpy(dtype=np.float64, copy=True)
     vals = vals - np.minimum(vals, vals.T)
     return pd.DataFrame(vals, index=A_df.index, columns=A_df.columns)
 
-def _key(code: str) -> int:
-    # i01 -> 1, i10 -> 10 ...
-    return int(code[1:])
 
-def build_names_by_index(sectors_df: pd.DataFrame):
-    sectors_df = sectors_df.copy()
-    sectors_df["base_code"] = sectors_df["ExioCode"].astype(str).str.split(".", n=1).str[0]
+def extract_year(path: str) -> int:
+    m = re.search(r"IOT_(\d{4})", os.path.basename(path))
+    return int(m.group(1))
 
-    unique_codes = sorted(sectors_df["base_code"].unique(), key=_key)
 
-    code2names = sectors_df.groupby("base_code")["ExioName"].apply(list).to_dict()
-    names_by_index = [code2names[c] for c in unique_codes]  # indice -> lista ExioName
-
-    return unique_codes, names_by_index
-
-def aggregate_A_region_by_code(mrio, region: str, unique_codes, names_by_index, scale: int = 1_000_000_000_000_000):
+def agg_region_region(df: pd.DataFrame, region_level_name: str = "region") -> pd.DataFrame:
     """
-    Aggregate A (region-region) into groups (i01, i02, ...) using names_by_index,
-    with formula: Agg = S @ A @ S.T
-
-    - unique_codes: list [“i01”,“i02”,...] in order (len = G)
-    - names_by_index[g]: list of ExioName belonging to the group unique_codes[g]
+    Aggregate df with regionxregion with sum of the level 
     """
-    # sub-matrix region
-    A_df = mrio.A.xs(region, level="region", axis=0).xs(region, level="region", axis=1)
-    A_df = normalize_square_df(A_df)
+    # Rows
+    lvl = region_level_name if region_level_name in df.index.names else 0
+    df = df.groupby(level=lvl).sum()
+    
+    # Cols
+    lvl = region_level_name if region_level_name in df.columns.names else 0
+    df = df.T.groupby(level=lvl).sum().T
 
-    sector_labels = A_df.index.get_level_values("sector").astype(str)
+    return df
 
-    # Numeric matrix
-    A = A_df.to_numpy(dtype=np.float128, copy=True)
-    N = A.shape[0]
-    G = len(unique_codes)
 
-    # 4) mapping name -> index 
-    name_to_pos = {name: i for i, name in enumerate(sector_labels)}
+def load_A_region_agg(path_zip: str, regions: list[str], scale: int = 1_000_000_000_000_000) -> pd.DataFrame:
+    mrio = pymrio.parse_exiobase3(path_zip)
+    A = mrio.A 
+    # aggregate
+    A_rr = agg_region_region(A, region_level_name="region")
+    # normalize right after aggregation
+    A_rr = normalize_square_df(A_rr)
+    # reorder + subset to requested regions
+    A_rr = A_rr.loc[regions, regions]
+    # scale by constant 
+    A_rr = A_rr * np.int64(scale)
+    # Round to integer
+    Arr_int = np.rint(A_rr).astype(np.int64)
 
-    # Construct S (GxN) indicator
-    # S[g, i] = 1 if sector i in group g
-    S = np.zeros((G, N), dtype=np.float128)
+    return Arr_int
 
-    missing = []  # for debug/report
-    for g, names in enumerate(names_by_index):
-        idxs = [name_to_pos[n] for n in names if n in name_to_pos]
-        if len(idxs) != len(names):
-            # track name not found in group
-            miss = [n for n in names if n not in name_to_pos]
-            if miss:
-                missing.extend((unique_codes[g], m) for m in miss)
-        if idxs:
-            S[g, np.array(idxs, dtype=np.int64)] = 1.0
 
-    # Aggregate: Agg = S @ A @ S.T
-    agg = S @ A @ S.T
-    agg = agg * np.int64(scale)
-    # convert in int64
-    agg_int = np.rint(agg).astype(np.int64)
-    agg_df = pd.DataFrame(agg_int, index=unique_codes, columns=unique_codes)
+def save_matrix(out_path: str, mat: np.ndarray) -> None:
+    """
+    Save format:
+        n
+        <matrix n x n>
+    """
+    with open(out_path, "w") as f:
+        f.write(f"{mat.shape[0]}\n")
+        np.savetxt(f, mat, fmt="%d", delimiter="\t")
 
-    return agg_df
 
 if __name__ == "__main__":
-    # mapping group -> name
-    sectors_df = load_sectors()
-    unique_codes, names_by_index = build_names_by_index(sectors_df)
+    folders_ixi = [
+        "../Compact-data/IOT_1995_ixi.zip",
+        # "../Compact-data/IOT_1996_ixi.zip",
+        # "../Compact-data/IOT_1997_ixi.zip",
+        # "../Compact-data/IOT_1998_ixi.zip",
+        # "../Compact-data/IOT_1999_ixi.zip",
+        # "../Compact-data/IOT_2000_ixi.zip",
+        # "../Compact-data/IOT_2001_ixi.zip",
+        # "../Compact-data/IOT_2002_ixi.zip",
+        # "../Compact-data/IOT_2003_ixi.zip",
+        # "../Compact-data/IOT_2004_ixi.zip",
+        # "../Compact-data/IOT_2005_ixi.zip",
+        # "../Compact-data/IOT_2006_ixi.zip",
+        # "../Compact-data/IOT_2007_ixi.zip",
+        # "../Compact-data/IOT_2008_ixi.zip",
+        # "../Compact-data/IOT_2009_ixi.zip",
+        # "../Compact-data/IOT_2010_ixi.zip",
+        # "../Compact-data/IOT_2011_ixi.zip",
+        # "../Compact-data/IOT_2012_ixi.zip",
+        # "../Compact-data/IOT_2013_ixi.zip",
+        # "../Compact-data/IOT_2014_ixi.zip",
+        # "../Compact-data/IOT_2015_ixi.zip",
+        # "../Compact-data/IOT_2016_ixi.zip",
+        # "../Compact-data/IOT_2017_ixi.zip",
+        # "../Compact-data/IOT_2018_ixi.zip",
+        # "../Compact-data/IOT_2019_ixi.zip",
+        # "../Compact-data/IOT_2020_ixi.zip",
+        # "../Compact-data/IOT_2021_ixi.zip",
+        "../Compact-data/IOT_2022_ixi.zip",
+    ]
 
-    print("Number code unique:", len(unique_codes))
-    print(unique_codes, "-> number groups:", len(names_by_index))
+    regions = ["AT","BE","BG","CY","CZ","DE","DK","EE","ES","FI","FR","GR","HR","HU","IE","IT","LT",
+               "LU","LV","MT","NL","PL","PT","RO","SE","SI","SK","GB","US","JP","CN","CA","KR","BR",
+               "IN","MX","RU","AU","CH","TR","TW","NO","ID","ZA","WA","WL","WE","WF","WM"]
 
-    iot_path = "../Compact-data/IOT_2022_ixi.zip"
-    inst = LoadInstance(iot_path)
-    regions = ["AT", "BE", "BG", "CY", "CZ","DE", "DK", "EE", "ES", "FI", "FR", "GR", "HR", "HU", "IE", "IT", "LT", 
-               "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK", "GB", "US", "JP", "CN", "CA", "KR", "BR", 
-               "IN", "MX", "RU", "AU", "CH", "TR", "TW", "NO", "ID", "ZA", "WA", "WL", "WE", "WF", "WM"]
-    
-    for region in regions:
-        agg_df = aggregate_A_region_by_code(inst.matrix, region, unique_codes, names_by_index)
+    # Load dict for  A_regionxregion_normalize
+    A_by_year: dict[int, pd.DataFrame] = {}
+    for p in folders_ixi:
+        y = extract_year(p)
+        A_rr = load_A_region_agg(p, regions)
+        A_by_year[y] = A_rr
+        print(f"[{y}] A_rr shape = {A_rr.shape}")
 
-        print("Shape matrix aggregate:", agg_df.shape)  
+    years_sorted = sorted(A_by_year.keys())
 
-        # -- Test for dimensions -- 
+    # One matrix for year
+    out_dir_year = f"../Dataset/rxr_n_{A_rr.shape[0]}"
+    os.makedirs(out_dir_year, exist_ok=True)
 
-        # out_dir = "out_aggregated"
-        # os.makedirs(out_dir, exist_ok=True)
-        # out_path = os.path.join(out_dir, f"A_aggregated_{region}")
-        # agg_df.to_csv(out_path, sep="\t", index=True)
+    for y in years_sorted:
+        df = A_by_year[y]
+        # with labels for test
+        #df.to_csv(os.path.join(out_dir_year, f"A_rr_norm_{y}.tsv"), sep="\t")
+        
+        # format
+        save_matrix(os.path.join(out_dir_year, f"rxr_{y}_n{df.shape[0]}"),df.to_numpy())
 
-        out_dir = f"cxc_n_{agg_df.shape[0]}"
-        os.makedirs(out_dir, exist_ok=True)
-        out_path = os.path.join(out_dir, f"cxc_{region}_2022_n{agg_df.shape[0]}")
 
-        mat = agg_df.to_numpy(dtype=np.int64)
-
-        with open(out_path, "w") as f:
-            f.write(f"{mat.shape[0]}\n")
-            np.savetxt(f, mat, fmt="%d", delimiter="\t")
-
-        print("Save in:", out_path)
