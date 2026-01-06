@@ -44,7 +44,7 @@ def build_names_by_index(sectors_df: pd.DataFrame):
 
     return unique_codes, names_by_index
 
-def aggregate_A_region_by_code(mrio, region: str, unique_codes, names_by_index, scale: int = 1_000_000_000_000_000):
+def aggregate_A_region_by_code(mrio, region: str, unique_codes, names_by_index, c: int = 1_000_000_000_000_000):
     """
     Aggregate A (region-region) into groups (i01, i02, ...) using names_by_index,
     with formula: Agg = S @ A @ S.T
@@ -60,7 +60,9 @@ def aggregate_A_region_by_code(mrio, region: str, unique_codes, names_by_index, 
 
     # Numeric matrix
     A = A_df.to_numpy(dtype=np.float128, copy=True)
-    N = A.shape[0]
+    A_scaled = np.rint(A * np.int64(c)).astype(np.int64)
+    
+    N = A_scaled.shape[0]
     G = len(unique_codes)
 
     # 4) mapping name -> index 
@@ -82,11 +84,8 @@ def aggregate_A_region_by_code(mrio, region: str, unique_codes, names_by_index, 
             S[g, np.array(idxs, dtype=np.int64)] = 1.0
 
     # Aggregate: Agg = S @ A @ S.T
-    agg = S @ A @ S.T
-    agg = agg * np.int64(scale)
-    # convert in int64
-    agg_int = np.rint(agg).astype(np.int64)
-    agg_df = pd.DataFrame(agg_int, index=unique_codes, columns=unique_codes)
+    agg = S @ A_scaled @ S.T
+    agg_df = pd.DataFrame(agg, index=unique_codes, columns=unique_codes)
 
     return agg_df
 

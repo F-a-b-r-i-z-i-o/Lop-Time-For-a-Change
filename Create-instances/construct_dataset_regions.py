@@ -25,7 +25,7 @@ class LoadInstance:
         a*_ij = a_ij - min(a_ij, a_ji) on the full matrix, then scale by c.
         """
 
-        # to numeric (high precision for stability)
+        # to numeric 
         vals = M.to_numpy(dtype=np.longdouble, copy=True)
 
         # a*_ij = a_ij - min(a_ij, a_ji)
@@ -80,7 +80,7 @@ if __name__ == "__main__":
     ]
 
     for region in regions:
-        mat = inst.construct_sub_matrix_regions_A(region)  # <-- this is already a numpy array
+        mat = inst.construct_sub_matrix_regions_A(region)  
 
         print("Shape matrix:", mat.shape)
 

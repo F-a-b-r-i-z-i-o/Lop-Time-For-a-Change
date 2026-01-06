@@ -35,21 +35,23 @@ def agg_region_region(df: pd.DataFrame, region_level_name: str = "region") -> pd
     return df
 
 
-def load_A_region_agg(path_zip: str, regions: list[str], scale: int = 1_000_000_000_000_000) -> pd.DataFrame:
-    mrio = pymrio.parse_exiobase3(path_zip)
-    A = mrio.A 
-    # aggregate
-    A_rr = agg_region_region(A, region_level_name="region")
-    # normalize right after aggregation
-    A_rr = normalize_square_df(A_rr)
-    # reorder + subset to requested regions
-    A_rr = A_rr.loc[regions, regions]
-    # scale by constant 
-    A_rr = A_rr * np.int64(scale)
-    # Round to integer
-    Arr_int = np.rint(A_rr).astype(np.int64)
+def load_A_region_agg(path: str, regions: list[str], c: int = 1_000_000_000_000_000,) -> pd.DataFrame:
+    mrio = pymrio.parse_exiobase3(path)
+    A = mrio.A
+    A_norm = normalize_square_df(A)
 
-    return Arr_int
+    # scale + round to integer aggregation
+    A_scaled_int = np.rint(A_norm.to_numpy(dtype=np.float64) * np.int64(c)).astype(np.int64)
+    A_scaled_int = pd.DataFrame(A_scaled_int, index=A_norm.index, columns=A_norm.columns)
+
+    # aggregate 
+    A_rr_int = agg_region_region(A_scaled_int, region_level_name="region")
+
+    # reorder subset to requested regions
+    A_rr_int = A_rr_int.loc[regions, regions]
+
+    return A_rr_int
+
 
 
 def save_matrix(out_path: str, mat: np.ndarray) -> None:

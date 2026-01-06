@@ -29,9 +29,7 @@ def normalize_square_df(A_df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(vals, index=A_df.index, columns=A_df.columns)
 
 def build_groups_by_consumption_categories(
-    sectors_df: pd.DataFrame,
-    category_col: str = "ConsumptionCategories",
-    sector_name_col: str = "ExioName",
+    sectors_df: pd.DataFrame
 ):
     """
     Build aggregation groups using ConsumptionCategories.
@@ -40,17 +38,17 @@ def build_groups_by_consumption_categories(
       - names_by_index[g]: list of ExioName belonging to that category
     """
 
-    df = sectors_df[[sector_name_col, category_col]].copy()
+    df = sectors_df[["ExioName", "ConsumptionCategories"]].copy()
 
     # Clean strings
-    df[sector_name_col] = df[sector_name_col].astype(str).str.strip()
-    df[category_col] = df[category_col].astype(str).str.strip()
+    df["ExioName"] = df["ExioName"].astype(str).str.strip()
+    df["ConsumptionCategories"] = df["ConsumptionCategories"].astype(str).str.strip()
 
     # Keep categories in file order 
-    unique_groups = list(pd.unique(df[category_col]))
+    unique_groups = list(pd.unique(df["ConsumptionCategories"]))
 
     # category -> list of ExioName
-    group2names = df.groupby(category_col)[sector_name_col].apply(list).to_dict()
+    group2names = df.groupby("ConsumptionCategories")["ExioName"].apply(list).to_dict()
 
     # De-duplicate names inside each group (preserving order)
     names_by_index = []
@@ -66,49 +64,52 @@ def aggregate_A_region_by_groups(
     region: str,
     unique_groups,
     names_by_index,
-    scale: int = 1_000_000_000_000_000
+    c: int = 1_000_000_000_000_000,  # scale factor
 ):
     """
-    Aggregate A (region-region) into groups using names_by_index,
-    with formula: Agg = S @ A @ S.T
-
-    - unique_groups: list of group labels (len = G)
-    - names_by_index[g]: list of ExioName belonging to group unique_groups[g]
+    Correct order:
+      1) extract A region-region
+      2) normalize A -> A*
+      3) scale: A_scaled = round(A* * c)  (still sector x sector)
+      4) aggregate: Agg = S @ A_scaled @ S.T
     """
-    # sub-matrix region
+
+    # extract region submatrix
     A_df = mrio.A.xs(region, level="region", axis=0).xs(region, level="region", axis=1)
     A_df = normalize_square_df(A_df)
 
+    # sector labels in A for mappin 
     sector_labels = A_df.index.get_level_values("sector").astype(str)
 
-    # Numeric matrix
+    # scale aggregation 
     A = A_df.to_numpy(dtype=np.float128, copy=True)
-    N = A.shape[0]
+    A_scaled = np.rint(A * np.int64(c)).astype(np.int64)  # integer sector x sector
+
+    N = A_scaled.shape[0]
     G = len(unique_groups)
 
-    # mapping ExioName -> index in A
+    # mapping ExioName -> position in A
     name_to_pos = {name: i for i, name in enumerate(sector_labels)}
 
-    # Construct S (GxN) indicator
-    S = np.zeros((G, N), dtype=np.float128)
+    # construct S (GxN) indicator
+    S = np.zeros((G, N), dtype=np.int64)
 
-    missing = []
+    missing = [] # for debug/report
     for g, names in enumerate(names_by_index):
         idxs = [name_to_pos[n] for n in names if n in name_to_pos]
         if len(idxs) != len(names):
+            # track name not found in group
             miss = [n for n in names if n not in name_to_pos]
             if miss:
                 missing.extend((unique_groups[g], m) for m in miss)
         if idxs:
-            S[g, np.array(idxs, dtype=np.int64)] = 1.0
+            S[g, np.array(idxs, dtype=np.int64)] = 1
 
-    # Aggregate: Agg = S @ A @ S.T
-    agg = S @ A @ S.T
-    agg = agg * np.int64(scale)
-    agg_int = np.rint(agg).astype(np.int64)
+    # aggregate with integer arithmetic 
+    agg_int = S @ A_scaled @ S.T  # (GxN)(NxN)(NxG) => GxG
 
     agg_df = pd.DataFrame(agg_int, index=unique_groups, columns=unique_groups)
-
+    
     return agg_df
 
 if __name__ == "__main__":
