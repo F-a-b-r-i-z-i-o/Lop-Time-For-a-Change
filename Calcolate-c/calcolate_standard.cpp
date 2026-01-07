@@ -114,7 +114,6 @@ int main()
     fs::path in_dir = "find_c_dataset";
     const unsigned long UMAX = numeric_limits<unsigned long>::max();
 
-    cout << setprecision(20);
     cout << "ULONG_MAX = " << UMAX << endl;
     cout << "sizeof(unsigned long) = " << sizeof(unsigned long) << "\n\n";
 
