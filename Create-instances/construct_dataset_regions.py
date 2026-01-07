@@ -1,71 +1,32 @@
-import pymrio
-import numpy as np
-import os
-import pandas as pd
+from utils import *
 
 
-class LoadInstance:
-    def __init__(self, file_path: str) -> None:
-        """Load the EXIOBASE3 IO system once, then normalize+scale A."""
-        self.file_path = file_path
-        self.c = 1_000_000_000_000_000
-        self.matrix = self._load_matrix()
-
-        # Precompute: normalized and scaled A
-        self.A_norm_scaled = self._normalize_and_scale_square_matrix(self.matrix.A, self.c)
-
-    def _load_matrix(self):
-        """Loads the EXIOBASE3 system."""
-        exio_matrix = pymrio.parse_exiobase3(self.file_path)
-        return exio_matrix
-
-    @staticmethod
-    def _normalize_and_scale_square_matrix(M: pd.DataFrame, c: np.int64) -> pd.DataFrame:
-        """ 
-        a*_ij = a_ij - min(a_ij, a_ji) on the full matrix, then scale by c.
-        """
-
-        # to numeric 
-        vals = M.to_numpy(dtype=np.longdouble, copy=True)
-
-        # a*_ij = a_ij - min(a_ij, a_ji)
-        min_vals = np.minimum(vals, vals.T)
-        norm = vals - min_vals  # diagonal becomes 0 (since min(a_ii,a_ii)=a_ii)
-
-        # scale after normalization
-        scaled = norm * np.int64(c)
-
-        return pd.DataFrame(scaled, index=M.index, columns=M.columns)
-
-
-    def construct_sub_matrix_regions_A(self, region: str) -> np.ndarray:
-        """
-        Create a square numeric sub-matrix for one region,
-        extracted from the already normalized+scaled big A.
-        """
-        base_matrix = self.A_norm_scaled
-
-        rows_region = base_matrix.xs(region, level='region', axis=0)
-        cols_region = rows_region.xs(region, level='region', axis=1)
-
-        numeric = cols_region.to_numpy(dtype=np.longdouble, copy=True)
-
-        if np.isnan(numeric).any():
-            raise ValueError("Sub-matrix contains NaN values.")
-
-        return numeric
-
-def save_matrix(out_path: str, mat: np.ndarray) -> None:
+def construct_sub_matrix_regions_A(mrio, region: str, c: int = 1_000_000_000_000_000) -> np.ndarray:
     """
-    Save format:
-        n
-        <matrix n x n>
+    Scale+round the BIG A first (int64 numpy),
+    then extract the region-region sub-matrix.
     """
-    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    # Big A as labeled DataFrame (MultiIndex on rows/cols: region, sector)
+    A_df = mrio.A
 
-    with open(out_path, "w") as f:
-        f.write(f"{mat.shape[0]}\n")
-        np.savetxt(f, mat, fmt="%d", delimiter=" ")
+    # NaN check BEFORE scaling 
+    if A_df.isna().to_numpy().any():
+        raise ValueError("BIG A contains NaN values (cannot scale+cast to int64).")
+
+    # scale+round the BIG A (returns numpy int64, same order as A_df)
+    A_int = LoadInstance.scale_and_round_df(A_df, c=c)
+
+    # build masks from the ORIGINAL labels (because A_int has no labels)
+    row_mask = (A_df.index.get_level_values("region") == region)
+    col_mask = (A_df.columns.get_level_values("region") == region)
+
+    if not row_mask.any() or not col_mask.any():
+        raise ValueError(f"Region '{region}' not found in A index/columns.")
+
+    # extract region-region block from the integer matrix
+    sub_int = A_int[np.ix_(row_mask, col_mask)]
+
+    return sub_int
 
 
 if __name__ == "__main__":
@@ -80,13 +41,11 @@ if __name__ == "__main__":
     ]
 
     for region in regions:
-        mat = inst.construct_sub_matrix_regions_A(region)  
+        mat = construct_sub_matrix_regions_A(inst.matrix, region)
 
         print("Shape matrix:", mat.shape)
 
         out_dir = f"../Dataset/pxp_n_{mat.shape[0]}"
         out_path = os.path.join(out_dir, f"cxc_{region}_2022_n{mat.shape[0]}")
 
-        save_matrix(out_path, mat)
-
-        print("Saved in:", out_path)
+        inst.save_matrix(out_path, mat)

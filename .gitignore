@@ -10,3 +10,4 @@ Dataset/
 *.exe
 *.out
 a.out
+__pycache__*

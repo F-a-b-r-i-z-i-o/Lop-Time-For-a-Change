@@ -1,43 +1,10 @@
-import pymrio
-import numpy as np
-import os
-import pymrio.mrio_models.exio3_ixi as model
-import pandas as pd
-
-class LoadInstance:
-    def __init__(self, file_path: str) -> None:
-        self.file_path = file_path
-        self.matrix = self._load_matrix()
-
-    def _load_matrix(self):
-        exio_matrix = pymrio.parse_exiobase3(self.file_path)
-        return exio_matrix
-    
-def load_sectors():
-    base_dir = os.path.dirname(model.__file__)
-    sectors = os.path.join(base_dir, "sectors.tsv")
-    df = pd.read_csv(sectors, sep="\t")
-    return df
-
-def normalize_square_df(A_df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Return the normalized matrix A* where:
-        a*_ij = a_ij - min(a_ij, a_ji)
-    """
-    vals = A_df.to_numpy(dtype=np.float128, copy=True)
-    # Element wise symmetric cancellation
-    vals = vals - np.minimum(vals, vals.T)
-    return pd.DataFrame(vals, index=A_df.index, columns=A_df.columns)
-
-def _key(code: str) -> int:
-    # i01 -> 1, i10 -> 10 ...
-    return int(code[1:])
+from utils import * 
 
 def build_names_by_index(sectors_df: pd.DataFrame):
     sectors_df = sectors_df.copy()
     sectors_df["base_code"] = sectors_df["ExioCode"].astype(str).str.split(".", n=1).str[0]
 
-    unique_codes = sorted(sectors_df["base_code"].unique(), key=_key)
+    unique_codes = sorted(sectors_df["base_code"].unique(), key=LoadInstance.key_extract)
 
     code2names = sectors_df.groupby("base_code")["ExioName"].apply(list).to_dict()
     names_by_index = [code2names[c] for c in unique_codes]  # index -> list ExioName
@@ -54,18 +21,14 @@ def aggregate_A_region_by_code(mrio, region: str, unique_codes, names_by_index, 
     """
     # sub-matrix region
     A_df = mrio.A.xs(region, level="region", axis=0).xs(region, level="region", axis=1)
-    A_df = normalize_square_df(A_df)
-
     sector_labels = A_df.index.get_level_values("sector").astype(str)
 
-    # Numeric matrix
-    A = A_df.to_numpy(dtype=np.float128, copy=True)
-    A_scaled = np.rint(A * np.int64(c)).astype(np.int64)
+    A_scaled = LoadInstance.scale_and_round_df(A_df, c=c)
     
     N = A_scaled.shape[0]
     G = len(unique_codes)
 
-    # 4) mapping name -> index 
+    # mapping name -> index 
     name_to_pos = {name: i for i, name in enumerate(sector_labels)}
 
     # Construct S (GxN) indicator
@@ -90,15 +53,17 @@ def aggregate_A_region_by_code(mrio, region: str, unique_codes, names_by_index, 
     return agg_df
 
 if __name__ == "__main__":
+    iot_path = "../Compact-data/IOT_2022_ixi.zip"
+    inst = LoadInstance(iot_path)
+
     # mapping group -> name
-    sectors_df = load_sectors()
+    sectors_df = inst.load_sectors()
     unique_codes, names_by_index = build_names_by_index(sectors_df)
 
     print("Number code unique:", len(unique_codes))
     print(unique_codes, "-> number groups:", len(names_by_index))
 
-    iot_path = "../Compact-data/IOT_2022_ixi.zip"
-    inst = LoadInstance(iot_path)
+    
     regions = ["AT", "BE", "BG", "CY", "CZ","DE", "DK", "EE", "ES", "FI", "FR", "GR", "HR", "HU", "IE", "IT", "LT", 
                "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK", "GB", "US", "JP", "CN", "CA", "KR", "BR", 
                "IN", "MX", "RU", "AU", "CH", "TR", "TW", "NO", "ID", "ZA", "WA", "WL", "WE", "WF", "WM"]
@@ -120,9 +85,5 @@ if __name__ == "__main__":
         out_path = os.path.join(out_dir, f"cxc_{region}_2022_n{agg_df.shape[0]}")
 
         mat = agg_df.to_numpy(dtype=np.int64)
-
-        with open(out_path, "w") as f:
-            f.write(f"{mat.shape[0]}\n")
-            np.savetxt(f, mat, fmt="%d", delimiter=" ")
-
-        print("Save in:", out_path)
+        inst.save_matrix(out_path, mat)
+        

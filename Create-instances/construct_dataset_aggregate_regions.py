@@ -1,33 +1,13 @@
-import os
-import re
-import numpy as np
-import pandas as pd
-import pymrio
-
-
-def normalize_square_df(A_df: pd.DataFrame) -> pd.DataFrame:
-    """
-    Normalization with: 
-        a*_ij = a_ij - min(a_ij, a_ji)
-    """
-    vals = A_df.to_numpy(dtype=np.float64, copy=True)
-    vals = vals - np.minimum(vals, vals.T)
-    return pd.DataFrame(vals, index=A_df.index, columns=A_df.columns)
-
-
-def extract_year(path: str) -> int:
-    m = re.search(r"IOT_(\d{4})", os.path.basename(path))
-    return int(m.group(1))
+from utils import *  
 
 
 def agg_region_region(df: pd.DataFrame, region_level_name: str = "region") -> pd.DataFrame:
     """
-    Aggregate df with regionxregion with sum of the level 
+    Aggregate df to region x region by summing across the region level in rows and cols.
     """
     # Rows
     lvl = region_level_name if region_level_name in df.index.names else 0
     df = df.groupby(level=lvl).sum()
-
     # Cols
     lvl = region_level_name if region_level_name in df.columns.names else 0
     df = df.T.groupby(level=lvl).sum().T
@@ -35,34 +15,33 @@ def agg_region_region(df: pd.DataFrame, region_level_name: str = "region") -> pd
     return df
 
 
-def load_A_region_agg(path: str, regions: list[str], c: int = 1_000_000_000_000_000,) -> pd.DataFrame:
-    mrio = pymrio.parse_exiobase3(path)
-    A = mrio.A
-    A_norm = normalize_square_df(A)
 
-    # scale + round to integer aggregation
-    A_scaled_int = np.rint(A_norm.to_numpy(dtype=np.float64) * np.int64(c)).astype(np.int64)
-    A_scaled_int = pd.DataFrame(A_scaled_int, index=A_norm.index, columns=A_norm.columns)
+def load_A_region_agg(path: str, regions: list[str], c: int = 1_000_000_000_000_000) -> pd.DataFrame:
+    inst = LoadInstance(path)
+    A = inst.matrix.A
 
-    # aggregate 
+    # NaN check before converting to int64
+    if A.isna().to_numpy().any():
+        raise ValueError(f"BIG A contains NaN values for file: {path}")
+
+    # normalize + scale + round using class method -> numpy int64
+    A_scaled_int_np = LoadInstance.scale_and_round_df(A, c=c)
+
+    # keep the same labels for grouping
+    A_scaled_int = pd.DataFrame(A_scaled_int_np, index=A.index, columns=A.columns)
+
+    # aggregate to region x region
     A_rr_int = agg_region_region(A_scaled_int, region_level_name="region")
 
-    # reorder subset to requested regions
-    A_rr_int = A_rr_int.loc[regions, regions]
+    # reorder subset of regions (filter to those actually present)
+    present = [r for r in regions if r in A_rr_int.index and r in A_rr_int.columns]
+    missing = [r for r in regions if r not in present]
+    
+    if missing:
+        print(f"Warning: missing regions in {os.path.basename(path)} -> {missing}")
 
-    return A_rr_int
+    return A_rr_int.loc[present, present]
 
-
-
-def save_matrix(out_path: str, mat: np.ndarray) -> None:
-    """
-    Save format:
-        n
-        <matrix n x n>
-    """
-    with open(out_path, "w") as f:
-        f.write(f"{mat.shape[0]}\n")
-        np.savetxt(f, mat, fmt="%d", delimiter=" ")
 
 
 if __name__ == "__main__":
@@ -101,10 +80,10 @@ if __name__ == "__main__":
                "LU","LV","MT","NL","PL","PT","RO","SE","SI","SK","GB","US","JP","CN","CA","KR","BR",
                "IN","MX","RU","AU","CH","TR","TW","NO","ID","ZA","WA","WL","WE","WF","WM"]
 
-    # Load dict for  A_regionxregion_normalize
+    # Load dict for A_regionxregion_normalize
     A_by_year: dict[int, pd.DataFrame] = {}
     for p in folders_ixi:
-        y = extract_year(p)
+        y = LoadInstance.extract_year(p)
         A_rr = load_A_region_agg(p, regions)
         A_by_year[y] = A_rr
         print(f"[{y}] A_rr shape = {A_rr.shape}")
@@ -112,15 +91,12 @@ if __name__ == "__main__":
     years_sorted = sorted(A_by_year.keys())
 
     # One matrix for year
-    out_dir_year = f"../Dataset/rxr_n_{A_rr.shape[0]}"
+    n = A_by_year[years_sorted[0]].shape[0]
+    out_dir_year = f"../Dataset/rxr_n_{n}"
     os.makedirs(out_dir_year, exist_ok=True)
 
     for y in years_sorted:
         df = A_by_year[y]
-        # with labels for test
-        #df.to_csv(os.path.join(out_dir_year, f"A_rr_norm_{y}.tsv"), sep="\t")
-        
-        # format
-        save_matrix(os.path.join(out_dir_year, f"rxr_{y}_n{df.shape[0]}"),df.to_numpy())
-
+        out_path = os.path.join(out_dir_year, f"rxr_{y}_n{df.shape[0]}")
+        LoadInstance.save_matrix(out_path, df.to_numpy(dtype=np.int64))
 
