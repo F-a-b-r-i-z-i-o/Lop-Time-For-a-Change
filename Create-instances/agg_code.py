@@ -11,7 +11,7 @@ def build_names_by_index(sectors_df: pd.DataFrame):
 
     return unique_codes, names_by_index
 
-def aggregate_A_region_by_code(mrio, region: str, unique_codes, names_by_index, c: int = 1_000_000_000_000_000):
+def aggregate_A_region_by_code(mrio, region: str, unique_codes, names_by_index):
     """
     Aggregate A (region-region) into groups (i01, i02, ...) using names_by_index,
     with formula: Agg = S @ A @ S.T
@@ -23,7 +23,7 @@ def aggregate_A_region_by_code(mrio, region: str, unique_codes, names_by_index, 
     A_df = mrio.A.xs(region, level="region", axis=0).xs(region, level="region", axis=1)
     sector_labels = A_df.index.get_level_values("sector").astype(str)
 
-    A_scaled = LoadInstance.scale_and_round_df(A_df, c=c)
+    A_scaled = LoadInstance.scale_and_round_df(A_df)
     
     N = A_scaled.shape[0]
     G = len(unique_codes)

@@ -22,8 +22,7 @@ def aggregate_A_region_by_groups(
     mrio,
     region: str,
     unique_groups,
-    names_by_index,
-    c: int = 1_000_000_000_000_000,
+    names_by_index
 ):
     # extract region submatrix
     A_df = mrio.A.xs(region, level="region", axis=0).xs(region, level="region", axis=1)
@@ -32,7 +31,7 @@ def aggregate_A_region_by_groups(
     sector_labels = A_df.index.get_level_values("sector").astype(str)
 
     # normalize + scale + round 
-    A_scaled = LoadInstance.scale_and_round_df(A_df, c=c)
+    A_scaled = LoadInstance.scale_and_round_df(A_df)
 
     N = A_scaled.shape[0]
     G = len(unique_groups)

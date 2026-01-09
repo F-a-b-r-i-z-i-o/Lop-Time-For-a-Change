@@ -16,7 +16,7 @@ def agg_region_region(df: pd.DataFrame, region_level_name: str = "region") -> pd
 
 
 
-def load_A_region_agg(path: str, regions: list[str], c: int = 1_000_000_000_000_000) -> pd.DataFrame:
+def load_A_region_agg(path: str, regions: list[str]) -> pd.DataFrame:
     inst = LoadInstance(path)
     A = inst.matrix.A
 
@@ -25,7 +25,7 @@ def load_A_region_agg(path: str, regions: list[str], c: int = 1_000_000_000_000_
         raise ValueError(f"BIG A contains NaN values for file: {path}")
 
     # normalize + scale + round using class method -> numpy int64
-    A_scaled_int_np = LoadInstance.scale_and_round_df(A, c=c)
+    A_scaled_int_np = LoadInstance.scale_and_round_df(A)
 
     # keep the same labels for grouping
     A_scaled_int = pd.DataFrame(A_scaled_int_np, index=A.index, columns=A.columns)

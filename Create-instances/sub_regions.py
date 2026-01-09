@@ -1,7 +1,7 @@
 from utils import *
 
 
-def construct_sub_matrix_regions_A(mrio, region: str, c: int = 1_000_000_000_000_000) -> np.ndarray:
+def construct_sub_matrix_regions_A(mrio, region: str) -> np.ndarray:
     """
     Scale+round the BIG A first (int64 numpy),
     then extract the region-region sub-matrix.
@@ -14,7 +14,7 @@ def construct_sub_matrix_regions_A(mrio, region: str, c: int = 1_000_000_000_000
         raise ValueError("BIG A contains NaN values (cannot scale+cast to int64).")
 
     # scale+round the BIG A (returns numpy int64, same order as A_df)
-    A_int = LoadInstance.scale_and_round_df(A_df, c=c)
+    A_int = LoadInstance.scale_and_round_df(A_df)
 
     # build masks from the ORIGINAL labels (because A_int has no labels)
     row_mask = (A_df.index.get_level_values("region") == region)
