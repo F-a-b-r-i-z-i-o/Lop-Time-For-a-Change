@@ -46,7 +46,7 @@ class LoadInstance:
     @staticmethod
     def scale_and_round_df(
         A_df: pd.DataFrame,
-        c: int = 1_000_000,
+        c: int = 1_000,
     ) -> np.ndarray:
         """
         normalize A_df, then compute:
