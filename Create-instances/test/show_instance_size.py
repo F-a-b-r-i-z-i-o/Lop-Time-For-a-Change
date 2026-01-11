@@ -1,7 +1,5 @@
 import sys
 import os
-import numpy as np
-
 
 def read_instance_size(filename):
     with open(filename, 'r') as f:

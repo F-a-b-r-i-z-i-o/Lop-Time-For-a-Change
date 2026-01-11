@@ -1,8 +1,7 @@
-import sys
 import os
 import numpy as np
 import pandas as pd
-
+import sys
 
 def read_lop_instance(filename):
     with open(filename, 'r') as f:
@@ -12,16 +11,25 @@ def read_lop_instance(filename):
 
 
 def calculate_statistics(A):
-    #n, sparsity (percentage of zeros), st dev, coefficient of variation, mean
-    #exclude diagonal from the statistics
+    #n, sparsity (percentage of zeros), st dev, coefficient of variation, mean, min, q1, median, q3, max, useless_items
+    #exclude diagonal and zeros (due to normal form) from the statistics
     n = A.shape[0]
-    mask = ~np.eye(n, dtype=bool)
-    A_off_diag = A[mask] #è un array di dimensione n*n-n
-    mean = A_off_diag.mean()
-    std = A_off_diag.std()
+    values = []
+    for i in range(n-1):
+        for j in range(i+1,n):
+            values.append( A[i,j] if A[i,j]>0 else A[j,i] )
+    values = np.array(values) #contiene n*n-n elementi
+    mean = values.mean()
+    std = values.std()
     cv = std/mean
-    sparsity = np.sum(A_off_diag==0) / A_off_diag.size * 100
-    return n, sparsity, std, cv, mean
+    sparsity = np.sum(values==0) / values.size * 100
+    _min = values.min()
+    q1 = np.quantile(values, 0.25)
+    median = np.median(values)
+    q3 = np.quantile(values, 0.75)
+    _max = values.max()
+    useless_items = len([ i for i in range(n) if A[i,:].sum()==0 and A[:,i].sum()==0 ])
+    return n, sparsity, std, cv, mean, _min, q1, median, q3, _max, useless_items
 
 
 if len(sys.argv)<2:
@@ -38,8 +46,9 @@ if os.path.isfile(arg_in):
     filenames.append(arg_in)
 elif os.path.isdir(arg_in):
     iset = arg_in
-    if iset[-1] in {'/', '\\'}:
-        iset = iset[:-1]
+    if iset[-1] in {'/', '\\'}: iset = iset[:-1]
+    if '/' in iset: iset = iset[iset.rfind('/')+1:]
+    if '\\' in iset: iset = iset[iset.rfind('\\')+1:]
     for filename in os.listdir(arg_in):
         full_path = os.path.join(arg_in,filename)
         filenames.append(full_path)
@@ -52,14 +61,23 @@ for filename in filenames:
     ninstances += 1
     A = read_lop_instance(filename)
     stats = calculate_statistics(A)
+    instance_name = filename
+    if '/' in instance_name: instance_name = instance_name[instance_name.rfind('/')+1:]
+    if '\\' in instance_name: instance_name = instance_name[instance_name.rfind('\\')+1:]
     all_stats.append({
-            'instance set': iset,
-            'instance': filename,
+            'instance_set': iset,
+            'instance': instance_name,
             'n': stats[0],
             'sparsity': stats[1],
             'std': stats[2],
             'cv': stats[3],
             'mean': stats[4],
+            'min': stats[5],
+            'q1': stats[6],
+            'median': stats[7],
+            'q3': stats[8],
+            'max': stats[9],
+            'useless_items': stats[10],
         })
 df = pd.DataFrame(all_stats)
 
@@ -69,10 +87,16 @@ print( df.to_string(index=False) )
 print('-'*10)
 
 print('\n\n' + '#'*10)
-print(f'Avg sparsity = {df["sparsity"].mean():.2f}')
-print(f'Avg std      = {df["std"].mean():.2f}')
-print(f'Avg cv       = {df["cv"].mean():.2f}')
-print(f'Avg mean     = {df["mean"].mean():.2f}')
+print(f'Avg sparsity      = {df["sparsity"].mean():.2f}')
+print(f'Avg std           = {df["std"].mean():.2f}')
+print(f'Avg cv            = {df["cv"].mean():.2f}')
+print(f'Avg mean          = {df["mean"].mean():.2f}')
+print(f'Avg min           = {df["min"].mean():.2f}')
+print(f'Avg q1            = {df["q1"].mean():.2f}')
+print(f'Avg median        = {df["median"].mean():.2f}')
+print(f'Avg q3            = {df["q3"].mean():.2f}')
+print(f'Avg max           = {df["max"].mean():.2f}')
+print(f'Avg useless_items = {df["useless_items"].mean():.2f}')
 print('#'*10)
 
 if arg_out is not None:
@@ -82,9 +106,6 @@ if arg_out is not None:
         df = pd.concat([df_prev,df])
     #save the pickle
     df.to_pickle(arg_out)
-
-
-
 
 
 
