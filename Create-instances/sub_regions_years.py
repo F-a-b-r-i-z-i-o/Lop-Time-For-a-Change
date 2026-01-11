@@ -1,0 +1,81 @@
+from utils import *
+import os
+import numpy as np
+
+
+def construct_sub_matrix_regions_A_scaled_int(mrio, region: str) -> np.ndarray:
+    """
+    Scale+round BIG A first (int64 numpy),
+    then extract the region-region sub-matrix.
+    """
+    A_df = mrio.A
+
+    if A_df.isna().to_numpy().any():
+        raise ValueError("BIG A contains NaN values (cannot scale+cast to int64).")
+
+    # scale+round BIG A (numpy int64, same order as A_df)
+    A_int = LoadInstance.scale_and_round_df(A_df)
+
+    row_mask = (A_df.index.get_level_values("region") == region)
+    col_mask = (A_df.columns.get_level_values("region") == region)
+
+    if not row_mask.any() or not col_mask.any():
+        raise ValueError(f"Region '{region}' not found in A index/columns.")
+
+    return A_int[np.ix_(row_mask, col_mask)]
+
+
+def sum_sub_matrices_over_paths(iot_paths, region: str) -> np.ndarray:
+    """
+    For a given region, load each MRIO instance from iot_paths,
+    extract scaled+rounded A[region,region] and sum across paths.
+    """
+    acc = None
+    expected_shape = None
+
+    for p in iot_paths:
+        inst = LoadInstance(p)
+        sub = construct_sub_matrix_regions_A_scaled_int(inst.matrix, region)
+
+        if acc is None:
+            expected_shape = sub.shape
+            acc = sub.astype(np.int64, copy=True)
+        else:
+            if sub.shape != expected_shape:
+                raise ValueError(
+                    f"Shape mismatch for region {region}: got {sub.shape} from {p}, expected {expected_shape}."
+                )
+            acc += sub  # int64 sum
+
+    if acc is None:
+        raise ValueError("No paths provided (iot_paths is empty).")
+
+    return acc
+
+
+if __name__ == "__main__":
+    iot_paths = [
+        "../Compact-data/IOT_1995_pxp.zip",
+        "../Compact-data/IOT_2022_pxp.zip",
+    ]
+
+    regions = [
+        "AT", "BE", "BG", "CY", "CZ", "DE", "DK", "EE", "ES", "FI", "FR", "GR", "HR", "HU",
+        "IE", "IT", "LT", "LU", "LV", "MT", "NL", "PL", "PT", "RO", "SE", "SI", "SK", "GB",
+        "US", "JP", "CN", "CA", "KR", "BR", "IN", "MX", "RU", "AU", "CH", "TR", "TW", "NO",
+        "ID", "ZA", "WA", "WL", "WE", "WF", "WM"
+    ]
+
+    saver_inst = LoadInstance(iot_paths[0])
+
+    for region in regions:
+        mat_sum = sum_sub_matrices_over_paths(iot_paths, region)
+
+        print(region, "Shape matrix:", mat_sum.shape)
+
+        out_dir = f"../Dataset/pxp_SUM_n_{mat_sum.shape[0]}"
+        os.makedirs(out_dir, exist_ok=True)
+
+        out_path = os.path.join(out_dir, f"pxp_{region}_SUM_n{mat_sum.shape[0]}")
+
+        saver_inst.save_matrix(out_path, mat_sum)

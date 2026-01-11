@@ -9,8 +9,9 @@ import pymrio.mrio_models.exio3_ixi as model
 class LoadInstance:
     def __init__(self, file_path: str) -> None:
         self.file_path = file_path
+        print(f"---Loading Matrix---")
         self.matrix = self._load_matrix()
-
+        
     def _load_matrix(self):
         return pymrio.parse_exiobase3(self.file_path)
 

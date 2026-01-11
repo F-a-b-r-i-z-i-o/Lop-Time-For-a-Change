@@ -46,6 +46,6 @@ if __name__ == "__main__":
         print("Shape matrix:", mat.shape)
 
         out_dir = f"../Dataset/pxp_n_{mat.shape[0]}"
-        out_path = os.path.join(out_dir, f"cxc_{region}_2022_n{mat.shape[0]}")
+        out_path = os.path.join(out_dir, f"pxp_{region}_2022_n{mat.shape[0]}")
 
         inst.save_matrix(out_path, mat)
