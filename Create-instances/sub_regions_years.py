@@ -1,12 +1,14 @@
 from utils import *
 import os
 import numpy as np
+import pandas as pd  # ✅ add this
 
 
-def construct_sub_matrix_regions_A_scaled_int(mrio, region: str) -> np.ndarray:
+def construct_sub_matrix_regions_A_scaled_int(mrio, region: str) -> pd.DataFrame:
     """
     Scale+round BIG A first (int64 numpy),
-    then extract the region-region sub-matrix.
+    then extract the region-region sub-matrix,
+    returning a DataFrame (keeps labels for remove_useless_items).
     """
     A_df = mrio.A
 
@@ -22,7 +24,14 @@ def construct_sub_matrix_regions_A_scaled_int(mrio, region: str) -> np.ndarray:
     if not row_mask.any() or not col_mask.any():
         raise ValueError(f"Region '{region}' not found in A index/columns.")
 
-    return A_int[np.ix_(row_mask, col_mask)]
+    sub_int = A_int[np.ix_(row_mask, col_mask)]
+
+    sub_df = pd.DataFrame(
+        sub_int.astype(np.int64, copy=False),
+        index=A_df.index[row_mask],
+        columns=A_df.columns[col_mask],
+    )
+    return sub_df
 
 
 def sum_sub_matrices_over_paths(iot_paths, region: str) -> np.ndarray:
@@ -30,29 +39,28 @@ def sum_sub_matrices_over_paths(iot_paths, region: str) -> np.ndarray:
     For a given region, load each MRIO instance from iot_paths,
     extract scaled+rounded A[region,region] and sum across paths.
     """
-    acc = None
-    expected_shape = None
+    acc_df = None
 
     for p in iot_paths:
         inst = LoadInstance(p)
-        sub = construct_sub_matrix_regions_A_scaled_int(inst.matrix, region)
+        sub_df = construct_sub_matrix_regions_A_scaled_int(inst.matrix, region)
 
-        if acc is None:
-            expected_shape = sub.shape
-            acc = sub.astype(np.int64, copy=True)
+        if acc_df is None:
+            acc_df = sub_df.copy()
         else:
-            if sub.shape != expected_shape:
+            if not acc_df.index.equals(sub_df.index) or not acc_df.columns.equals(sub_df.columns):
                 raise ValueError(
-                    f"Shape mismatch for region {region}: got {sub.shape} from {p}, expected {expected_shape}."
+                    f"Index/columns mismatch for region {region} between instances. Problem file: {p}"
                 )
-            acc += sub  # int64 sum
+            acc_df.iloc[:, :] = acc_df.to_numpy(np.int64) + sub_df.to_numpy(np.int64)
 
-    if acc is None:
+    if acc_df is None:
         raise ValueError("No paths provided (iot_paths is empty).")
-    
-    #acc = LoadInstance.remvoe_useless_items(acc)
 
-    return acc
+    acc_df, _ = LoadInstance.remvoe_useless_items(acc_df)
+
+    return acc_df.to_numpy(dtype=np.int64)
+
 
 
 if __name__ == "__main__":
