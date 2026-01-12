@@ -57,7 +57,12 @@ class LoadInstance:
         A_df = LoadInstance.normalize_square_df(A_df)
         A = A_df.to_numpy(dtype=np.float128, copy=True)
         return np.rint(A * np.int64(c)).astype(np.int64)
-
+    
+    def remvoe_useless_items(A: pd.DataFrame):
+        keep = ~((A.sum(axis=1) == 0) & (A.sum(axis=0) == 0))
+        removed = A.index[~keep]
+        return A.loc[keep, keep], removed
+    
     @staticmethod
     def save_matrix(out_path: str, mat: np.ndarray) -> None:
         """

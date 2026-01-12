@@ -15,7 +15,6 @@ def agg_region_region(df: pd.DataFrame, region_level_name: str = "region") -> pd
     return df
 
 
-
 def load_A_region_agg(path: str, regions: list[str]) -> pd.DataFrame:
     inst = LoadInstance(path)
     A = inst.matrix.A

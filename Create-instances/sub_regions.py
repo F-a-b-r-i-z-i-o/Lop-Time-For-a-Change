@@ -1,32 +1,42 @@
 from utils import *
 
 
+
 def construct_sub_matrix_regions_A(mrio, region: str) -> np.ndarray:
     """
     Scale+round the BIG A first (int64 numpy),
     then extract the region-region sub-matrix.
     """
-    # Big A as labeled DataFrame (MultiIndex on rows/cols: region, sector)
-    A_df = mrio.A
+    A_df = mrio.A  
 
-    # NaN check BEFORE scaling 
     if A_df.isna().to_numpy().any():
         raise ValueError("BIG A contains NaN values (cannot scale+cast to int64).")
 
-    # scale+round the BIG A (returns numpy int64, same order as A_df)
-    A_int = LoadInstance.scale_and_round_df(A_df)
+    # scale+round the BIG A (could be DF or ndarray depending on your impl)
+    A_scaled = LoadInstance.scale_and_round_df(A_df)
+    A_int = A_scaled.to_numpy() if hasattr(A_scaled, "to_numpy") else np.asarray(A_scaled)
 
-    # build masks from the ORIGINAL labels (because A_int has no labels)
-    row_mask = (A_df.index.get_level_values("region") == region)
-    col_mask = (A_df.columns.get_level_values("region") == region)
+    # build masks from the ORIGINAL labels
+    row_mask = (A_df.index.get_level_values("region") == region).to_numpy()
+    col_mask = (A_df.columns.get_level_values("region") == region).to_numpy()
 
     if not row_mask.any() or not col_mask.any():
         raise ValueError(f"Region '{region}' not found in A index/columns.")
 
-    # extract region-region block from the integer matrix
+    # extract region-region block
     sub_int = A_int[np.ix_(row_mask, col_mask)]
 
-    return sub_int
+    # make it a DataFrame so remvoe_useless_items works 
+    sub_index = A_df.index[row_mask]
+    sub_cols  = A_df.columns[col_mask]
+    sub_df = pd.DataFrame(sub_int, index=sub_index, columns=sub_cols)
+
+    sub_df, _ = LoadInstance.remvoe_useless_items(sub_df)
+
+    return sub_df.to_numpy()
+
+
+
 
 
 if __name__ == "__main__":

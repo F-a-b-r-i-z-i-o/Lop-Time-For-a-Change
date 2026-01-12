@@ -49,7 +49,10 @@ def aggregate_A_region_by_code(mrio, region: str, unique_codes, names_by_index):
     # Aggregate: Agg = S @ A @ S.T
     agg = S @ A_scaled @ S.T
     agg_df = pd.DataFrame(agg, index=unique_codes, columns=unique_codes)
-
+    
+    # Remove rows and cols that the sum are 0 
+    #agg_df, _ = LoadInstance.remvoe_useless_items(agg_df)
+    
     return agg_df
 
 if __name__ == "__main__":

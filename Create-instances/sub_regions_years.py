@@ -49,16 +49,18 @@ def sum_sub_matrices_over_paths(iot_paths, region: str) -> np.ndarray:
 
     if acc is None:
         raise ValueError("No paths provided (iot_paths is empty).")
+    
+    #acc = LoadInstance.remvoe_useless_items(acc)
 
     return acc
 
 
 if __name__ == "__main__":
     iot_paths = [
-        "../Compact-data/IOT_2018_pxp.zip",
-        "../Compact-data/IOT_2019_pxp.zip",
-        "../Compact-data/IOT_2020_pxp.zip",
-        "../Compact-data/IOT_2021_pxp.zip",
+        "../Compact-data/IOT_1995_pxp.zip",
+        # "../Compact-data/IOT_2019_pxp.zip",
+        # "../Compact-data/IOT_2020_pxp.zip",
+        # "../Compact-data/IOT_2021_pxp.zip",
         "../Compact-data/IOT_2022_pxp.zip",
     ]
 
