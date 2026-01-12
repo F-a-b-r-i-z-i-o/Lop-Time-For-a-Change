@@ -1,5 +1,5 @@
 #include <cmath>
-#include "PSolution.h"
+#include "../include/PSolution.h"
 #include <cstring>
 #include <iostream>
 
@@ -7,17 +7,16 @@ using namespace std;
 
 
 
-//#define EPS         (1e-3)
-#define EPS         (1e-10)
+#define EPS            (1e-3)
 #define PLUS_INF    (+1./0.)
-#define MINUS_INF   (-1./0.)
+#define MINUS_INF    (-1./0.)
 
 
 
 int PSolution::n;
 long int PSolution::nc2;
 long int PSolution::n2;
-double* PSolution::lop = 0;
+int* PSolution::lop = 0;
 double* PSolution::v = 0;
 PrecWithValue* PSolution::lopSorted = 0;
 int* PSolution::invLopSorted = 0;
@@ -88,7 +87,7 @@ int precsValueComparator(const void* prec1, const void* prec2) {
 
 
 //setup lop matrix and compute precedence values from it (using 1d matrices)
-void PSolution::setLOPMatrix(double* lop1, int n) {
+void PSolution::setLOPMatrix(int* lop1, int n) {
     int i,j,k;
     long int n2 = n*n;
     lop = lop1;
@@ -145,7 +144,7 @@ void PSolution::makeEmpty() {
         }
     }
     np = 0;
-    fit = 0.;
+    fit = 0;
     //vsum_valid = vmax_valid = false;
     vsum_valid = false;
     //rem_max_val = -1; //it is like -inf
@@ -162,9 +161,9 @@ bool PSolution::isTotal() {
 
 
 //evaluate this partial solution (set and return the fitness)
-long double PSolution::eval() {
+unsigned long PSolution::eval() {
     int i,j,k,t,in;
-    fit = 0.;
+    fit = 0;
     for (i=0; i<n; i++) {
         t = sn[i];
         in = i*n;
@@ -179,7 +178,7 @@ long double PSolution::eval() {
 
 
 //set basing on the n-length permutation x
-void PSolution::fromPermutation(int* x, long double fit) {
+void PSolution::fromPermutation(int* x, int fit) {
     int i,j,ii,jj;
     makeEmpty(); //first step, make it empty
     for (ii=0; ii<n; ii++) {
@@ -193,7 +192,7 @@ void PSolution::fromPermutation(int* x, long double fit) {
         }
     }
     np = nc2;
-    if (fit>=0.) this->fit = fit;
+    if (fit>=0) this->fit = fit;
     else eval();
     //vsum_valid = vmax_valid = false;
     vsum_valid = false;
@@ -658,19 +657,50 @@ long int PSolution::destruct_sorted(long** countersMatrix, long int npr) {
     return removedPrecs;
 }
 
+
+
+/*//calculate sum and max of the values of available precedences
+ void PSolution::compute_vsum_vmax() {
+ if (vsum_valid && vmax_valid) return;
+ unsigned long int_vsum = 0;
+ int int_vmax = -1; //-inf
+ unsigned long int_isum; //values' sum of unassigned precedences i<*
+ int i,j,k,t,val,in;
+ for (i=0; i<n; i++) {
+ in = i*n;
+ t = un[i];
+ int_isum = 0;
+ for (k=0; k<t; k++) {
+ j = u[i][k];
+ val = lop[in+j];
+ int_isum += val;
+ if (val>int_vmax) {
+ int_vmax = val;
+ imax = i;
+ jmax = j;
+ }
+ }
+ int_vsum += int_isum;
+ uvsum[i] = int_isum + t*EPS;
+ }
+ vsum = int_vsum + (n2-n-np)*EPS;
+ vmax = int_vmax + EPS;
+ vsum_valid = vmax_valid = true;
+ }*/
+
+
+
 //calculate only sum of the values of availalble precedences
 void PSolution::compute_vsum() {
     //code based on compute_vsum_vmax
     if (vsum_valid) return;
-    //unsigned long int_vsum = 0;
-    //unsigned long int_isum; //values' sum of unassigned precedences i<*
-	long double int_vsum = 0;
-    long double int_isum; //values' sum of unassigned precedences i<*
+    unsigned long int_vsum = 0;
+    unsigned long int_isum; //values' sum of unassigned precedences i<*
     int i,j,k,t,in;
     for (i=0; i<n; i++) {
         in = i*n;
         t = un[i];
-        int_isum = 0.;
+        int_isum = 0;
         for (k=0; k<t; k++) {
             j = u[i][k];
             int_isum += lop[in+j];
@@ -681,6 +711,32 @@ void PSolution::compute_vsum() {
     vsum = int_vsum + (n2-n-np)*EPS;
     vsum_valid = true;
 }
+
+
+
+//calculate only sum of the values of availalble precedences
+/*void PSolution::compute_vmax() {
+ //code based on compute_vsum_vmax
+ if (vmax_valid) return;
+ int int_vmax = -1; //-inf
+ int i,j,k,t,in,val;
+ for (i=0; i<n; i++) {
+ in = i*n;
+ t = un[i];
+ for (k=0; k<t; k++) {
+ j = u[i][k];
+ val = lop[in+j];
+ if (val>int_vmax) {
+ int_vmax = val;
+ imax = i;
+ jmax = j;
+ }
+ }
+ }
+ vmax = int_vmax + EPS;
+ vmax_valid = true;
+ }*/
+
 
 
 //print matrix to cout

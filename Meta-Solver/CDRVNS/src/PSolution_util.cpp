@@ -1,6 +1,6 @@
 //UTILITY FUNCTIONS TO INCLUDE IN PSOLUTION.CPP
 #include <cstdlib> //for qsort
-#include "random.h"
+#include "../include/random.h"
 #include <math.h>
 
 //add item j to list l with length ln and where li is the inversion of l

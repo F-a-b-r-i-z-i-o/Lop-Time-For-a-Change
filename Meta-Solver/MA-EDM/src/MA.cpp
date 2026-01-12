@@ -14,8 +14,8 @@ LOP, such as the
 #include <signal.h>
 #include <string>
 
-#include "../include/MA.h"
-#include "../include/utils.h"
+#include "MA.h"
+#include "utils.h"
 
 using namespace std;
 

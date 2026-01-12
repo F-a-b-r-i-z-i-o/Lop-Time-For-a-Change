@@ -5,7 +5,7 @@ Gara Miranda (Designer)
 Description: function to evaluate the cost associated to a permutation
 ********************************************************************************************/
 
-#include "../include/Individual.h"
+#include "Individual.h"
 
 void Individual::evaluate() {
 	cost = 0;

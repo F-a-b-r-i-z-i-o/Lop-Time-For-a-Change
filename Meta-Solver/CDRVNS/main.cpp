@@ -39,12 +39,10 @@ int main(int argc, char * argv[]) {
  #ifdef VERBOSE
     cout<<"Reading instance..."<<endl;
 #endif
-
     //1. Read LOP instance
     LOP * lop= new LOP();
-
+    
     int n=lop->Read(INSTANCE_FILENAME);
-
     
     //calculate the sparsity of the algorithm
     int i;
@@ -60,20 +58,20 @@ int main(int argc, char * argv[]) {
     cout<<"Evals: "<<lop->m_max_evaluations<<endl;
 #endif
     initRand(SEED);
-#ifdef VERBOSE
+ #ifdef VERBOSE
     cout<<"Initializing valentinos code..."<<endl;
 #endif
     //create precedences memory
     int compiled_solutions=0;
-    long ** memory= new long*[n];
+   long ** memory= new long*[n];
     for (i=0;i<n;i++)
     {
         memory[i]=new long[n];
         fill_n(memory[i],lop->m_problem_size,0);
     }
 
-    double * arrayLOP= new double[n*n];
-    for (int i=0;i<n*n;i++)arrayLOP[i]=-1.;
+    int * arrayLOP= new int[n*n];
+    for (int i=0;i<n*n;i++)arrayLOP[i]=-1;
     lop->GetMatrixAsArray(arrayLOP);
     //PrintArray(arrayLOP,n*n);
     PSolution::setLOPMatrix(arrayLOP, n);
@@ -90,9 +88,9 @@ int main(int argc, char * argv[]) {
     bool improvement=false;
     int * solution= new int[n];
     int * best_solution= new int[n];
-    long double fitness=0.;
-    long double best_fitness=0.;
-    long double fit=0.;
+    long int fitness=0;
+    long int best_fitness=0;
+    long int fit=0;
     float factor=0;
   
 #ifdef VERBOSE
@@ -114,7 +112,7 @@ int main(int argc, char * argv[]) {
     
 #ifdef VERBOSE
     PrintArray(solution,n);
-    printf("fitness. %.15Lf   evals rem. %lld\n",best_fitness,lop->m_max_evaluations-lop->m_evaluations);
+    printf("fitness. %ld   evals rem. %lld\n",best_fitness,lop->m_max_evaluations-lop->m_evaluations);
     cout<<"Running VNS..."<<endl;
 #endif
     //4. Run VNS
@@ -144,7 +142,7 @@ int main(int argc, char * argv[]) {
             memcpy(best_solution, solution, sizeof(int)*n);
             best_fitness=fitness;
 #ifdef VERBOSE
-            printf("fitness. %.15Lf   evals rem. %lld\n",best_fitness,lop->m_max_evaluations-lop->m_evaluations);
+            printf("fitness. %ld   evals rem. %lld\n",best_fitness,lop->m_max_evaluations-lop->m_evaluations);
             //PrintArray(best_solution, n);
 #endif
         }
@@ -153,32 +151,32 @@ int main(int argc, char * argv[]) {
         }
         
         if (lop->m_evaluations<lop->m_max_evaluations){
-			//  cout<<"valentinos code"<<endl;
-			//4.4. Destruction-Construction procedure on 'solution' vector
-			memcpy(prev_solution,solution,sizeof(int)*n);
-			psol.fromPermutation(solution);
-			do{
-				Q=urand()*0.1+0.9; //according to Valentino it should be set in the range [0.9,1].
-				factor=((float)lop->m_evaluations)/((float)lop->m_max_evaluations);
-				R=1-(factor*0.9);
-				psol.destruct_sorted(memory,R);
-				psol.construct(Q);
-				psol.toPermutation(solution);
-			} while(memcmp(prev_solution, solution, sizeof(int)*n)==0 );
+          //  cout<<"valentinos code"<<endl;
+        //4.4. Destruction-Construction procedure on 'solution' vector
+        memcpy(prev_solution,solution,sizeof(int)*n);
+        psol.fromPermutation(solution);
+        do{
+            Q=urand()*0.1+0.9; //according to Valentino it should be set in the range [0.9,1].
+            factor=((float)lop->m_evaluations)/((float)lop->m_max_evaluations);
+            R=1-(factor*0.9);
+            psol.destruct_sorted(memory,R);
+            psol.construct(Q);
+            psol.toPermutation(solution);
+        } while(memcmp(prev_solution, solution, sizeof(int)*n)==0 );
         
-			fitness=psol.eval();
-			lop->m_evaluations++;
+        fitness=psol.eval();
+        lop->m_evaluations++;
         
-			if (fitness>best_fitness){
-				memcpy(best_solution, solution, sizeof(int)*n);
-				best_fitness=fitness;
+        if (fitness>best_fitness){
+            memcpy(best_solution, solution, sizeof(int)*n);
+            best_fitness=fitness;
 #ifdef VERBOSE
-				printf("fitness repair. %.15Lf   evals rem. %lld R: %g\n",best_fitness,lop->m_max_evaluations-lop->m_evaluations,R);
+            printf("fitness repair. %ld   evals rem. %lld R: %g\n",best_fitness,lop->m_max_evaluations-lop->m_evaluations,R);
 #endif
-			}
+        }
         }
 
-    } while(lop->m_evaluations<lop->m_max_evaluations);
+    }while(lop->m_evaluations<lop->m_max_evaluations);
 #ifdef VERBOSE
     cout<<"out of the loop"<<endl;
 #endif
@@ -195,21 +193,15 @@ int main(int argc, char * argv[]) {
     if (test==NULL){
         fprintf(result_file,"\"Instance\";\"Repetition\";\"Algorithm\";\"Fitness\";\"Time\"\n");
     }
-    fprintf(result_file,"\"%s\";%d;\"%s\";%.15Lf;%.3f\n",INSTANCE_FILENAME,SEED,"CDRVNS",best_fitness,t2-t1);
+     fprintf(result_file,"\"%s\";%d;\"%s\";%ld;%.3f\n",INSTANCE_FILENAME,SEED,"CDRVNS",best_fitness,t2-t1);
+    
 #else
-    //result_file= fopen("./scratch_results.csv","a+");
-	result_file= fopen(RESULTS_FILENAME,"a+");
-    fprintf(result_file,"\"%s\";%d;\"%s\";%.15Lf;%.3f\n",INSTANCE_FILENAME,SEED,"CDRVNS",best_fitness,t2-t1);
+    result_file= fopen("./scratch_results.csv","a+");
+    fprintf(result_file,"\"%s\";%d;\"%s\";%ld;%.3f\n",INSTANCE_FILENAME,SEED,"CDRVNS",best_fitness,t2-t1);
 #endif
     fclose(result_file);
  
-    // cout << "Best permutation (best_solution): ";
-    // for (int i = 0; i < n; ++i) {
-    //     cout << best_solution[i] << " ";
-    // }
-    // cout << endl;
-
-    lop->SaveInstancePermuted("matrix_after_LOP.csv", best_solution);
+    
     // Free memory
     delete lop;
     delete [] solution;

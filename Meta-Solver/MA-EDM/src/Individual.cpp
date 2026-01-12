@@ -7,7 +7,7 @@ Description: some internal operations required by MA:
 - clone individuals
 ********************************************************************************************/
 
-#include "../include/Individual.h"
+#include "Individual.h"
 
 Individual::Individual(){
 	S.resize(problem->problemDimension);

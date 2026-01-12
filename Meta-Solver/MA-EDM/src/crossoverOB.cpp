@@ -5,8 +5,8 @@ Gara Miranda (Designer)
 Description: implementation of the order-based crossover (OB)
 ********************************************************************************************/
 
-#include "../include/Individual.h"
-#include "../include/utils.h"
+#include "Individual.h"
+#include "utils.h"
 
 //At exit, both individuls must have been evaluated 
 void Individual::crossoverOB(Individual &ind) {

@@ -6,7 +6,7 @@
 //  Copyright © 2017 Collaboration Santucci - Ceberio. All rights reserved.
 //
 
-#include "Tools.hpp"
+#include "../include/Tools.hpp"
 #include <cstdlib>  
 #include <stdio.h>
 #include <string.h>
@@ -14,9 +14,9 @@
 /*
  * Sorts the array of longs in the descending order.
  */
-void QuickSort(double * arr,int low, int high)
+void QuickSort(long * arr,int low, int high)
 {
-    long pivot;double temp;
+    long pivot,temp;
     int j,i;
     if(low<high)
     {
@@ -142,10 +142,10 @@ float HistoricProbability(int i, int j, int ** memory){
 /*
  * This method performs moves to the best neighbour in the insert neighbourhood.
  */
-long double GreedyLocalSearch_Insert(int * solution, long double fitness, LOP * lop){
+long GreedyLocalSearch_Insert(int * solution, long fitness, LOP * lop){
     
     int f_i,f_j,f_t,f_k,f_v, f_best_j;
-    long double f_maxgain,improvement ;
+    long int f_maxgain,improvement ;
     long int f_last_i = 0;
     int min,max;
     
@@ -157,9 +157,9 @@ long double GreedyLocalSearch_Insert(int * solution, long double fitness, LOP * 
         f_maxgain = 0;
             
         for ( f_v = 0, f_i = f_last_i; f_v < lop->m_problem_size && (lop->m_max_evaluations>lop->m_evaluations); f_v++, f_i++ ) {
-            long double f_gain;
+            long int f_gain;
             
-            f_gain = f_maxgain = 0.;
+            f_gain = f_maxgain = 0;
             if (f_i == lop->m_problem_size) f_i = 0;
                 
                 min=lop->m_sparsity_boundaries[solution[f_i]][0];
@@ -184,7 +184,7 @@ long double GreedyLocalSearch_Insert(int * solution, long double fitness, LOP * 
                 }
                 
                 //update solution with the best movement.
-                if ( f_maxgain > 0. ) {
+                if ( f_maxgain > 0 ) {
                     f_j = f_best_j;
                     f_t = solution[f_i];
                     if (f_i < f_j)
@@ -199,7 +199,7 @@ long double GreedyLocalSearch_Insert(int * solution, long double fitness, LOP * 
             }
         fitness += improvement;
     }
-    while (improvement >0. && (lop->m_max_evaluations>lop->m_evaluations));
+    while (improvement >0 && (lop->m_max_evaluations>lop->m_evaluations));
     return fitness;
     
 }
@@ -209,10 +209,10 @@ long double GreedyLocalSearch_Insert(int * solution, long double fitness, LOP * 
 /*
  * This method performs moves to the best neighbour in the interchange neighbourhood.
  */
-long double Best_IntechangeStep(int * solution, long double fitness, LOP * lop){
+long Best_IntechangeStep(int * solution, long fitness, LOP * lop){
     int k,j, best_k=0,best_j=0;
     int aux;
-    long double cost_neigh=0, cost_opt=fitness;
+    long cost_neigh=0, cost_opt=fitness;
     
     for (k=0; k<lop->m_problem_size-1 && lop->m_evaluations<lop->m_max_evaluations; k++) {
         for (j=k+1; j<lop->m_problem_size && lop->m_evaluations<lop->m_max_evaluations; j++) {
@@ -244,10 +244,10 @@ long double Best_IntechangeStep(int * solution, long double fitness, LOP * lop){
 /*
  * This method performs moves to the best neighbour in the interchange neighbourhood by performing an efficient evaluation of the neighborhood.
  */
-long double Best_IntechangeStep_Efficient(int * solution, long double fitness, LOP * lop){
+long Best_IntechangeStep_Efficient(int * solution, long fitness, LOP * lop){
     int k,j, best_k=0,best_j=0;
     int aux;
-    long double cost_neigh=0, cost_opt=fitness, difference;
+    long cost_neigh=0, cost_opt=fitness, difference;
     int neighborhood_size=(lop->m_problem_size*(lop->m_problem_size-1))/2;
     if ((lop->m_max_evaluations-lop->m_evaluations)<neighborhood_size){
         //the evaluations will  run out while revising neighborhood.
@@ -272,8 +272,22 @@ long double Best_IntechangeStep_Efficient(int * solution, long double fitness, L
     }else{ //the evaluations will not run out.
         for (k=0; k<lop->m_problem_size-1; k++) {
             for (j=k+1; j<lop->m_problem_size; j++) {
-               difference=lop->EvaluateDifference_Interchange(solution, k,j);
-               cost_neigh=fitness+difference;
+                
+                //old version
+               // aux=solution[k];
+               // solution[k]=solution[j];
+               // solution[j]=aux;
+                
+               // cost_neigh=lop->Evaluate(solution);
+               // cout<<"old version: "<<cost_neigh<<endl;
+               // aux= solution[j];
+               // solution[j]=solution[k];
+               // solution[k]=aux;
+                
+                difference=lop->EvaluateDifference_Interchange(solution, k,j);
+                cost_neigh=fitness+difference;
+               // cout<<"new version: "<<cost_neigh<<endl;
+               // exit(1);
                 if (cost_neigh>cost_opt) {
                     best_k=k;
                     best_j=j;
@@ -292,16 +306,18 @@ long double Best_IntechangeStep_Efficient(int * solution, long double fitness, L
 /*
  * This method performs moves to the best neighbour in the interchange neighbourhood by performing an efficient evaluation of the neighborhood with time as stopping criterion.
  */
-long double Best_IntechangeStep_Efficient_time(int * solution, long double fitness, LOP * lop){
+long Best_IntechangeStep_Efficient_time(int * solution, long fitness, LOP * lop){
     int k,j, best_k=0,best_j=0;
     int aux;
-    long double cost_neigh=0., cost_opt=fitness, difference;
+    long cost_neigh=0, cost_opt=fitness, difference;
     //the evaluations will not run out.
         for (k=0; k<lop->m_problem_size-1; k++) {
             for (j=k+1; j<lop->m_problem_size; j++) {
                 
                 difference=lop->EvaluateDifference_Interchange(solution, k,j);
                 cost_neigh=fitness+difference;
+                // cout<<"new version: "<<cost_neigh<<endl;
+                // exit(1);
                 if (cost_neigh>cost_opt) {
                     best_k=k;
                     best_j=j;

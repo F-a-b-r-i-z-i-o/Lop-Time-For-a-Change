@@ -6,7 +6,7 @@ Description: implementation of a stochatic hill-climber with the move operation.
 neighborhood is traversed in O(n^2).
 ********************************************************************************************/
 
-#include "../include/Individual.h"
+#include "Individual.h"
 #include <algorithm>
 
 void Individual::intensify() {

@@ -6,8 +6,8 @@
 //  Copyright © 2017 Collaboration Santucci - Ceberio. All rights reserved.
 //
 
-#include "LOP.h"
-#include "Tools.hpp"
+#include "../include/LOP.h"
+#include "../include/Tools.hpp"
 #include <algorithm>
 #include <climits>
 #include <string.h>
@@ -52,19 +52,19 @@ int LOP::Read(char * filename){
     printf("%d\n", m_problem_size);
 #endif
     // Initiaze structures.
-    m_instance = new double*[m_problem_size];
+    m_instance = new int*[m_problem_size];
     m_sparsity_boundaries= new int*[m_problem_size];
-    m_pairwise_differences = new double*[m_problem_size];
+    m_pairwise_differences = new int*[m_problem_size];
     //cout<<"..... Allocating..."<<endl;
     for (int i=0;i<m_problem_size;i++)
     {
-        m_instance[i]= new double[m_problem_size];
+        m_instance[i]= new int[m_problem_size];
         m_sparsity_boundaries[i]= new int[2];
-        m_pairwise_differences[i]= new double[m_problem_size];
+        m_pairwise_differences[i]= new int[m_problem_size];
     }
     
     // Read instance.
-    int size=2000000;//2milioni
+    int size=100192;
     char line[size];
     char * chop;
     const char * delimiter=" ";
@@ -76,7 +76,7 @@ int LOP::Read(char * filename){
             chop=strtok(line,delimiter);
             j=0;
             while(chop!=NULL){
-                m_instance[i][j]=atof(chop);
+                m_instance[i][j]=atoi(chop);
                 chop=strtok(NULL,delimiter);
                 j++;
             }
@@ -99,9 +99,9 @@ int LOP::Read(char * filename){
 /*
  * Calculates the corresponding objective value of the solution for the LOP problem.
  */
-long double LOP::Evaluate(int * solution)
+long LOP::Evaluate(int * solution)
 {
-	long double value=0.;
+	long value=0;
     int i,j;
     for (i=0;i<m_problem_size-1;i++){
 		for (j=i+1;j<m_problem_size;j++){
@@ -115,10 +115,10 @@ long double LOP::Evaluate(int * solution)
 /*
  * Calculates the objective value variation due to the interchange of items k and j in the given solution for the LOP problem.
  */
-long double LOP::EvaluateDifference_Interchange(int * solution, int k, int j)
+long LOP::EvaluateDifference_Interchange(int * solution, int k, int j)
 {
-    long double sum_out=0;
-    long double sum_in=0;
+    long sum_out=0;
+    long sum_in=0;
     int i;
     //sum_out
     for (i=k+1;i<j;i++){
@@ -160,9 +160,9 @@ int ** LOP::GetSparsityMatrix()
  */
 int ** LOP::CalculateSparsityMatrix(){
         
-    double * differencesArray= new double[m_problem_size-1];
+    long * differencesArray= new long[m_problem_size-1];
     int item=0;
-    double beforeSum, afterSum;
+    int beforeSum, afterSum;
     int min,max;
     int k,i;
     int restriction;
@@ -183,11 +183,11 @@ int ** LOP::CalculateSparsityMatrix(){
         
         for (min=0;min<m_problem_size;min++)
         {
-            beforeSum=0.;
+            beforeSum=0;
             for (k=0;k<min;k++)
                 beforeSum+=differencesArray[k];
             
-            afterSum=0.;
+            afterSum=0;
             for (k=min;k<val;k++)
                 afterSum+=differencesArray[k];
             
@@ -204,15 +204,15 @@ int ** LOP::CalculateSparsityMatrix(){
             
             for (max=val;max>=0;max--)
             {
-                beforeSum=0.;
+                beforeSum=0;
                 for (k=0;k<max;k++)
                     beforeSum+=differencesArray[k];
                 
-                afterSum=0.;
+                afterSum=0;
                 for (k=max;k<val;k++)
                     afterSum+=differencesArray[k];
                 
-                if (beforeSum>=0. && afterSum <=0.)
+                if (beforeSum>=0 && afterSum <=0)
                 {
                     //     restriction=max-(val);
                     m_sparsity_boundaries[item][0]=0;
@@ -230,7 +230,7 @@ int ** LOP::CalculateSparsityMatrix(){
 /*
  * Converts the matrix of parameters to an array of parameters of length n^2.
  */
-void LOP::GetMatrixAsArray(double * array){
+void LOP::GetMatrixAsArray(int * array){
     int i,z,j=0;
     
     for (i=0;i<m_problem_size;i++){
@@ -272,26 +272,6 @@ double LOP::PrecedenceProbability(int i, int j, int * solution){
     else{
         return (up/down);
     }
-}
-
-
-void LOP::SaveInstancePermuted(char* filename, int* permutation)
-{
-    FILE* f = fopen(filename, "w");
-    
-    // Matrix nxn reorder: row i, column j -> element (perm[i], perm[j])
-    for (int i = 0; i < m_problem_size; ++i) {
-        for (int j = 0; j < m_problem_size; ++j) {
-            int row = permutation[i];
-            int col = permutation[j];
-            double val = m_instance[row][col];
-
-            // separator ;
-            fprintf(f, "%.10f%s", val, (j == m_problem_size - 1) ? "\n" : ";");
-        }
-    }
-
-    fclose(f);
 }
 
 

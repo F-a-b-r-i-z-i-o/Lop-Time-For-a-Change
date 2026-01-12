@@ -37,7 +37,7 @@ public:
     /*
      * Matrix of parameters of the instance.
      */
-    double ** m_instance;
+    int ** m_instance;
     
     /*
      * Sparsity matrix. n x 2 size matrix.
@@ -47,7 +47,7 @@ public:
     /*
      * Matrix with pairwise differences. That is m_instance[i][j]-m_instance[j][i].
      */
-    double ** m_pairwise_differences;
+    int ** m_pairwise_differences;
     
     /*
      * The size of the problem.
@@ -87,12 +87,12 @@ public:
 	/*
 	 * Calculates the corresponding objective value of the solution for the LOP problem.
 	 */
-	long double Evaluate(int * solution);
+	long Evaluate(int * solution);
 	
     /*
      * Calculates the objective value variation due to the interchange of items k and j in the given solution for the LOP problem.
      */
-    long double EvaluateDifference_Interchange(int * solution, int k, int j);
+    long EvaluateDifference_Interchange(int * solution, int k, int j);
     
     /*
      * Returns the size of the problem.
@@ -112,17 +112,12 @@ public:
     /*
      * Converts the matrix of parameters to an array of parameters of length n^2.
      */
-    void GetMatrixAsArray(double * array);
+    void GetMatrixAsArray(int * array);
     
     /*
      * Computes the probability to perform an insert operation moving element at position i to position j.
      */
     double PrecedenceProbability(int i, int j, int * solution);
-
-    /*
-     * Save the triangular matrix.
-     */
-    void SaveInstancePermuted(char* filename, int* permutation);
     
 private:
 

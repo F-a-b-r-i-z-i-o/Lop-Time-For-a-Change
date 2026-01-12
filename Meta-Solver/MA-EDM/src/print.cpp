@@ -5,7 +5,7 @@ Gara Miranda (Designer)
 Description: function to print a solution. It prints the permutation and cost
 ********************************************************************************************/
 
-#include "../include/Individual.h"
+#include "Individual.h"
 #include <iostream>
 #include <fstream>
 #include <string>

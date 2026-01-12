@@ -19,10 +19,10 @@
 
 
 // Name of the file where the result will be stored.
-char RESULTS_FILENAME[1000];
+char RESULTS_FILENAME[50];
 
 // Name of the file where the instances is stored.
-char INSTANCE_FILENAME[1000];
+char INSTANCE_FILENAME[50];
 
 // The seed asigned to the process
 int SEED;
@@ -49,9 +49,9 @@ void usage(char *progname)
     printf("   -i File name of the instance.\n");
     printf("   -o Name of the file to store the results.\n");
     printf("   -s Seed used for pseudo-random numbers generator.\n");
-    //printf("   -q Greedy probability.\n");
-    //printf("   -g Number of chains in the destruction procedure.\n");
-    //printf("   -b Destruction strategy.\n");
+    printf("   -q Greedy probability.\n");
+    printf("   -g Number of chains in the destruction procedure.\n");
+    printf("   -b Destruction strategy.\n");
 }
 
 /*
@@ -167,7 +167,6 @@ bool GetParameters(int argc,char * argv[])
         usage(argv[0]);
         return false;
     }
-	strcpy(RESULTS_FILENAME, "output.csv"); //default output filename
     char** optarg;
     optarg = new char*[argc];
     while ((c = GetOption (argc, argv,":h:s:o:i:q:g:b:w:",optarg)) != '\0')
@@ -184,21 +183,21 @@ bool GetParameters(int argc,char * argv[])
                 srand(SEED);
                 break;
                 
-            case 'o' :
-                strcpy(RESULTS_FILENAME, *optarg);
-                break;
+            //case 'o' :
+            //    strcpy(RESULTS_FILENAME, *optarg);
+            //    break;
                 
             case 'i':
                 strcpy(INSTANCE_FILENAME, *optarg);
                 break;
                 
-            //case 'q' :
-            //    Q = atof(*optarg);
-            //    break;
+            case 'q' :
+                Q = atof(*optarg);
+                break;
             
-            //case 'g' :
-            //    NPR = atoi(*optarg);
-            //    break;
+            case 'g' :
+                NPR = atoi(*optarg);
+                break;
                 
             default:
                 printf("Wrong parameter specification...\n");

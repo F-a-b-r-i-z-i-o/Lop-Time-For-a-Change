@@ -1,4 +1,4 @@
-#include "random.h"
+#include "../include/random.h"
 #include <cstdio> //FILE, fopen(), fclose(), fread(), fprintf(), fscanf()
 
 

@@ -6,7 +6,7 @@ Description: initialization of solutions. No heuristic is used in this case; ins
 each permutation is equiprobable.
 ********************************************************************************************/
 
-#include "../include/Individual.h"
+#include "Individual.h"
 #include <algorithm>
 
 void Individual::initialize_heuristic() {

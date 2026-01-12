@@ -5,7 +5,7 @@ Gara Miranda (Designer)
 Description: function to calculate the permutation deviation distance of two permutations
 ********************************************************************************************/
 
-#include "../include/Individual.h"
+#include "Individual.h"
 
 TDistance Individual::getDistance(Individual &ind) {
 	int valueToPositionI2[problem->problemDimension];

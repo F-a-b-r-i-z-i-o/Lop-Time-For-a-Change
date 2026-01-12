@@ -14,7 +14,7 @@
 /*
  * Sorts the array of longs in the descending order.
  */
-void QuickSort(double * arr,int low, int high);
+void QuickSort(long * arr,int low, int high);
 
 /*
  * Prints in the standard output the given matrix.
@@ -34,27 +34,27 @@ void GenerateRandomPermutation(int size, int * permutation);
 /*
  * This method performs moves stochastically in the insert neighbourhood considering information from the history and values of the instance.
  */
-long double StochasticLocalSearch_Insert(int * solution, long double fitness, LOP * lop);
+long StochasticLocalSearch_Insert(int * solution, long fitness, LOP * lop);
     
 /*
  * This method performs moves to the best neighbour in the insert neighbourhood.
  */
-long double GreedyLocalSearch_Insert(int * solution, long double fitness, LOP * lop);
+long GreedyLocalSearch_Insert(int * solution, long fitness, LOP * lop);
 
 /*
  * This method performs moves to the best neighbour in the interchange neighbourhood.
  */
-long double Best_IntechangeStep(int * solution, long double fitness, LOP * lop);
+long Best_IntechangeStep(int * solution, long fitness, LOP * lop);
 
 /*
  * This method performs moves to the best neighbour in the interchange neighbourhood by performing an efficient evaluation of the neighborhood.
  */
-long double Best_IntechangeStep_Efficient(int * solution, long double fitness, LOP * lop);
+long Best_IntechangeStep_Efficient(int * solution, long fitness, LOP * lop);
 
 /*
  * This method performs moves to the best neighbour in the interchange neighbourhood by performing an efficient evaluation of the neighborhood with time as stopping criterion.
  */
-long double Best_IntechangeStep_Efficient_time(int * solution, long double fitness, LOP * lop);
+long Best_IntechangeStep_Efficient_time(int * solution, long fitness, LOP * lop);
 
 /*
  * It applies random shake_power times a perturbation on the given solution.

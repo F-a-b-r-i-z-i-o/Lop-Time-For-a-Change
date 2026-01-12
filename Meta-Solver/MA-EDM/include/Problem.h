@@ -10,7 +10,7 @@ Description: class to store the information of a LOP instance
 
 #include <vector>
 #include <string>
-#define LOPMatrix vector<vector<double>>
+#define LOPMatrix vector<vector<int>>
 using namespace std;
 
 class Problem {
