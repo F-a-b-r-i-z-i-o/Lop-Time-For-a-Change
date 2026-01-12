@@ -32,7 +32,7 @@ def load_A_region_agg(path: str, regions: list[str]) -> pd.DataFrame:
     # aggregate to region x region
     A_rr_int = agg_region_region(A_scaled_int, region_level_name="region")
 
-    # reorder subset of regions (filter to those actually present)
+    # reorder subset of regions 
     present = [r for r in regions if r in A_rr_int.index and r in A_rr_int.columns]
     missing = [r for r in regions if r not in present]
     

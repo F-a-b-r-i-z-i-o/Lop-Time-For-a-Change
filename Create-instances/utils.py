@@ -58,7 +58,7 @@ class LoadInstance:
         A = A_df.to_numpy(dtype=np.float128, copy=True)
         return np.rint(A * np.int64(c)).astype(np.int64)
     
-    def remvoe_useless_items(A: pd.DataFrame):
+    def remove_useless_items(A: pd.DataFrame):
         keep = ~((A.sum(axis=1) == 0) & (A.sum(axis=0) == 0))
         removed = A.index[~keep]
         return A.loc[keep, keep], removed
