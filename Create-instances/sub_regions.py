@@ -17,8 +17,8 @@ def construct_sub_matrix_regions_A(mrio, region: str) -> np.ndarray:
     A_int = A_scaled.to_numpy() if hasattr(A_scaled, "to_numpy") else np.asarray(A_scaled)
 
     # build masks from the ORIGINAL labels
-    row_mask = (A_df.index.get_level_values("region") == region).to_numpy()
-    col_mask = (A_df.columns.get_level_values("region") == region).to_numpy()
+    row_mask = (A_df.index.get_level_values("region") == region)
+    col_mask = (A_df.columns.get_level_values("region") == region)
 
     if not row_mask.any() or not col_mask.any():
         raise ValueError(f"Region '{region}' not found in A index/columns.")
@@ -31,7 +31,7 @@ def construct_sub_matrix_regions_A(mrio, region: str) -> np.ndarray:
     sub_cols  = A_df.columns[col_mask]
     sub_df = pd.DataFrame(sub_int, index=sub_index, columns=sub_cols)
 
-    #sub_df, _ = LoadInstance.remove_useless_items(sub_df)
+    sub_df, _ = LoadInstance.remove_useless_items(sub_df)
 
     return sub_df.to_numpy()
 
@@ -40,7 +40,7 @@ def construct_sub_matrix_regions_A(mrio, region: str) -> np.ndarray:
 
 
 if __name__ == "__main__":
-    iot_path = "../Compact-data/IOT_2022_pxp.zip"
+    iot_path = "../Compact-data/IOT_2022_ixi.zip"
     inst = LoadInstance(iot_path)
 
     regions = [
@@ -55,7 +55,7 @@ if __name__ == "__main__":
 
         print("Shape matrix:", mat.shape)
 
-        out_dir = f"../Dataset/pxp_n_{mat.shape[0]}"
+        out_dir = f"../Dataset/ixi/ixi_n_{mat.shape[0]}"
         out_path = os.path.join(out_dir, f"pxp_{region}_2022_n{mat.shape[0]}")
 
         inst.save_matrix(out_path, mat)
