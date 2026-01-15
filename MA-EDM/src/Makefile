@@ -1,4 +1,4 @@
-main: main.cpp crossoverCX.o crossoverOB.o getDistance.o intensify.o print.o utils.o evaluate.o initialize_heuristic.o MA.o Problem.o Individual.o
+main: main.cpp crossoverCX.o crossoverOB.o getDistance.o intensify.o print.o utils.o evaluate.o initialize_heuristic.o MA.o Problem.o Individual.o MultiSolutionSet.o
 	g++ -O2 -o $@ $^
 
 Individual.o: Individual.h Individual.cpp
@@ -27,6 +27,9 @@ initialize_heuristic.o: initialize_heuristic.cpp Individual.h
 
 Problem.o: Problem.h
 	g++ -O2 -c -o $@ Problem.cpp
+
+MultiSolutionSet.o: MultiSolutionSet.h MultiSolutionSet.cpp
+	g++ -O2 -c -o $@ MultiSolutionSet.cpp
 
 MA.o: MA.h Individual.h Problem.h MA.cpp
 	g++ -O2 -c -o $@ MA.cpp

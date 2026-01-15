@@ -21,8 +21,10 @@ Parameters:
 #include <stdio.h>
 #include <vector>
 #include <fstream>
+#include "MultiSolutionSet.h"
 
 Problem *Individual::problem;
+MultiSolutionSet msset;
 int main(int argc, char **argv){
 	if(argc!=7){
 		cout << "Error. Usage: " << argv[0] << " N crossover stopping_criterion seed instance_file output_file" << endl; 
