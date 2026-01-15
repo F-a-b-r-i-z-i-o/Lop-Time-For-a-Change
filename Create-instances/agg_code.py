@@ -51,7 +51,7 @@ def aggregate_A_region_by_code(mrio, region: str, unique_codes, names_by_index):
     agg_df = pd.DataFrame(agg, index=unique_codes, columns=unique_codes)
     
     # Remove rows and cols that the sum are 0 
-    #agg_df, _ = LoadInstance.remvoe_useless_items(agg_df)
+    #agg_df, _ = LoadInstance.remove_useless_items(agg_df)
     
     return agg_df
 

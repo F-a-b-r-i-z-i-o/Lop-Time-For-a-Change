@@ -26,12 +26,12 @@ def construct_sub_matrix_regions_A(mrio, region: str) -> np.ndarray:
     # extract region-region block
     sub_int = A_int[np.ix_(row_mask, col_mask)]
 
-    # make it a DataFrame so remvoe_useless_items works 
+    # make it a DataFrame  
     sub_index = A_df.index[row_mask]
     sub_cols  = A_df.columns[col_mask]
     sub_df = pd.DataFrame(sub_int, index=sub_index, columns=sub_cols)
 
-    sub_df, _ = LoadInstance.remvoe_useless_items(sub_df)
+    #sub_df, _ = LoadInstance.remove_useless_items(sub_df)
 
     return sub_df.to_numpy()
 

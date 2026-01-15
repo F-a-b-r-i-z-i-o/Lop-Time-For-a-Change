@@ -57,7 +57,7 @@ def sum_sub_matrices_over_paths(iot_paths, region: str) -> np.ndarray:
     if acc_df is None:
         raise ValueError("No paths provided (iot_paths is empty).")
 
-    acc_df, _ = LoadInstance.remvoe_useless_items(acc_df)
+    acc_df, _ = LoadInstance.remove_useless_items(acc_df)
 
     return acc_df.to_numpy(dtype=np.int64)
 
