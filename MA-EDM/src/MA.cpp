@@ -171,7 +171,7 @@ void MA::initDI(){
 void MA::run() {
 	initPopulation();
 	initDI();
-	MultiSolutionSet msset(5);
+    MultiSolutionSet msset(5, (int)population[0]->S.size());
 	generation = 0;
 	double cTime;
 	double bestCost;
@@ -180,9 +180,10 @@ void MA::run() {
 		selectParents();
 		crossover();
 		intensify();
-		for (int i = 0; i < offspring.size(); i++)
+		for (int i = 0; i < offspring.size(); i++){
 			//CHIAMARE QUI UPDATE SET ... offspring[i]->S offspring[i]->cost //VALENTINO
-			msset.update_set(offspring[i]->S.data(),(unsigned long)offspring[i]->getCost());
+			msset.update_set(offspring[i]->S.data(),offspring[i]->getCost());
+		}
 		replacement();
 		struct timeval currentTime;
 		gettimeofday(&currentTime, NULL);
@@ -199,4 +200,5 @@ void MA::run() {
 	}while (cTime - initialTime < finalTime);
 	//print best solution
 	population[0]->print(outputFile);
+	//msset.print_result(population[0]->S.data(),population[0]->getCost());
 }

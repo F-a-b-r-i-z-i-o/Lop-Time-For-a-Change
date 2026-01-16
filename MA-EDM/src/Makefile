@@ -1,41 +1,49 @@
+CXXFLAGS = -O2
+
+debug: CXXFLAGS = -O0 -g -DDEBUG
+debug: clean main
+
+release: CXXFLAGS = -O2
+release: clean main
+
 main: main.cpp crossoverCX.o crossoverOB.o getDistance.o intensify.o print.o utils.o evaluate.o initialize_heuristic.o MA.o Problem.o Individual.o MultiSolutionSet.o
-	g++ -O2 -o $@ $^
+	g++ $(CXXFLAGS) -o $@ $^
 
 Individual.o: Individual.h Individual.cpp
-	g++ -O2 -c -o $@ Individual.cpp 
+	g++ $(CXXFLAGS) -c -o $@ Individual.cpp 
 
 crossoverCX.o: crossoverCX.cpp Individual.h 
-	g++ -O2 -c -o $@ crossoverCX.cpp
+	g++ $(CXXFLAGS) -c -o $@ crossoverCX.cpp
 
 crossoverOB.o: crossoverOB.cpp Individual.h 
-	g++ -O2 -c -o $@ crossoverOB.cpp
+	g++ $(CXXFLAGS) -c -o $@ crossoverOB.cpp
 
 getDistance.o: getDistance.cpp Individual.h 
-	g++ -O2 -c -o $@ getDistance.cpp
+	g++ $(CXXFLAGS) -c -o $@ getDistance.cpp
 
 intensify.o: intensify.cpp Individual.h 
-	g++ -O2 -c -o $@ intensify.cpp
+	g++ $(CXXFLAGS) -c -o $@ intensify.cpp
 
 print.o: print.cpp Individual.h 
-	g++ -O2 -c -o $@ print.cpp
+	g++ $(CXXFLAGS) -c -o $@ print.cpp
 
 evaluate.o: evaluate.cpp Individual.h 
-	g++ -O2 -c -o $@ evaluate.cpp
+	g++ $(CXXFLAGS) -c -o $@ evaluate.cpp
 
 initialize_heuristic.o: initialize_heuristic.cpp Individual.h 
-	g++ -O2 -c -o $@ initialize_heuristic.cpp
+	g++ $(CXXFLAGS) -c -o $@ initialize_heuristic.cpp
 
 Problem.o: Problem.h
-	g++ -O2 -c -o $@ Problem.cpp
+	g++ $(CXXFLAGS) -c -o $@ Problem.cpp
 
 MultiSolutionSet.o: MultiSolutionSet.h MultiSolutionSet.cpp
-	g++ -O2 -c -o $@ MultiSolutionSet.cpp
+	g++ $(CXXFLAGS) -c -o $@ MultiSolutionSet.cpp
 
 MA.o: MA.h Individual.h Problem.h MA.cpp
-	g++ -O2 -c -o $@ MA.cpp
+	g++ $(CXXFLAGS) -c -o $@ MA.cpp
 
 utils.o: utils.cpp utils.h
-	g++ -O2 -c -o $@ utils.cpp
+	g++ $(CXXFLAGS) -c -o $@ utils.cpp
 
 clean:
 	rm -f main *.o

@@ -1,44 +1,69 @@
 #include "MultiSolutionSet.h"
 #include <iostream>
-#include <fstream>
-#include <stdexcept>
-#include "Individual.h"
+#include <utility>
 
 using namespace std;
 
-MultiSolutionSet::MultiSolutionSet(int m) {
-	cout << "Sono il costruttore!\n";
+#ifdef DEBUG
+  #define DBG(stmt) do { stmt; } while(0)
+#else
+  #define DBG(stmt) do {} while(0)
+#endif
+
+MultiSolutionSet::MultiSolutionSet(int m_, int n_) : m(m_), n(n_) {
+    DBG(cout << "Sono il costruttore! m=" << m << " n=" << n << "\n");
 }
 
 MultiSolutionSet::~MultiSolutionSet() {
-	cout << "Sono il distruttore!\n";
+    DBG(cout << "Sono il distruttore!\n");
 }
 
-void MultiSolutionSet::update_set(int* x, unsigned long fx) {
-	cout << "Sono update_set!\n";
-}
+void MultiSolutionSet::update_set(const int* x, unsigned long fx) {
+    for (const auto& sol : set_possible_solution) {
+        bool equal = true;
 
-void MultiSolutionSet::print_result(int seed, 
-									string algorithm, 
-									int m, 
-									string name_instance, 
-									int nevals, 
-									double time, 
-									vector<int> solution_set, 
-									vector<double> fitness)
-	{
-    string filename = "results_MA-EDM.csv";
-    ofstream out(filename, ios::app);
-    string algorithm = "MS-MA-EDM";
+        for (int i = 0; i < n; ++i) {
+            if (sol[i] != x[i]) {
+                equal = false;
+                break;
+            }
+        }
+
+        if (equal) {
+            DBG(cout << "EQUAL" << endl);
+            return; 
+        }
+    }
+
+    DBG(cout << "NOT PRESENT" << endl);
+
+    if (set_possible_solution.size() < m) {
+        vector<int> cand(x, x + n);
+        DBG(cout << "INSERT" << endl);
+    } else {
+        unsigned long fworst = set_fx[0];
+        int idx_worst = 0; 
+        for (size_t i = 1; i < set_fx.size(); i++)
+        {
+            if (set_fx[i] < fworst){
+                fworst = set_fx[i];
+                idx_worst = i;
+            }
+        }
+        if (fx<fworst)
+            return;
+        else{
+            //cout<<"TODO";
+        }
+    }
+            
+    DBG(cout << "SIZE = " << set_possible_solution.size() << endl);
+
+	for (const auto& perm : set_possible_solution) {
+		for (int v : perm) {
+			DBG(cout << v << " ");
+		}
+		DBG(cout << endl);
+	}
 	
-	out << "seed\talgorithm\tm\tinstance\tnevals\ttime\tsolution_set\tfitness_set\n";
-    
-    out << seed << '\t'
-        << algorithm << '\t'
-        << m << '\t'
-        << nevals << '\t'
-        << time <<'\t';
-
-    out << endl;
-
 }
