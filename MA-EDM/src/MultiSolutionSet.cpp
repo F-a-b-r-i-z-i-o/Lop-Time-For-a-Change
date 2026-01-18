@@ -11,7 +11,9 @@ using namespace std;
   #define DBG(stmt) do {} while(0)
 #endif
 
-MultiSolutionSet::MultiSolutionSet(int m_, int n_) : m(m_), n(n_) {
+MultiSolutionSet::MultiSolutionSet(int m_, int n_){
+    m = m_; 
+    n = n_;
     DBG(cout << "Sono il costruttore! m=" << m << " n=" << n << "\n");
 }
 
@@ -24,104 +26,157 @@ double kendellTau(int *a, int *b, int n){
     for (j=1; j < n; j++)
         for (i=0; i < j; i++)
             v += (a[i] < a[j]) != (b[i] < b[j]);
-    
-    return v / (0.5*n*(n-1));
+    double denom = 0.5 * n * (n - 1);
+    return v / denom;
 }
 
-void MultiSolutionSet::update_set(const int* x, unsigned long fx) {
-    //TODO: rincontrollare insieme S ed S' 
-    //      ricontrollare kendell perchè vettore ordina distanze ma 
-    //      forse non permutazioni e fiteness 
+void MultiSolutionSet::rebuild_fitness_distances() {
+    size_t S = set_possible_solution.size();
 
+    // fitness_distances[i] length S+1:
+    //   fitness_distances[i][0]   = fitness of solution i
+    //   fitness_distances[i][j+1] = KendallTau(i, j) for j != i
+    fitness_distances.assign(S, vector<double>(S + 1, 0.0));
+
+    // Store fitness in the first position
+    for (size_t i = 0; i < S; ++i) {
+        fitness_distances[i][0] = static_cast<double>(set_fx[i]);
+    }
+
+    // Fill Kendall tau distances
+    for (size_t i = 0; i < S; ++i) {
+        for (size_t j = i + 1; j < S; ++j) {
+            double d = kendellTau(set_possible_solution[i].data(),
+                                  set_possible_solution[j].data(),
+                                  n);
+            fitness_distances[i][j + 1] = d;
+            fitness_distances[j][i + 1] = d;
+        }
+    }
+
+    // Sort distance
+    for (size_t i = 0; i < S; ++i) {
+        sort(fitness_distances[i].begin() + 1, fitness_distances[i].end());
+    }
+}
+
+
+void MultiSolutionSet::update_set(const int* x, unsigned long fx) {
+
+    // Check duplicates: if x is already in the set
     for (const auto& sol : set_possible_solution) {
         bool equal = true;
-
         for (int i = 0; i < n; ++i) {
-            if (sol[i] != x[i]) {
-                equal = false;
-                break;
-            }
+            if (sol[i] != x[i]) { equal = false; break; }
         }
-
         if (equal) {
-            DBG(cout << "EQUAL" << endl);
-            return; 
-        }
-    }
-
-    DBG(cout << "NOT PRESENT" << endl);
-
-    if (set_possible_solution.size() < m) {
-        vector<int> cand(x, x + n);
-        size_t pos = 0;
-
-        while (pos < set_fx.size() && set_fx[pos] > fx) {
-            ++pos;
-            DBG(cout << "ORDER" << endl);
-        }
-        // find position to insert (decreasing order for fx)
-        set_possible_solution.insert(set_possible_solution.begin() + pos, move(cand));
-        set_fx.insert(set_fx.begin() + pos, fx);
-        DBG(cout << "INSERT" << endl);
-    } 
-    else {    
-        unsigned long fworst = set_fx[0];
-        int idx_worst = 0; 
-        for (size_t i = 1; i < set_fx.size(); i++)
-        {
-            if (set_fx[i] < fworst){
-                fworst = set_fx[i];
-                idx_worst = i;
-            }
-        }
-        if (fx<fworst)
+            DBG(cout << "EQUAL\n");
             return;
-        
-        else{
-            vector<int> cand(x, x + n);
-            size_t pos = 0;
-            
-            while (pos < set_fx.size() && set_fx[pos] > fx) {
-                ++pos;
-                DBG(cout << "ORDER" << endl);
-            }
-            
-            set_possible_solution.insert(set_possible_solution.begin() + pos, move(cand));
-            set_fx.insert(set_fx.begin() + pos, fx);
-            DBG(cout << "INSERT (FULL -> REPLACE WORST)" << endl);
-            
-            // Vector of kendall distances 
-            vector<double> ktDistances;
-            size_t S = set_possible_solution.size();
-
-            for (size_t i = 0; i < S; i++)
-            {
-                for (size_t j = i + 1; j < S; j++)
-                {
-                    double ktValue = kendellTau(set_possible_solution[i].data(),set_possible_solution[j].data(),n);
-                    //DBG(cout << "KendallTau(" << i << "," << j << ") = " << ktValue << endl);
-                    ktDistances.push_back(ktValue);
-                }
-            }
-
-            // Sort small -> big
-            sort(ktDistances.begin(), ktDistances.end());
-            DBG(cout << "KendallTau distances sorted (" << ktDistances.size() << "):" << endl);
-            // for (double d : ktDistances) 
-            //     DBG(cout << d << " " << endl); 
-            double min_val_kendel_vect = ktDistances[0];
-            DBG(cout << min_val_kendel_vect << endl); 
-            DBG(cout << " ------------------------------ ");
         }
     }
-            
-    // DBG(cout << "SIZE = " << set_possible_solution.size() << endl);
 
-	// for (const auto& perm : set_possible_solution) {
-	// 	for (int v : perm) {
-	// 		DBG(cout << v << " ");
-	// 	}
-	// 	DBG(cout << endl);
-	// }
-	
+    DBG(cout << "NOT PRESENT\n");
+
+    vector<int> cand(x, x + n);
+
+    // Find insertion position:
+    //  - fitness ascending (minimization)
+    //  - lexicographic order on permutations (ascending)
+    size_t pos = 0;
+
+    while (pos < set_fx.size() && set_fx[pos] < fx) {
+        ++pos;
+        DBG(cout << "ORDER(fitness)\n");
+    }
+
+    while (pos < set_fx.size() && set_fx[pos] == fx &&
+           lexicographical_compare(set_possible_solution[pos].begin(),
+                                   set_possible_solution[pos].end(),
+                                   cand.begin(), cand.end()))
+    {
+        ++pos;
+        DBG(cout << "ORDER(lex)\n");
+    }
+
+    // If the set is full, accept only if cand is not worse than the current worst
+    //  Worst is the last element because the set is kept ordered (fitness ascending).
+    if (set_possible_solution.size() >= (size_t)m) {
+        unsigned long fworst = set_fx.back();              // largest fitness (worst)
+        auto& worst_perm = set_possible_solution.back();
+
+        // If cand has higher fitness, it's worse -> reject
+        if (fx > fworst) {
+            DBG(cout << "FULL: fx > fworst -> return\n");
+            return;
+        }
+
+        // If same fitness as worst, accept only if cand is lexicographically smaller
+        if (fx == fworst) {
+            bool cand_better_lex = lexicographical_compare(
+                cand.begin(), cand.end(),
+                worst_perm.begin(), worst_perm.end()
+            );
+            if (!cand_better_lex) {
+                DBG(cout << "FULL: fx==fworst and not lex-better -> return\n");
+                return;
+            }
+        }
+    }
+
+    // Insert cand and its fitness at the computed position
+    set_possible_solution.insert(set_possible_solution.begin() + pos, move(cand));
+    set_fx.insert(set_fx.begin() + pos, fx);
+    DBG(cout << "INSERT at pos=" << pos << "\n");
+
+    rebuild_fitness_distances();
+
+    // If size exceeds m, remove the solution.
+    if (set_possible_solution.size() > m) {
+        size_t S = fitness_distances.size();
+        size_t idx_max = 0;
+
+        for (size_t i = 1; i < S; ++i) {
+            //TODO: control this point for idx_max or min
+
+            // if fitness_distances[idx_max] < fitness_distances[i], then i is larger -> update idx_max
+            if (lexicographical_compare(fitness_distances[idx_max].begin(), fitness_distances[idx_max].end(),
+                                        fitness_distances[i].begin(), fitness_distances[i].end()))
+            {
+                idx_max = i;
+            }
+        }
+
+        DBG(cout << "REMOVE idx_max=" << idx_max
+                << " fd0(fx)=" << (ulong)fitness_distances[idx_max][0] << endl);
+
+        set_possible_solution.erase(set_possible_solution.begin() + idx_max);
+        set_fx.erase(set_fx.begin() + idx_max);
+
+        // Rebuild because indices and sizes changed
+        rebuild_fitness_distances();
+    }
+    
+    DBG(
+        cout << "\n[STATE] set_fx + permutations (ordered):\n";
+        for (size_t i = 0; i < set_possible_solution.size(); ++i) {
+            cout << "i=" << i << " fx=" << set_fx[i] << " perm=";
+            int limit = (n < 200 ? n : 200);
+            for (int k = 0; k < limit; ++k) cout << set_possible_solution[i][k] << " ";
+            cout << "\n";
+        }
+        cout << "-------------------------------------\n";
+
+        cout << "[STATE] fitness_distances (fitness + sorted Kendall distances):" << endl;
+        for (size_t i = 0; i < fitness_distances.size(); ++i) {
+            cout << "i=" << i
+                << " fx=" << set_fx[i]  
+                << " dists=";
+
+            for (size_t k = 1; k < fitness_distances[i].size(); ++k) { // <-- solo distanze
+                cout << fitness_distances[i][k] << " ";
+            }
+            cout << "\n";
+        }
+        cout << "-------------------------------------\n";
+    );
 }
