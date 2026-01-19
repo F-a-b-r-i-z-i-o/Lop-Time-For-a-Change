@@ -100,7 +100,7 @@ void MultiSolutionSet::update_set(const int* x, unsigned long fx) {
 
     // If the set is full, accept only if cand is not worse than the current worst
     //  Worst is the last element because the set is kept ordered (fitness ascending).
-    if (set_possible_solution.size() >= (size_t)m) {
+    if (set_possible_solution.size() >= m) {
         unsigned long fworst = set_fx.back();              // largest fitness (worst)
         auto& worst_perm = set_possible_solution.back();
 
@@ -133,26 +133,24 @@ void MultiSolutionSet::update_set(const int* x, unsigned long fx) {
     // If size exceeds m, remove the solution.
     if (set_possible_solution.size() > m) {
         size_t S = fitness_distances.size();
-        size_t idx_max = 0;
+        size_t idx_min = 0;
 
         for (size_t i = 1; i < S; ++i) {
-            //TODO: control this point for idx_max or min
-
-            // if fitness_distances[idx_max] < fitness_distances[i], then i is larger -> update idx_max
-            if (lexicographical_compare(fitness_distances[idx_max].begin(), fitness_distances[idx_max].end(),
-                                        fitness_distances[i].begin(), fitness_distances[i].end()))
+            // take min lexicographical
+            if (lexicographical_compare(fitness_distances[i].begin(), fitness_distances[i].end(),
+                            fitness_distances[idx_min].begin(), fitness_distances[idx_min].end()))
             {
-                idx_max = i;
+                idx_min = i;
             }
         }
 
-        DBG(cout << "REMOVE idx_max=" << idx_max
-                << " fd0(fx)=" << (ulong)fitness_distances[idx_max][0] << endl);
-
-        set_possible_solution.erase(set_possible_solution.begin() + idx_max);
-        set_fx.erase(set_fx.begin() + idx_max);
-
-        // Rebuild because indices and sizes changed
+        DBG(cout << "REMOVE idx_min=" << idx_min
+                << " fd0(fx)=" << (ulong)fitness_distances[idx_min][0] << endl);
+        
+        // remove min lexicographical
+        set_possible_solution.erase(set_possible_solution.begin() + idx_min);
+        set_fx.erase(set_fx.begin() + idx_min);
+        
         rebuild_fitness_distances();
     }
     
