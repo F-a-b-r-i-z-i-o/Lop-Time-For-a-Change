@@ -13,7 +13,7 @@ published in the paper "A Diversity-aware Memetic Algorithm for the Linear Order
 
 class MA {
 	public:
-		MA(int N_, double pc_,string &crossType_, double finalTime_, string &outputFile);
+		MA(int N_, double pc_,string &crossType_, double finalTime_, string &outputFile, string &instanceFile, int seed, int m);
 		void run();
 	private:
 		//Parameters of MA
@@ -22,6 +22,9 @@ class MA {
 		string crossType; //crossover type
 		double finalTime;//Seconds
 		string outputFile;
+		string instanceFile; 
+		int seed;
+		int m;
 
 		//Basic procedures of MA
 		void initPopulation();

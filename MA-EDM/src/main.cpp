@@ -25,7 +25,7 @@ Parameters:
 
 Problem *Individual::problem;
 int main(int argc, char **argv){
-	if(argc!=7){
+	if(argc!=8){
 		cout << "Error. Usage: " << argv[0] << " N crossover stopping_criterion seed instance_file output_file" << endl; 
 		exit(0);
 	}
@@ -36,9 +36,10 @@ int main(int argc, char **argv){
 	int seed = atoi(argv[4]);
 	string instanceFile = argv[5];
 	string outputFile = argv[6];
+	int m = atoi(argv[7]);
 
 	srand(seed);
-	MA ma(N, pc, crossType, finalTime, outputFile);
+	MA ma(N, pc, crossType, finalTime, outputFile, instanceFile, seed, m);
 	Problem p(instanceFile);
 	Individual::problem = &p;
 	ma.run();

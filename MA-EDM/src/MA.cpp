@@ -20,12 +20,15 @@ LOP, such as the
 
 using namespace std;
 
-MA::MA(int N_, double pc_, string &crossType_, double finalTime_, string &outputFile_){
+MA::MA(int N_, double pc_, string &crossType_, double finalTime_, string &outputFile_, string &instanceFile_, int seed_, int m_){
 	N = N_;
 	pc = pc_;
 	crossType= crossType_;
 	finalTime = finalTime_;
 	outputFile = outputFile_;
+	instanceFile = instanceFile_;
+	seed = seed_;
+	m = m_;
 	struct timeval currentTime; 
 	gettimeofday(&currentTime, NULL);
 	initialTime = (double) (currentTime.tv_sec) + (double) (currentTime.tv_usec)/1.0e6;
@@ -171,10 +174,11 @@ void MA::initDI(){
 void MA::run() {
 	initPopulation();
 	initDI();
-    MultiSolutionSet msset(5, (int)population[0]->S.size());
+    MultiSolutionSet msset(5, population[0]->S.size());
 	generation = 0;
 	double cTime;
 	double bestCost;
+	int nevals = 0;
 	do {
 		//Iteration of the MA: selection, crossover, intensification, replacement
 		selectParents();
@@ -183,6 +187,7 @@ void MA::run() {
 		for (int i = 0; i < offspring.size(); i++){
 			//CHIAMARE QUI UPDATE SET ... offspring[i]->S offspring[i]->cost //VALENTINO
 			msset.update_set(offspring[i]->S.data(),-offspring[i]->getCost());
+			nevals++;
 		}
 		replacement();
 		struct timeval currentTime;
@@ -199,6 +204,14 @@ void MA::run() {
 		generation++;
 	}while (cTime - initialTime < finalTime);
 	//print best solution
-	population[0]->print(outputFile);
-	//msset.print_result(population[0]->S.data(),population[0]->getCost());
+	//population[0]->print("orginal-result.txt");
+	msset.print_final_results(
+		instanceFile,  
+		seed,            
+		"MA-EDM",        
+		nevals,          
+		elapsedTime, 
+		outputFile,
+		m
+	);
 }
