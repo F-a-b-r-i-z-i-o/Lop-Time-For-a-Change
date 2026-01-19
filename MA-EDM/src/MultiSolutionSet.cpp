@@ -30,6 +30,72 @@ double kendellTau(int *a, int *b, int n){
     return v / denom;
 }
 
+// efficient Kendall Tau distance implementation
+
+int mergesortCount(int* a, int* temp, int begin, int end) {
+	//merge sort that count the inversions and sort a (the merge procedure is hardcoded here)
+	//http://rupakcs.blogspot.it/2011/05/counting-inversions-in-array-using.html
+	//http://www.geeksforgeeks.org/counting-inversions/
+	if (begin==end)  
+		return 0;
+	int middle = begin + (end-begin)/2;
+	int linv = mergesortCount(a,temp,begin,middle); //inversions on the left part
+	int rinv = mergesortCount(a,temp,middle+1,end); //inversions on the right part
+	int i = begin;
+	int j = middle+1;
+    int k = begin;
+	int minv = 0; //inversions for the merging step
+	while (i<=middle && j<=end) {
+		if (a[i]<a[j]) { //I know that or a[i]<a[j] or a[i]>a[j] ... they can't be equals
+			temp[k++] = a[i++];
+		} else {
+			minv += middle-i+1;
+			temp[k++] = a[j++];
+		}
+	}
+	int q = middle-i+1;
+	memcpy(temp+k,a+i,sizeof(int)*q);
+	memcpy(temp+(k+q),a+j,sizeof(int)*(end-j+1));
+	memcpy(a+begin,temp+begin,sizeof(int)*(end-begin+1));
+	return linv+rinv+minv;
+}
+
+
+
+int countInversions(int* a, int size) {
+	//returns the number of inversions in a and sort a
+	int* workspace = new int[size];
+	int ninv = mergesortCount(a,workspace,0,size-1);
+	delete[] workspace;
+	return ninv;
+}
+
+void pinverse(int *pinv,int *p,int n) {
+    for(int i=0; i<n; i++)
+        pinv[p[i]]=i;
+}
+
+void pcompose(int *p3,int *p1,int *p2,int n) {
+	for(int i=0;i<n;i++)
+		p3[i]=p1[p2[i]];
+}
+
+void pdifference(int *diff,int *p2,int *p3,int n) {
+    int *p2inv=new int[n];
+	pinverse(p2inv,p2,n);
+	pcompose(diff,p2inv,p3,n);  
+	delete[] p2inv;
+}
+
+int kendall_tau_distance(int *p1,int *p2,int n) {
+    int* p3=new int[n];
+    pdifference(p3,p1,p2,n);
+	int res=countInversions(p3,n);
+	delete[] p3;
+	return res;
+}
+
+
 void MultiSolutionSet::rebuild_fitness_distances() {
     size_t S = set_possible_solution.size();
 
