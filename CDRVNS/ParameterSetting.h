@@ -10,6 +10,7 @@
 #include <string.h>
 #include "PSolution.h"
 #include <ctype.h>
+#include <limits.h> 
 
 #ifndef ParameterSetting_h
 #define ParameterSetting_h
@@ -19,10 +20,10 @@
 
 
 // Name of the file where the result will be stored.
-char RESULTS_FILENAME[50];
+char RESULTS_FILENAME[PATH_MAX];
 
 // Name of the file where the instances is stored.
-char INSTANCE_FILENAME[50];
+char INSTANCE_FILENAME[PATH_MAX];
 
 // The seed asigned to the process
 int SEED;
@@ -39,6 +40,7 @@ double R=0.5;
 // probability threshold for the destruction construction step.
 double ALPHA=0.99995;
 
+int m = 5;
 
 /*
  * Help command output.
@@ -169,7 +171,7 @@ bool GetParameters(int argc,char * argv[])
     }
     char** optarg;
     optarg = new char*[argc];
-    while ((c = GetOption (argc, argv,":h:s:o:i:q:g:b:w:",optarg)) != '\0')
+    while ((c = GetOption (argc, argv,":h:s:o:i:q:g:b:w:m:",optarg)) != '\0')
     {
         switch (c)
         {
@@ -197,6 +199,10 @@ bool GetParameters(int argc,char * argv[])
             
             case 'g' :
                 NPR = atoi(*optarg);
+                break;
+            
+            case 'm' :
+                m = atoi(*optarg);
                 break;
                 
             default:

@@ -1,4 +1,5 @@
 #include <vector>
+#include <string>
 using namespace std;
 struct MultiSolutionSet {
     int m;  // max dimension set
@@ -21,4 +22,12 @@ struct MultiSolutionSet {
     int kendallTauDistance(int *p1,int *p2,int n);
     void update_set(const int* x, unsigned long fx);
     void rebuild_fitness_distances();
+    void print_final_results(const string& path,
+                    int seed,
+                    const string& algorithm,
+                    int nevals,
+                    double time_sec,
+                    string outputfile, 
+                    int m
+                );
 };

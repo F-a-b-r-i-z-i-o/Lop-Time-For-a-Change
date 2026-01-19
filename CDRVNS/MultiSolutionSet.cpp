@@ -3,7 +3,10 @@
 #include <utility>
 #include <algorithm>
 #include <string.h>
-
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <cstdint>
 using namespace std;
 
 #ifdef DEBUG
@@ -220,4 +223,66 @@ void MultiSolutionSet::update_set(const int* x, uint64_t fx) {
         }
         cout << "-------------------------------------\n";
     );
+}
+string perm_to_semicolon(const vector<int>& perm) {
+    ostringstream oss;
+    for (size_t i = 0; i < perm.size(); ++i) {
+        if (i) oss << ';';
+        oss << perm[i];
+    }
+    return oss.str();
+}
+
+
+string join_to_semicolon(const vector<unsigned long>& v, size_t from = 0) {
+    ostringstream oss;
+    for (size_t i = from; i < v.size(); ++i) {
+        if (i > from) oss << ';';
+        oss << v[i];
+    }
+    return oss.str();
+}
+
+void MultiSolutionSet::print_final_results(const string& path,
+                                           int seed,
+                                           const string& algorithm,
+                                           int nevals,
+                                           double time_sec,
+                                           string outputfile, 
+                                           int m)
+                                                 
+{
+    ofstream out(outputfile, ios::app);
+    if (!out) return;
+
+    // header 
+    out.seekp(0, ios::end);
+    if (out.tellp() == 0) {
+        out << "seed\talgorithm\tm\tinstance\tn\tnevals\ttime\tpermutation\tfitness\tkendall_dists\n";
+    }
+
+    // One row per solution in the set
+    size_t S = set_possible_solution.size();
+    for (size_t i = 0; i < S; ++i) {
+        string perm_str = perm_to_semicolon(set_possible_solution[i]);
+
+        // fitness_distances[i] = [fitness, d1, d2, ...] with distances sorted
+        unsigned long fit_i = set_fx[i];
+        string dists_str;
+        if (i < fitness_distances.size()) {
+            dists_str = join_to_semicolon(fitness_distances[i], 1); // skip [0]=fitness
+        }
+
+        out << seed << '\t'
+            << algorithm << '\t'
+            << m << '\t'
+            << path << '\t'
+            << n << '\t'
+            << nevals << '\t'
+            << time_sec << '\t'
+            << perm_str << '\t'
+            << fit_i << '\t'
+            << dists_str
+            << endl;
+    }
 }
