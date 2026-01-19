@@ -182,7 +182,7 @@ void MA::run() {
 		intensify();
 		for (int i = 0; i < offspring.size(); i++){
 			//CHIAMARE QUI UPDATE SET ... offspring[i]->S offspring[i]->cost //VALENTINO
-			msset.update_set(offspring[i]->S.data(),offspring[i]->getCost());
+			msset.update_set(offspring[i]->S.data(),-offspring[i]->getCost());
 		}
 		replacement();
 		struct timeval currentTime;

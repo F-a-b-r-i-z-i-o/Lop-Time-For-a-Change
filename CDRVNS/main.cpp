@@ -52,8 +52,8 @@ int main(int argc, char * argv[]) {
     }else{
         lop->m_max_evaluations=(long long int)10*1000*1000*1000;
     }
-	
-	MultiSolutionSet msset(5);//VALENTINO
+	cout << n;
+	MultiSolutionSet msset(5, n);//VALENTINO
     
 
 #ifdef VERBOSE

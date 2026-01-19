@@ -2,6 +2,7 @@
 #include <iostream>
 #include <utility>
 #include <algorithm>
+#include <string.h>
 
 using namespace std;
 
@@ -14,25 +15,24 @@ using namespace std;
 MultiSolutionSet::MultiSolutionSet(int m_, int n_){
     m = m_; 
     n = n_;
-    DBG(cout << "Sono il costruttore! m=" << m << " n=" << n << "\n");
+    //DBG(cout << "Sono il costruttore! m=" << m << " n=" << n << "\n");
 }
 
-MultiSolutionSet::~MultiSolutionSet() {
-    DBG(cout << "Sono il distruttore!\n");
-}
+// MultiSolutionSet::~MultiSolutionSet() {
+//     DBG(cout << "Sono il distruttore!\n");
+// }
 
-double kendellTau(int *a, int *b, int n){
-    int i,j,v = 0; 
-    for (j=1; j < n; j++)
-        for (i=0; i < j; i++)
-            v += (a[i] < a[j]) != (b[i] < b[j]);
-    double denom = 0.5 * n * (n - 1);
-    return v / denom;
-}
+// int kendallTau(int *a, int *b, int n){
+//     int i,j,v = 0; s
+//     for (j=1; j < n; j++)
+//         for (i=0; i < j; i++)
+//             v += (a[i] < a[j]) != (b[i] < b[j]);
+//     return v;
+// }
 
 // efficient Kendall Tau distance implementation
 
-int mergesortCount(int* a, int* temp, int begin, int end) {
+int MultiSolutionSet::mergesortCount(int* a, int* temp, int begin, int end) {
 	//merge sort that count the inversions and sort a (the merge procedure is hardcoded here)
 	//http://rupakcs.blogspot.it/2011/05/counting-inversions-in-array-using.html
 	//http://www.geeksforgeeks.org/counting-inversions/
@@ -60,9 +60,7 @@ int mergesortCount(int* a, int* temp, int begin, int end) {
 	return linv+rinv+minv;
 }
 
-
-
-int countInversions(int* a, int size) {
+int MultiSolutionSet::countInversions(int* a, int size) {
 	//returns the number of inversions in a and sort a
 	int* workspace = new int[size];
 	int ninv = mergesortCount(a,workspace,0,size-1);
@@ -70,24 +68,24 @@ int countInversions(int* a, int size) {
 	return ninv;
 }
 
-void pinverse(int *pinv,int *p,int n) {
+void MultiSolutionSet::pinverse(int *pinv,int *p,int n) {
     for(int i=0; i<n; i++)
         pinv[p[i]]=i;
 }
 
-void pcompose(int *p3,int *p1,int *p2,int n) {
+void MultiSolutionSet::pcompose(int *p3,int *p1,int *p2,int n) {
 	for(int i=0;i<n;i++)
 		p3[i]=p1[p2[i]];
 }
 
-void pdifference(int *diff,int *p2,int *p3,int n) {
+void MultiSolutionSet::pdifference(int *diff,int *p2,int *p3,int n) {
     int *p2inv=new int[n];
 	pinverse(p2inv,p2,n);
 	pcompose(diff,p2inv,p3,n);  
 	delete[] p2inv;
 }
 
-int kendall_tau_distance(int *p1,int *p2,int n) {
+int MultiSolutionSet::kendallTauDistance(int *p1,int *p2,int n) {
     int* p3=new int[n];
     pdifference(p3,p1,p2,n);
 	int res=countInversions(p3,n);
@@ -97,62 +95,63 @@ int kendall_tau_distance(int *p1,int *p2,int n) {
 
 
 void MultiSolutionSet::rebuild_fitness_distances() {
-    size_t S = set_possible_solution.size();
+     size_t S = set_possible_solution.size();
 
-    // fitness_distances[i] length S+1:
-    //   fitness_distances[i][0]   = fitness of solution i
-    //   fitness_distances[i][j+1] = KendallTau(i, j) for j != i
-    fitness_distances.assign(S, vector<double>(S + 1, 0.0));
+    // [0]=fitness, [1..S]=dist 
+    fitness_distances.assign(S, vector<unsigned long>(S + 1, 0ULL));
 
-    // Store fitness in the first position
+    // fitness in columns 0
     for (size_t i = 0; i < S; ++i) {
-        fitness_distances[i][0] = static_cast<double>(set_fx[i]);
+        fitness_distances[i][0] = set_fx[i];
     }
 
-    // Fill Kendall tau distances
+    // kendall
     for (size_t i = 0; i < S; ++i) {
         for (size_t j = i + 1; j < S; ++j) {
-            double d = kendellTau(set_possible_solution[i].data(),
-                                  set_possible_solution[j].data(),
-                                  n);
+             int d = kendallTauDistance(
+                set_possible_solution[i].data(),
+                set_possible_solution[j].data(),
+                n
+            );
             fitness_distances[i][j + 1] = d;
             fitness_distances[j][i + 1] = d;
         }
     }
 
-    // Sort distance
     for (size_t i = 0; i < S; ++i) {
         sort(fitness_distances[i].begin() + 1, fitness_distances[i].end());
     }
 }
 
 
-void MultiSolutionSet::update_set(const int* x, unsigned long fx) {
+void MultiSolutionSet::update_set(const int* x, uint64_t fx) {
+    /*
+    Maintain the set ordered by:
+    - fitness descending (maximize fitness)
+    - if tie, permutation lexicographically ascending (lexicographically smallest is best)
+    */
 
-    // Check duplicates: if x is already in the set
+    // Duplicate check
     for (const auto& sol : set_possible_solution) {
         bool equal = true;
         for (int i = 0; i < n; ++i) {
             if (sol[i] != x[i]) { equal = false; break; }
         }
         if (equal) {
-            DBG(cout << "EQUAL\n");
+            DBG(cout << "DUPLICATE -> skip\n");
             return;
         }
     }
 
-    DBG(cout << "NOT PRESENT\n");
-
     vector<int> cand(x, x + n);
 
-    // Find insertion position:
-    //  - fitness ascending (minimization)
-    //  - lexicographic order on permutations (ascending)
+    // Find insertion position to keep ordering:
+    // - higher fitness first
+    // - for equal fitness, lexicographically smaller first
     size_t pos = 0;
 
-    while (pos < set_fx.size() && set_fx[pos] < fx) {
+    while (pos < set_fx.size() && set_fx[pos] > fx) {
         ++pos;
-        DBG(cout << "ORDER(fitness)\n");
     }
 
     while (pos < set_fx.size() && set_fx[pos] == fx &&
@@ -161,67 +160,46 @@ void MultiSolutionSet::update_set(const int* x, unsigned long fx) {
                                    cand.begin(), cand.end()))
     {
         ++pos;
-        DBG(cout << "ORDER(lex)\n");
     }
 
-    // If the set is full, accept only if cand is not worse than the current worst
-    //  Worst is the last element because the set is kept ordered (fitness ascending).
+    // If full, accept only if cand is better than the current worst (last element).
     if (set_possible_solution.size() >= m) {
-        unsigned long fworst = set_fx.back();              // largest fitness (worst)
+        unsigned long fworst = set_fx.back();           // smallest fitness (worst)
         auto& worst_perm = set_possible_solution.back();
 
-        // If cand has higher fitness, it's worse -> reject
-        if (fx > fworst) {
-            DBG(cout << "FULL: fx > fworst -> return\n");
+        // Lower fitness than worst -> reject
+        if (fx < fworst) {
+            DBG(cout << "FULL: worse fitness -> reject\n");
             return;
         }
 
-        // If same fitness as worst, accept only if cand is lexicographically smaller
+        // Same fitness: accept only if lexicographically smaller than the current worst
         if (fx == fworst) {
             bool cand_better_lex = lexicographical_compare(
                 cand.begin(), cand.end(),
                 worst_perm.begin(), worst_perm.end()
             );
             if (!cand_better_lex) {
-                DBG(cout << "FULL: fx==fworst and not lex-better -> return\n");
+                DBG(cout << "FULL: same fitness, not lex-better -> reject\n");
                 return;
             }
         }
     }
 
-    // Insert cand and its fitness at the computed position
+    // Insert candidate
     set_possible_solution.insert(set_possible_solution.begin() + pos, move(cand));
     set_fx.insert(set_fx.begin() + pos, fx);
-    DBG(cout << "INSERT at pos=" << pos << "\n");
+
+    // If size exceeds m, drop the worst (last), which is correct for the requested ranking.
+    if (set_possible_solution.size() > m) {
+        set_possible_solution.pop_back();
+        set_fx.pop_back();
+    }
 
     rebuild_fitness_distances();
 
-    // If size exceeds m, remove the solution.
-    if (set_possible_solution.size() > m) {
-        size_t S = fitness_distances.size();
-        size_t idx_min = 0;
-
-        for (size_t i = 1; i < S; ++i) {
-            // take min lexicographical
-            if (lexicographical_compare(fitness_distances[i].begin(), fitness_distances[i].end(),
-                            fitness_distances[idx_min].begin(), fitness_distances[idx_min].end()))
-            {
-                idx_min = i;
-            }
-        }
-
-        DBG(cout << "REMOVE idx_min=" << idx_min
-                << " fd0(fx)=" << (ulong)fitness_distances[idx_min][0] << endl);
-        
-        // remove min lexicographical
-        set_possible_solution.erase(set_possible_solution.begin() + idx_min);
-        set_fx.erase(set_fx.begin() + idx_min);
-        
-        rebuild_fitness_distances();
-    }
-    
     DBG(
-        cout << "\n[STATE] set_fx + permutations (ordered):\n";
+        cout << "\n[STATE] set_fx + permutations (ordered by fitness DESC, lex ASC):\n";
         for (size_t i = 0; i < set_possible_solution.size(); ++i) {
             cout << "i=" << i << " fx=" << set_fx[i] << " perm=";
             int limit = (n < 200 ? n : 200);
@@ -230,13 +208,12 @@ void MultiSolutionSet::update_set(const int* x, unsigned long fx) {
         }
         cout << "-------------------------------------\n";
 
-        cout << "[STATE] fitness_distances (fitness + sorted Kendall distances):" << endl;
+        cout << "[STATE] fitness_distances (fitness + sorted Kendall distances):\n";
         for (size_t i = 0; i < fitness_distances.size(); ++i) {
             cout << "i=" << i
-                << " fx=" << set_fx[i]  
-                << " dists=";
-
-            for (size_t k = 1; k < fitness_distances[i].size(); ++k) { // <-- solo distanze
+                 << " fx=" << fitness_distances[i][0]
+                 << " dists=";
+            for (size_t k = 1; k < fitness_distances[i].size(); ++k) {
                 cout << fitness_distances[i][k] << " ";
             }
             cout << "\n";
