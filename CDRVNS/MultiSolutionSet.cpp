@@ -131,7 +131,7 @@ void MultiSolutionSet::update_set(const int* x, uint64_t fx) {
     /*
     Maintain the set ordered by:
     - fitness descending (maximize fitness)
-    - if tie, permutation lexicographically ascending (lexicographically smallest is best)
+    - if tie, distance vector lexicographically ascending (lexicographically smallest is best)
     */
 
     // Duplicate check
@@ -157,16 +157,17 @@ void MultiSolutionSet::update_set(const int* x, uint64_t fx) {
         ++pos;
     }
 
-    while (pos < set_fx.size() && set_fx[pos] == fx &&
+
+    while (pos < set_fx.size() && set_fx[pos] == fx && ///togliere questo confronto
            lexicographical_compare(set_possible_solution[pos].begin(),
                                    set_possible_solution[pos].end(),
                                    cand.begin(), cand.end()))
     {
         ++pos;
-    }
+    } //togliere fino a qua
 
     // If full, accept only if cand is better than the current worst (last element).
-    if (set_possible_solution.size() >= m) {
+    if (set_possible_solution.size() == m) {
         unsigned long fworst = set_fx.back();           // smallest fitness (worst)
         auto& worst_perm = set_possible_solution.back();
 

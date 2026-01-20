@@ -1,7 +1,10 @@
 #include <vector>
 #include <string>
 using namespace std;
+
+
 struct MultiSolutionSet {
+
     int m;  // max dimension set
     int n;  // length permutation
     vector<vector<int>> set_possible_solution;
@@ -9,7 +12,7 @@ struct MultiSolutionSet {
     
     // fitness_distances[i][0] = fitness of i
     // fitness_distances[i][j+1] = KendallTau(i, j)
-    vector<vector<unsigned long>> fitness_distances; 
+    vector<vector<int>> fitness_distances; 
 
     MultiSolutionSet(int m_, int n_);
     //~MultiSolutionSet();
@@ -20,8 +23,11 @@ struct MultiSolutionSet {
     int countInversions(int* a, int size);
     int mergesortCount(int* a, int* temp, int begin, int end);
     int kendallTauDistance(int *p1,int *p2,int n);
+
     void update_set(const int* x, unsigned long fx);
+
     void rebuild_fitness_distances();
+
     void print_final_results(const string& path,
                     int seed,
                     const string& algorithm,
@@ -30,4 +36,5 @@ struct MultiSolutionSet {
                     string outputfile, 
                     int m
                 );
+
 };
