@@ -21,7 +21,7 @@ Parameters:
 #include <stdio.h>
 #include <vector>
 #include <fstream>
-#include "MultiSolutionSet.h"
+#include "Archive.h"
 
 Problem *Individual::problem;
 int main(int argc, char **argv){
@@ -43,4 +43,9 @@ int main(int argc, char **argv){
 	Problem p(instanceFile);
 	Individual::problem = &p;
 	ma.run();
+	/*
+		example for run:
+			./main 200 cx 1 1 ../../Dataset/pxp/pxp_n_170/pxp_US_2022_n170 output.csv 5 
+
+	*/
 }

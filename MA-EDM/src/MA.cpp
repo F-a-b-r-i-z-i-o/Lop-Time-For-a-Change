@@ -16,7 +16,7 @@ LOP, such as the
 
 #include "MA.h"
 #include "utils.h"
-#include "MultiSolutionSet.h"
+#include "Archive.h"
 
 using namespace std;
 
@@ -174,7 +174,7 @@ void MA::initDI(){
 void MA::run() {
 	initPopulation();
 	initDI();
-    MultiSolutionSet msset(5, population[0]->S.size());
+    Archive archive(m, population[0]->S.size());
 	generation = 0;
 	double cTime;
 	double bestCost;
@@ -186,7 +186,7 @@ void MA::run() {
 		intensify();
 		for (int i = 0; i < offspring.size(); i++){
 			//CHIAMARE QUI UPDATE SET ... offspring[i]->S offspring[i]->cost //VALENTINO
-			msset.update_set(offspring[i]->S.data(),-offspring[i]->getCost());
+			archive.update(offspring[i]->S.data(),-offspring[i]->getCost());
 			nevals++;
 		}
 		replacement();
@@ -204,14 +204,14 @@ void MA::run() {
 		generation++;
 	}while (cTime - initialTime < finalTime);
 	//print best solution
-	//population[0]->print("orginal-result.txt");
-	msset.print_final_results(
-		instanceFile,  
-		seed,            
-		"MA-EDM",        
-		nevals,          
-		elapsedTime, 
+	population[0]->print("orginal-result.txt");
+	archive.print(
 		outputFile,
-		m
+		"MS-MA-EDM", 
+		m,
+		N,
+		instanceFile,
+		seed,
+		nevals
 	);
 }

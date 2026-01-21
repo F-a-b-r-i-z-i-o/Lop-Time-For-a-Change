@@ -6,7 +6,7 @@ debug: clean main
 release: CXXFLAGS = -O2
 release: clean main
 
-main: main.cpp crossoverCX.o crossoverOB.o getDistance.o intensify.o print.o utils.o evaluate.o initialize_heuristic.o MA.o Problem.o Individual.o MultiSolutionSet.o
+main: main.cpp crossoverCX.o crossoverOB.o getDistance.o intensify.o print.o utils.o evaluate.o initialize_heuristic.o MA.o Problem.o Individual.o Archive.o
 	g++ $(CXXFLAGS) -o $@ $^
 
 Individual.o: Individual.h Individual.cpp
@@ -36,8 +36,8 @@ initialize_heuristic.o: initialize_heuristic.cpp Individual.h
 Problem.o: Problem.h
 	g++ $(CXXFLAGS) -c -o $@ Problem.cpp
 
-MultiSolutionSet.o: MultiSolutionSet.h MultiSolutionSet.cpp
-	g++ $(CXXFLAGS) -c -o $@ MultiSolutionSet.cpp
+Archive.o: Archive.h Archive.cpp
+	g++ $(CXXFLAGS) -c -o $@ Archive.cpp
 
 MA.o: MA.h Individual.h Problem.h MA.cpp
 	g++ $(CXXFLAGS) -c -o $@ MA.cpp
