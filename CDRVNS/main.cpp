@@ -15,7 +15,7 @@
 #include "Tools.hpp"
 #include <stdio.h>
 #include <stdlib.h>
-#include "MultiSolutionSet.h"//VALENTINO
+#include "Archive.h"
 
 void Compile_Precedences (long ** memory, int n, int * solution){
     int i,j;
@@ -53,7 +53,7 @@ int main(int argc, char * argv[]) {
         lop->m_max_evaluations=(long long int)10*1000*1000*1000;
     }
 	cout << n;
-	MultiSolutionSet msset(m, n);//VALENTINO
+	Archive archive(m, n);
     
 
 #ifdef VERBOSE
@@ -118,7 +118,7 @@ int main(int argc, char * argv[]) {
     printf("fitness. %ld   evals rem. %lld\n",best_fitness,lop->m_max_evaluations-lop->m_evaluations);
     cout<<"Running VNS..."<<endl;
 #endif
-    int counter_update_set = 0;
+    int counter_update = 0;
     //4. Run VNS
     do{
        // cout<<"my code"<<endl;
@@ -137,8 +137,8 @@ int main(int argc, char * argv[]) {
             }
         }while (improvement && lop->m_evaluations<lop->m_max_evaluations);
 		
-		msset.update_set(solution,fitness);//VALENTINO
-		counter_update_set++;
+		archive.update(solution,fitness);//VALENTINO
+		counter_update++;
        // cout<<"compile precendences"<<endl;
         Compile_Precedences(memory, n, solution);
         compiled_solutions++;
@@ -206,16 +206,16 @@ int main(int argc, char * argv[]) {
     result_file= fopen("./scratch_results.csv","a+");
     fprintf(result_file,"\"%s\";%d;\"%s\";%ld;%.3f\n",INSTANCE_FILENAME,SEED,"CDRVNS",best_fitness,t2-t1);
     
-    string mssetFile = "results.csv"; 
-    msset.print_final_results(
-        string(INSTANCE_FILENAME),
-        SEED,
-        "CDRVNS",
-        counter_update_set,
-        t2 - t1,
-        mssetFile, 
-        m
-    );
+    string result = "results.csv";
+
+    // archive.print(
+    //     result,
+    //     "MS-CDEVSN",
+    //     m,
+    //     INSTANCE_FILENAME, 
+    //     SEED, 
+    //     counter_update
+    // );
 
 #endif
     fclose(result_file);

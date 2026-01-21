@@ -10,8 +10,8 @@ release: clean CDRVNSforLOP
 
 all: CDRVNSforLOP
 
-CDRVNSforLOP: main.o LOP.o Tools.o PSolution.o random.o SFMT.o MultiSolutionSet.o
-	$(CXX) $(CXXFLAGS) main.o LOP.o Tools.o PSolution.o random.o SFMT.o MultiSolutionSet.o $(LDFLAGS) -o CDRVNSforLOP
+CDRVNSforLOP: main.o LOP.o Tools.o PSolution.o random.o SFMT.o Archive.o
+	$(CXX) $(CXXFLAGS) main.o LOP.o Tools.o PSolution.o random.o SFMT.o Archive.o $(LDFLAGS) -o CDRVNSforLOP
 
 main.o: main.cpp Tools.hpp ParameterSetting.h LOP.h PSolution.h random.h
 	$(CXX) $(CXXFLAGS) -c main.cpp
@@ -31,8 +31,8 @@ random.o: random.cpp random.h SFMT.h
 SFMT.o: SFMT.c SFMT.h SFMT-params.h SFMT-common.h SFMT-params19937.h
 	gcc -O3 -c SFMT.c   # oppure usa CC/CFLAGS separati se vuoi pulito
 
-MultiSolutionSet.o: MultiSolutionSet.cpp MultiSolutionSet.h
-	$(CXX) $(CXXFLAGS) -c MultiSolutionSet.cpp
+Archive.o: Archive.cpp Archive.h
+	$(CXX) $(CXXFLAGS) -c Archive.cpp
 
 clean:
 	rm -f core *.o CDRVNSforLOP
