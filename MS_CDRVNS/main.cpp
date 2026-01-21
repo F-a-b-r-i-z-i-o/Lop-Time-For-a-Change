@@ -52,7 +52,7 @@ int main(int argc, char * argv[]) {
     }else{
         lop->m_max_evaluations=(long long int)10*1000*1000*1000;
     }
-	Archive archive(m, n);
+	Archive archive(archive_m, n);
     
 
 #ifdef VERBOSE
@@ -117,7 +117,7 @@ int main(int argc, char * argv[]) {
     printf("fitness. %ld   evals rem. %lld\n",best_fitness,lop->m_max_evaluations-lop->m_evaluations);
     cout<<"Running VNS..."<<endl;
 #endif
-    int counter_update = 0;
+
     //4. Run VNS
     do{
        // cout<<"my code"<<endl;
@@ -137,7 +137,7 @@ int main(int argc, char * argv[]) {
         }while (improvement && lop->m_evaluations<lop->m_max_evaluations);
 		
 		archive.update(solution,fitness);//VALENTINO
-		counter_update++;
+
        // cout<<"compile precendences"<<endl;
         Compile_Precedences(memory, n, solution);
         compiled_solutions++;
@@ -202,24 +202,18 @@ int main(int argc, char * argv[]) {
      fprintf(result_file,"\"%s\";%d;\"%s\";%ld;%.3f\n",INSTANCE_FILENAME,SEED,"CDRVNS",best_fitness,t2-t1);
     
 #else
-    result_file= fopen("./scratch_results.csv","a+");
-    fprintf(result_file,"\"%s\";%d;\"%s\";%ld;%.3f\n",INSTANCE_FILENAME,SEED,"CDRVNS",best_fitness,t2-t1);
-    
-    string result = "results.csv";
-
+    //result_file= fopen("./scratch_results.csv","a+");
+    //fprintf(result_file,"\"%s\";%d;\"%s\";%ld;%.3f\n",INSTANCE_FILENAME,SEED,"CDRVNS",best_fitness,t2-t1);
     archive.print(
-        result,
+        RESULTS_FILENAME,
         "MS-CDRVNS",
-        m,
-        n,
         INSTANCE_FILENAME, 
-        SEED, 
-        counter_update
+        SEED,
+        lop->m_evaluations
     );
 
 #endif
-    fclose(result_file);
- 
+    //fclose(result_file);
     
     // Free memory
     delete lop;
@@ -230,7 +224,7 @@ int main(int argc, char * argv[]) {
     delete [] memory;
     delete [] prev_solution;
     delete [] arrayLOP;
-    
+	
     return 0;
 }
 

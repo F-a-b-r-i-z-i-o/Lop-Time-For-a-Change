@@ -35,13 +35,17 @@ MA::MA(int N_, double pc_, string &crossType_, double finalTime_, string &output
 }
 
 //Initialize and apply intensification to each individual
-void MA::initPopulation(){
+//void MA::initPopulation(){
+int MA::initPopulation(){//VALENTINO
+	int italians_nevals = 0;//VALENTINO
 	for (int i = 0; i < N; i++){
 		Individual *ei = new Individual();
 		ei->initialize_heuristic();
-		ei->intensify();
+		//ei->intensify();
+		italians_nevals += ei->intensify();//VALENTINO
 		population.push_back(ei);
 	}
+	return italians_nevals;//VALENTINO
 }
 
 //Select two parents with binary selection
@@ -84,10 +88,14 @@ void MA::crossover(){
 	}
 }
 
-void MA::intensify(){
+//void MA::intensify(){
+int MA::intensify(){//VALENTINO
+	int italians_nevals = 0;//VALENTINO
 	for (int i = 0; i < offspring.size(); i++){
-		offspring[i]->intensify();
+		//offspring[i]->intensify();
+		italians_nevals += offspring[i]->intensify();//VALENTINO
 	}
+	return italians_nevals;//VALENTINO
 }
 
 void MA::replacement(){
@@ -172,22 +180,23 @@ void MA::initDI(){
 }
 
 void MA::run() {
-	initPopulation();
+	int italians_nevals = 0;//VALENTINO
+	//initPopulation();
+	italians_nevals += initPopulation();//VALENTINO
 	initDI();
     Archive archive(m, population[0]->S.size());
 	generation = 0;
 	double cTime;
 	double bestCost;
-	int nevals = 0;
 	do {
 		//Iteration of the MA: selection, crossover, intensification, replacement
 		selectParents();
 		crossover();
-		intensify();
+		//intensify();
+		italians_nevals += intensify();//VALENTINO
 		for (int i = 0; i < offspring.size(); i++){
 			//CHIAMARE QUI UPDATE SET ... offspring[i]->S offspring[i]->cost //VALENTINO
 			archive.update(offspring[i]->S.data(),-offspring[i]->getCost());
-			nevals++;
 		}
 		replacement();
 		struct timeval currentTime;
@@ -204,14 +213,12 @@ void MA::run() {
 		generation++;
 	}while (cTime - initialTime < finalTime);
 	//print best solution
-	population[0]->print("orginal-result.txt");
+	//population[0]->print("orginal-result.txt");
 	archive.print(
 		outputFile,
 		"MS-MA-EDM", 
-		m,
-		N,
 		instanceFile,
 		seed,
-		nevals
+		italians_nevals
 	);
 }

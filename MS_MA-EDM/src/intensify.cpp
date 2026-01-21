@@ -9,7 +9,9 @@ neighborhood is traversed in O(n^2).
 #include "Individual.h"
 #include <algorithm>
 
-void Individual::intensify() {
+//void Individual::intensify() {
+int Individual::intensify() {//VALENTINO
+	int italians_nevals = 0;//VALENTINO
 	long int i, j, t, k, v, best_j;
 	long int maxgain;
 	best_j = 0;
@@ -34,6 +36,7 @@ void Individual::intensify() {
 			i = v;
 			for (j = i - 1; j >= 0; j--) {//Move to the left
 				gain += ((problem->instance[S[i]][S[j]]) - (problem->instance[S[j]][S[i]]));
+				italians_nevals++;//VALENTINO
 				if (gain > maxgain) {
 					maxgain = gain;
 					best_j = j;
@@ -43,6 +46,7 @@ void Individual::intensify() {
 			gain = 0;
 			for (j = i + 1; j < problem->problemDimension; j++) {//Move to the right
 				gain += ((problem->instance[S[j]][S[i]]) - (problem->instance[S[i]][S[j]]));
+				italians_nevals++;//VALENTINO
 				if (gain > maxgain) {
 					maxgain = gain;
 					best_j = j;
@@ -66,4 +70,5 @@ void Individual::intensify() {
 			}
 		}
 	}
+	return italians_nevals;//VALENTINO
 }

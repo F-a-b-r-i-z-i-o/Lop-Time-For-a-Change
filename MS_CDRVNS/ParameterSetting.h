@@ -20,10 +20,10 @@
 
 
 // Name of the file where the result will be stored.
-char RESULTS_FILENAME[PATH_MAX];
+char RESULTS_FILENAME[2048];
 
 // Name of the file where the instances is stored.
-char INSTANCE_FILENAME[PATH_MAX];
+char INSTANCE_FILENAME[2048];
 
 // The seed asigned to the process
 int SEED;
@@ -40,20 +40,21 @@ double R=0.5;
 // probability threshold for the destruction construction step.
 double ALPHA=0.99995;
 
-int m = 5;
+int archive_m = 1;
 
 /*
  * Help command output.
  */
 void usage(char *progname)
 {
-    printf("Usage: VNSforLOP -i <instance_name>  -o <results_filename> -s <seed> \n");
+    printf("Usage: VNSforLOP -i <instance_name>  -o <results_filename> -s <seed> -m <archive_size>\n");
     printf("   -i File name of the instance.\n");
     printf("   -o Name of the file to store the results.\n");
     printf("   -s Seed used for pseudo-random numbers generator.\n");
-    printf("   -q Greedy probability.\n");
-    printf("   -g Number of chains in the destruction procedure.\n");
-    printf("   -b Destruction strategy.\n");
+    //printf("   -q Greedy probability.\n");
+    //printf("   -g Number of chains in the destruction procedure.\n");
+    //printf("   -b Destruction strategy.\n");
+	printf("   -m Archive size.\n");
 }
 
 /*
@@ -163,6 +164,7 @@ int GetOption (int argc, char** argv, char* pszValidOpts, char** ppszParam)
  */
 bool GetParameters(int argc,char * argv[])
 {
+	strcpy(RESULTS_FILENAME, "results.csv");
     char c;
     if(argc==1)
     {
@@ -185,9 +187,9 @@ bool GetParameters(int argc,char * argv[])
                 srand(SEED);
                 break;
                 
-            //case 'o' :
-            //    strcpy(RESULTS_FILENAME, *optarg);
-            //    break;
+            case 'o' :
+                strcpy(RESULTS_FILENAME, *optarg);
+                break;
                 
             case 'i':
                 strcpy(INSTANCE_FILENAME, *optarg);
@@ -202,7 +204,7 @@ bool GetParameters(int argc,char * argv[])
                 break;
             
             case 'm' :
-                m = atoi(*optarg);
+                archive_m = atoi(*optarg);
                 break;
                 
             default:

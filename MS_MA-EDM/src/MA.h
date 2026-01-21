@@ -27,11 +27,13 @@ class MA {
 		int m;
 
 		//Basic procedures of MA
-		void initPopulation();
+		//void initPopulation();
+		int initPopulation();//VALENTINO
 		void initDI();
 		void selectParents();
 		void crossover();
-		void intensify();
+		//void intensify();
+		int intensify();//VALENTINO
 		void replacement();
 
 		//Internal attributes of MA

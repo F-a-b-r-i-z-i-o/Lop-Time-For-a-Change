@@ -15,13 +15,10 @@ using namespace std;
 
 //BEGIN HELP FUNCTION
 bool are_these_permutations_equal(int* x, int* y, int n) {
-	bool eq = true;
 	for (int i=0; i<n; i++)
-		if (x[i]!=y[i]) {
-			eq = false;
-			break;
-		}
-	return eq;
+		if (x[i]!=y[i])
+			return false;
+	return true;
 }
 
 int kendall_tau(int* x, int* y, int n) {
@@ -84,86 +81,67 @@ Archive::~Archive() {
 
 void Archive::update(int* x, unsigned long fx) {
 	//x,fx is the new solution,fitness candidate to enter the archive
-	//(1) to speedup a bit, if archive is full and fx is worse than fworst, take no action
-	if (size==m && fx<fworst)
-		return;
-	//(2) if x already exists in the archive, take no action
+	//(1) if x already exists in the archive, take no action
 	for (int i=0; i<size; i++)
 		if (are_these_permutations_equal(x, sol[i], n))
 			return;
-	//(3) add x,fx in the last position of the archive (size)
+	//(2) add x,fx in the last position of the archive (size)
 	memcpy(sol[size], x, n*sizeof(int));
 	fit[size] = fx;
-	//(4) calculate distances of existing solutions wrt x
+	//(3) calculate distances of existing solutions wrt x
 	if (size==0) {
 		//this is first solution arrived, so simply add one 0-entry to the 1by1 distance matrix
 		dmat[0][0] = 0;
 	} else {
 		//some solutions already in the archive, so add one row and one column
-		for (int i=0; i<size; i++)
+		for (int i=0; i<size-1; i++)
 			dmat[size][i] = dmat[i][size] = kendall_tau(x, sol[i], n);
 		dmat[size][size] = 0;
 	}
-	//(5) increase archive size by 1
+	//(4) increase archive size by 1
 	size++;
-	//(6) if archive size does not exceed m, take no further action 
+	//(5) if archive size does not exceed m, calculate fworst and take no further action
 	if (size<=m)
 		return;
-	//(7) calculate fitness-distance profiles
-	//    (7.1) fdp rows are the ordered version (ascending) of dmat rows
+	//(6) calculate fitness-distance profiles
+	//    (6.1) fdp rows are the ordered version (ascending) of dmat rows
 	for (int i=0; i<size; i++) { //size is m+1 here for sure!!!
 		memcpy(fdp[i], dmat[i], size*sizeof(int));
 		sort(fdp[i], fdp[i]+size);
 	}
-	//    (7.2) since fdp[*][0] is always 0 (distance to itself), replace it with fitness
+	//    (6.2) since fdp[*][0] is always 0 (distance to itself), replace it with fitness
 	for (int i=0; i<size; i++) //size is m+1 here for sure!!!
 		fdp[i][0] = fit[i];
-	//(8) find lexicographical minimum of fdp rows, its index is the solution to remove
+	//(7) find lexicographical minimum of fdp rows, its index is the solution to remove
 	int worst_idx = 0;
 	for (int i=1; i<size; i++)
 		if (lexicographical_compare(fdp[i],fdp[i]+size, fdp[worst_idx],fdp[worst_idx]+size)) //true if 1st (i) is less than 2nd (worst_idx)
 			worst_idx = i;
-	//(9) remove solution worst_idx by replacing it with the last added one (in position ns==m+1)
+	//(8) remove solution worst_idx by replacing it with the last added one (in position ns==m+1)
 	if (worst_idx!=m) { //to speedup a bit, replacing worst_idx with last solution data, does not make sense if worst_idx is already the last solution
-		
-		// Probabile errore con puntatori : 2 puntatori uguali
-		// DBG(cout << "[DBG] BEFORE: sol[w]=" << (void*)sol[worst_idx]
-        //      << " sol[m]=" << (void*)sol[m] << "\n";);
-    	// DBG(cout << "[DBG] BEFORE: dmat[w]=" << (void*)dmat[worst_idx]
-        //      << " dmat[m]=" << (void*)dmat[m] << "\n";);
-
-		
-		swap(sol[worst_idx], sol[m]);
-    	swap(fit[worst_idx], fit[m]);
-		swap(dmat[worst_idx], dmat[m]);
-
-		// DBG(cout << "[DBG] AFTER : sol[worst]=" << (void*)sol[worst_idx]
-        //       << " sol[m]=" << (void*)sol[m] << "\n";);
-		// DBG(cout << "[DBG] AFTER : dmat[worst]=" << (void*)dmat[worst_idx]
-        //       << " dmat[m]=" << (void*)dmat[m] << "\n";);
-		
 		//copy solution and fitness
-		// sol[worst_idx] = sol[m]; //memcpy(sol[worst_idx], sol[m], n*sizeof(int));
-		// fit[worst_idx] = fit[m];
+		//memcpy(sol[worst_idx], sol[m], n*sizeof(int));
+		int* tmp = sol[worst_idx]; 
+		sol[worst_idx] = sol[m]; 
+		sol[m] = tmp;
+		fit[worst_idx] = fit[m];
 		//update distance matrix: last row goes in worst row, last column goes in worst column
-		//dmat[worst_idx] = dmat[m]; //memcpy(dmat[worst_idx], dmat[m], (m+1)*sizeof(int));
+		memcpy(dmat[worst_idx], dmat[m], (m+1)*sizeof(int));
+		tmp = dmat[worst_idx];
+		dmat[worst_idx] = dmat[m]; 
+		dmat[m] = tmp;
 		for (int i=0; i<m+1; i++)
-			//dmat[i][worst_idx] = dmat[i][m];
-			swap(dmat[i][worst_idx], dmat[i][m]);
-
-		//worst fitness need to be updated here (among the first m solutions, because very last one will be removed)
-		for (int i=0; i<m; i++)
-			if (fit[i]<fworst)
-				fworst = fit[i];
+			dmat[i][worst_idx] = dmat[i][m];
 	}
-	//(10) decrease size by 1
+	//(9) decrease size by 1
 	size--; //now is m for sure!
 	//done
 }
 
 
 
-void Archive::print(string filename, string algname, int m, int n, string instance, unsigned long seed, int nevals) {
+void Archive::print(string filename, string algname, string instance, unsigned long seed, int nevals) {
+
 	clock_t end_time = clock();
 	unsigned long millis = (unsigned long)(1000. * double(end_time - start_time) / CLOCKS_PER_SEC);
 
@@ -193,9 +171,11 @@ void Archive::print(string filename, string algname, int m, int n, string instan
 		int idx = indices[i];
 		for (int j=0; j<n; j++) {
 			oss << sol[idx][j];
-			if (j < n-1) oss << ",";
+			if (j < n-1)
+				oss << " ";
 		}
-		oss << ";";
+		if (i<m-1)
+			oss << ",";
 	}
 	string sol_set = oss.str();
 
@@ -204,7 +184,8 @@ void Archive::print(string filename, string algname, int m, int n, string instan
 	oss.clear();
 	for (int i=0; i<m; i++) {
 		oss << fit[indices[i]];
-		if (i < m-1) oss << ";";
+		if (i < m-1)
+			oss << ",";
 	}
 	string fit_set = oss.str();
 
@@ -219,7 +200,48 @@ void Archive::print(string filename, string algname, int m, int n, string instan
 	  << n << ";"
 	  << nevals << ";"
 	  << millis << ";"
-	  << "\"" << sol_set << "\"" << ";"
-	  << "\"" << fit_set << "\""
-	  << "\n";
+	  << sol_set << ";"
+	  << fit_set << "\n";
 }
+
+
+/*
+void Archive::print(string filename, string algname, string instance, unsigned long seed, int nevals) {
+	//calculate running time in milliseconds
+	clock_t end_time = clock();
+	unsigned long millis = (unsigned long)(1000. * double(end_time - start_time) / CLOCKS_PER_SEC);
+	//build string for the solution set
+	ostringstream oss;
+	for (int i=0; i<m; i++) {
+		for (int j=0; j<n; j++) {
+			oss << sol[i][j];
+			if (j<n-1)
+				oss << " ";
+		}
+		if (i<m-1)
+			oss << ",";
+	}
+	string sol_set = oss.str();
+	//build string for the fitness set
+	oss.str("");
+	oss.clear();
+	for (int i=0; i<m; i++) {
+		oss << fit[i];
+		if (i<m-1)
+			oss << ",";
+	}
+	string fit_set = oss.str();
+	//write one line in the csv
+	ofstream f(filename, ios::app);
+	f << seed << ";"
+	  << algname << ";"
+	  << m << ";"
+	  << instance << ";"
+	  << n << ";"
+	  << nevals << ";"
+	  << millis << ";"
+	  << sol_set << ";"
+	  << fit_set << "\n";
+	//done
+}
+*/

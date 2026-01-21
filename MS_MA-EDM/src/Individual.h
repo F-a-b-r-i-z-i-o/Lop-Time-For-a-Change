@@ -26,7 +26,8 @@ class Individual {
 		void crossoverCX(Individual &ind);//Cross both individuals (the result is saved in the individuals). Cycle Crossover
 		void crossoverCXone(Individual &ind, int *valueToPositionI1, int *valueToPositionI2);
 		void crossoverOB(Individual &ind);//Cross both individuals (the result is saved in the individuals). Order based crossover
-		void intensify();//Simple hill-climber
+		//void intensify();//Simple hill-climber
+		int intensify();//Simple hill-climber //VALENTINO
 		static Problem *problem;
 		void print(const string &fileName);
 		void evaluate();

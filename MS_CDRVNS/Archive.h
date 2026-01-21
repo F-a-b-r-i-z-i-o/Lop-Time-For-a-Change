@@ -13,7 +13,6 @@ struct Archive {
 	int** dmat;			//unordered distance matrix (matrix m+1 by m+1)
 	int** fdp;			//fitness-distance profiles (matrix m+1 by m+1)
 	int size;			//current size of the archive
-	unsigned long fworst; //worst fitness in the archive
 	clock_t start_time;	//time when constructor called
 	
 	Archive(int m, int n);
@@ -21,6 +20,6 @@ struct Archive {
 	
 	void update(int* x, unsigned long fx);
 	
-	void print(string filename, string algname, int m, int n, string instance, unsigned long seed, int nevals) ;
+	void print(string filename, string algname, string instance, unsigned long seed, int nevals) ;
 	
 };

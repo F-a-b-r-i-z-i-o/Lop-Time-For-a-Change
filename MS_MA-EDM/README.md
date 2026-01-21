@@ -21,7 +21,3 @@ The description is in arxiv in the document "A Diversity-Aware Memetic Algorithm
 Example: ./main 200 cx 14400 99 N-stabu3_150 output.txt
 
 The instances are available at: http://grafo.etsii.urjc.es/optsicom/lolib/ and https://github.com/sgpceurj/EJOR2015
-
-Example MS-EDM 
-
-./main 200 cx 1 1 ../../Dataset/pxp/pxp_n_170/pxp_US_2022_n170 output.csv 5
