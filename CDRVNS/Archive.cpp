@@ -102,6 +102,7 @@ void Archive::update(int* x, unsigned long fx) {
 		//some solutions already in the archive, so add one row and one column
 		for (int i=0; i<size; i++)
 			dmat[size][i] = dmat[i][size] = kendall_tau(x, sol[i], n);
+		dmat[size][size] = 0;
 	}
 	//(5) increase archive size by 1
 	size++;
@@ -124,13 +125,32 @@ void Archive::update(int* x, unsigned long fx) {
 			worst_idx = i;
 	//(9) remove solution worst_idx by replacing it with the last added one (in position ns==m+1)
 	if (worst_idx!=m) { //to speedup a bit, replacing worst_idx with last solution data, does not make sense if worst_idx is already the last solution
+		
+		// Probabile errore con puntatori : 2 puntatori uguali
+		// DBG(cout << "[DBG] BEFORE: sol[w]=" << (void*)sol[worst_idx]
+        //      << " sol[m]=" << (void*)sol[m] << "\n";);
+    	// DBG(cout << "[DBG] BEFORE: dmat[w]=" << (void*)dmat[worst_idx]
+        //      << " dmat[m]=" << (void*)dmat[m] << "\n";);
+
+		
+		swap(sol[worst_idx], sol[m]);
+    	swap(fit[worst_idx], fit[m]);
+		swap(dmat[worst_idx], dmat[m]);
+
+		// DBG(cout << "[DBG] AFTER : sol[worst]=" << (void*)sol[worst_idx]
+        //       << " sol[m]=" << (void*)sol[m] << "\n";);
+		// DBG(cout << "[DBG] AFTER : dmat[worst]=" << (void*)dmat[worst_idx]
+        //       << " dmat[m]=" << (void*)dmat[m] << "\n";);
+		
 		//copy solution and fitness
-		sol[worst_idx] = sol[m]; //memcpy(sol[worst_idx], sol[m], n*sizeof(int));
-		fit[worst_idx] = fit[m];
+		// sol[worst_idx] = sol[m]; //memcpy(sol[worst_idx], sol[m], n*sizeof(int));
+		// fit[worst_idx] = fit[m];
 		//update distance matrix: last row goes in worst row, last column goes in worst column
-		dmat[worst_idx] = dmat[m]; //memcpy(dmat[worst_idx], dmat[m], (m+1)*sizeof(int));
+		//dmat[worst_idx] = dmat[m]; //memcpy(dmat[worst_idx], dmat[m], (m+1)*sizeof(int));
 		for (int i=0; i<m+1; i++)
-			dmat[i][worst_idx] = dmat[i][m];
+			//dmat[i][worst_idx] = dmat[i][m];
+			swap(dmat[i][worst_idx], dmat[i][m]);
+
 		//worst fitness need to be updated here (among the first m solutions, because very last one will be removed)
 		for (int i=0; i<m; i++)
 			if (fit[i]<fworst)
@@ -143,16 +163,16 @@ void Archive::update(int* x, unsigned long fx) {
 
 
 
-void Archive::print(string filename, string algname, int m, string instance, unsigned long seed, int nevals) {
-	//calculate running time in milliseconds
+void Archive::print(string filename, string algname, int m, int n, string instance, unsigned long seed, int nevals) {
 	clock_t end_time = clock();
 	unsigned long millis = (unsigned long)(1000. * double(end_time - start_time) / CLOCKS_PER_SEC);
-	
+
+
 	//create index array
 	int indices[m];
 	for (int i=0; i<m; i++)
 		indices[i] = i;
-	
+
 	//selection sort: find max and put in position i
 	for (int i=0; i<m-1; i++) {
 		int max_idx = i;
@@ -166,33 +186,32 @@ void Archive::print(string filename, string algname, int m, string instance, uns
 		indices[i] = indices[max_idx];
 		indices[max_idx] = temp;
 	}
-	
+
 	//build string for the solution set (ordered by fitness)
 	ostringstream oss;
 	for (int i=0; i<m; i++) {
 		int idx = indices[i];
 		for (int j=0; j<n; j++) {
 			oss << sol[idx][j];
-			if (j<n-1)
-				oss << " ";
+			if (j < n-1) oss << ",";
 		}
-		if (i<m-1)
-			oss << ",";
+		oss << ";";
 	}
 	string sol_set = oss.str();
-	
-	//build string for the fitness set (ordered)
+
+	//build string for the fitness set (ordered) ;
 	oss.str("");
 	oss.clear();
 	for (int i=0; i<m; i++) {
 		oss << fit[indices[i]];
-		if (i<m-1)
-			oss << ",";
+		if (i < m-1) oss << ";";
 	}
 	string fit_set = oss.str();
-	
-	//write one line in the csv
+
 	ofstream f(filename, ios::app);
+
+	f << "seed;algname;m;instance;n;nevals;millis;sol_set;fit_set\n";
+
 	f << seed << ";"
 	  << algname << ";"
 	  << m << ";"
@@ -200,6 +219,7 @@ void Archive::print(string filename, string algname, int m, string instance, uns
 	  << n << ";"
 	  << nevals << ";"
 	  << millis << ";"
-	  << sol_set << ";"
-	  << fit_set << endl;
+	  << "\"" << sol_set << "\"" << ";"
+	  << "\"" << fit_set << "\""
+	  << "\n";
 }

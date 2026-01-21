@@ -52,7 +52,6 @@ int main(int argc, char * argv[]) {
     }else{
         lop->m_max_evaluations=(long long int)10*1000*1000*1000;
     }
-	cout << n;
 	Archive archive(m, n);
     
 
@@ -208,14 +207,15 @@ int main(int argc, char * argv[]) {
     
     string result = "results.csv";
 
-    // archive.print(
-    //     result,
-    //     "MS-CDEVSN",
-    //     m,
-    //     INSTANCE_FILENAME, 
-    //     SEED, 
-    //     counter_update
-    // );
+    archive.print(
+        result,
+        "MS-CDRVNS",
+        m,
+        n,
+        INSTANCE_FILENAME, 
+        SEED, 
+        counter_update
+    );
 
 #endif
     fclose(result_file);

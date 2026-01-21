@@ -21,6 +21,6 @@ struct Archive {
 	
 	void update(int* x, unsigned long fx);
 	
-	void print(string filename, string algname, int m, string instance, unsigned long seed, int nevals);
+	void print(string filename, string algname, int m, int n, string instance, unsigned long seed, int nevals) ;
 	
 };
