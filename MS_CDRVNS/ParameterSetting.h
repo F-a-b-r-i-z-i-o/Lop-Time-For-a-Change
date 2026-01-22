@@ -42,6 +42,7 @@ double ALPHA=0.99995;
 
 int archive_m = 1;
 
+int time_execution = 0;
 /*
  * Help command output.
  */
@@ -55,6 +56,7 @@ void usage(char *progname)
     //printf("   -g Number of chains in the destruction procedure.\n");
     //printf("   -b Destruction strategy.\n");
 	printf("   -m Archive size.\n");
+    printf("   -t seconds of execution.\n");
 }
 
 /*
@@ -173,7 +175,7 @@ bool GetParameters(int argc,char * argv[])
     }
     char** optarg;
     optarg = new char*[argc];
-    while ((c = GetOption (argc, argv,":h:s:o:i:q:g:b:w:m:",optarg)) != '\0')
+    while ((c = GetOption (argc, argv,":h:s:o:i:q:g:b:w:m:t:",optarg)) != '\0')
     {
         switch (c)
         {
@@ -205,6 +207,10 @@ bool GetParameters(int argc,char * argv[])
             
             case 'm' :
                 archive_m = atoi(*optarg);
+                break;
+            
+            case 't' :
+                time_execution = atoi(*optarg);
                 break;
                 
             default:

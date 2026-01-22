@@ -1,17 +1,13 @@
 #include "Archive.h"
 #include <cstring> //memcpy
-#include <algorithm> //sort, lexicographical_compare
+#include <algorithm> //sort, lexicographical_compare, shuffle
 #include <fstream>
 #include <sstream>
 #include <ctime>
 #include <iostream>
 using namespace std;
 
-#ifdef DEBUG
-  #define DBG(stmt) do { stmt; } while(0)
-#else
-  #define DBG(stmt) do {} while(0)
-#endif
+
 
 //BEGIN HELP FUNCTION
 bool are_these_permutations_equal(int* x, int* y, int n) {
@@ -39,10 +35,7 @@ int kendall_tau(int* x, int* y, int n) {
 
 
 
-Archive::Archive(int m, int n) {
-	//m = archive final size, n = permutation length
-	this->m = m;
-	this->n = n;
+Archive::Archive(int m_, int n_, int seed_): m(m_), n(n_), seed(seed_), rng(seed_) {
 	//initialize full memory
 	this->sol = new int*[m+1]; //m+1 soluzioni al massimo
 	for (int i=0; i<m+1; i++)
@@ -54,10 +47,14 @@ Archive::Archive(int m, int n) {
 	this->fdp = new int*[m+1]; //distance profiles (ordered distance matrix) ... stessa massima dimensione della distance matrix, perche' fitness la metto al posto della distanza con se stessa
 	for (int i=0; i<m+1; i++)
 		this->fdp[i] = new int[m+1];
+	this->rnd_perm = new int[m+1]; //random permutation used for tie-breaks
 	//set empty at beginning
 	this->size = 0;
 	//set start time
 	this->start_time = clock();
+	//initialize random permutation to identity
+	for (int i=0; i<m+1; i++)
+		rnd_perm[i] = i;
 	//done
 }
 
@@ -74,6 +71,7 @@ Archive::~Archive() {
 	delete[] fit;
 	delete[] dmat;
 	delete[] fdp;
+	delete[] rnd_perm;
 	//done
 }
 
@@ -85,6 +83,7 @@ void Archive::update(int* x, unsigned long fx) {
 	for (int i=0; i<size; i++)
 		if (are_these_permutations_equal(x, sol[i], n))
 			return;
+	n_local_optimal;
 	//(2) add x,fx in the last position of the archive (size)
 	memcpy(sol[size], x, n*sizeof(int));
 	fit[size] = fx;
@@ -94,7 +93,7 @@ void Archive::update(int* x, unsigned long fx) {
 		dmat[0][0] = 0;
 	} else {
 		//some solutions already in the archive, so add one row and one column
-		for (int i=0; i<size-1; i++)
+		for (int i=0; i<size; i++)
 			dmat[size][i] = dmat[i][size] = kendall_tau(x, sol[i], n);
 		dmat[size][size] = 0;
 	}
@@ -112,12 +111,15 @@ void Archive::update(int* x, unsigned long fx) {
 	//    (6.2) since fdp[*][0] is always 0 (distance to itself), replace it with fitness
 	for (int i=0; i<size; i++) //size is m+1 here for sure!!!
 		fdp[i][0] = fit[i];
-	//(7) find lexicographical minimum of fdp rows, its index is the solution to remove
-	int worst_idx = 0;
-	for (int i=1; i<size; i++)
-		if (lexicographical_compare(fdp[i],fdp[i]+size, fdp[worst_idx],fdp[worst_idx]+size)) //true if 1st (i) is less than 2nd (worst_idx)
-			worst_idx = i;
-	//(8) remove solution worst_idx by replacing it with the last added one (in position ns==m+1)
+	//(7) find lexicographical minimum of fdp rows (using random scan for random tie-breaking), its index is the solution to remove
+	shuffle(rnd_perm, rnd_perm+size, rng); //size is m+1 for sure here!
+	int worst_idx = rnd_perm[0];
+	for (int i=1; i<size; i++) {
+		int ii = rnd_perm[i];
+		if (lexicographical_compare(fdp[ii],fdp[ii]+size, fdp[worst_idx],fdp[worst_idx]+size)) //true if 1st (i) is less than 2nd (worst_idx)
+			worst_idx = ii;
+	}
+	//(8) remove solution worst_idx by replacing it with the last added one (in position size==m+1)
 	if (worst_idx!=m) { //to speedup a bit, replacing worst_idx with last solution data, does not make sense if worst_idx is already the last solution
 		//copy solution and fitness
 		//memcpy(sol[worst_idx], sol[m], n*sizeof(int));
@@ -126,7 +128,7 @@ void Archive::update(int* x, unsigned long fx) {
 		sol[m] = tmp;
 		fit[worst_idx] = fit[m];
 		//update distance matrix: last row goes in worst row, last column goes in worst column
-		memcpy(dmat[worst_idx], dmat[m], (m+1)*sizeof(int));
+		//memcpy(dmat[worst_idx], dmat[m], (m+1)*sizeof(int));
 		tmp = dmat[worst_idx];
 		dmat[worst_idx] = dmat[m]; 
 		dmat[m] = tmp;
@@ -191,7 +193,7 @@ void Archive::print(string filename, string algname, string instance, unsigned l
 
 	ofstream f(filename, ios::app);
 
-	f << "seed;algname;m;instance;n;nevals;millis;sol_set;fit_set\n";
+	f << "seed;algname;m;instance;n;nevals;millis;sol_set;fit_set,optimal_number\n";
 
 	f << seed << ";"
 	  << algname << ";"
@@ -201,47 +203,8 @@ void Archive::print(string filename, string algname, string instance, unsigned l
 	  << nevals << ";"
 	  << millis << ";"
 	  << sol_set << ";"
-	  << fit_set << "\n";
+	  << fit_set << ";"
+	  << n_local_optimal << "\n";
+	  
 }
 
-
-/*
-void Archive::print(string filename, string algname, string instance, unsigned long seed, int nevals) {
-	//calculate running time in milliseconds
-	clock_t end_time = clock();
-	unsigned long millis = (unsigned long)(1000. * double(end_time - start_time) / CLOCKS_PER_SEC);
-	//build string for the solution set
-	ostringstream oss;
-	for (int i=0; i<m; i++) {
-		for (int j=0; j<n; j++) {
-			oss << sol[i][j];
-			if (j<n-1)
-				oss << " ";
-		}
-		if (i<m-1)
-			oss << ",";
-	}
-	string sol_set = oss.str();
-	//build string for the fitness set
-	oss.str("");
-	oss.clear();
-	for (int i=0; i<m; i++) {
-		oss << fit[i];
-		if (i<m-1)
-			oss << ",";
-	}
-	string fit_set = oss.str();
-	//write one line in the csv
-	ofstream f(filename, ios::app);
-	f << seed << ";"
-	  << algname << ";"
-	  << m << ";"
-	  << instance << ";"
-	  << n << ";"
-	  << nevals << ";"
-	  << millis << ";"
-	  << sol_set << ";"
-	  << fit_set << "\n";
-	//done
-}
-*/
