@@ -282,7 +282,6 @@ int main(int argc, char * argv[]) {
         RESULTS_FILENAME,
         "MS-CDRVNS",
         INSTANCE_FILENAME, 
-        SEED,
         lop->m_evaluations
     );
 
