@@ -36,16 +36,16 @@ MA::MA(int N_, double pc_, string &crossType_, double finalTime_, string &output
 
 //Initialize and apply intensification to each individual
 //void MA::initPopulation(){
-int MA::initPopulation(){//VALENTINO
-	int italians_nevals = 0;//VALENTINO
+unsigned long MA::initPopulation(){//VALENTINO
+	unsigned long __nevals = 0;//VALENTINO
 	for (int i = 0; i < N; i++){
 		Individual *ei = new Individual();
 		ei->initialize_heuristic();
 		//ei->intensify();
-		italians_nevals += ei->intensify();//VALENTINO
+		__nevals += ei->intensify();//VALENTINO
 		population.push_back(ei);
 	}
-	return italians_nevals;//VALENTINO
+	return __nevals;//VALENTINO
 }
 
 //Select two parents with binary selection
@@ -89,13 +89,13 @@ void MA::crossover(){
 }
 
 //void MA::intensify(){
-int MA::intensify(){//VALENTINO
-	int italians_nevals = 0;//VALENTINO
+unsigned long MA::intensify(){//VALENTINO
+	unsigned long ___nevals = 0;//VALENTINO
 	for (int i = 0; i < offspring.size(); i++){
 		//offspring[i]->intensify();
-		italians_nevals += offspring[i]->intensify();//VALENTINO
+		___nevals += offspring[i]->intensify();//VALENTINO
 	}
-	return italians_nevals;//VALENTINO
+	return ___nevals;//VALENTINO
 }
 
 void MA::replacement(){
@@ -180,80 +180,49 @@ void MA::initDI(){
 }
 
 void MA::run() {
-	int italians_nevals = 0;//VALENTINO
+	int MAX_LOCAL_OPTIMA = 20000;
+	int _n = Individual::problem->problemDimension;
+	//unsigned long MAX_COMPUTATIONAL_WORKING_UNITS = 1000*_n*_n;//VALENTINO
+	unsigned long ___nevals = 0;//VALENTINO
 	//initPopulation();
-	italians_nevals += initPopulation();//VALENTINO
+	___nevals += initPopulation();//VALENTINO
 	initDI();
-    Archive archive(m, population[0]->S.size(), seed);
+    Archive archive(m, population[0]->S.size(),seed);
 	generation = 0;
 	double cTime;
 	double bestCost;
-	if (finalTime>0){
-		do {
-			//Iteration of the MA: selection, crossover, intensification, replacement
-			selectParents();
-			crossover();
-			//intensify();
-			italians_nevals += intensify();//VALENTINO
-			for (int i = 0; i < offspring.size(); i++){
-				//CHIAMARE QUI UPDATE SET ... offspring[i]->S offspring[i]->cost //VALENTINO
-				archive.update(offspring[i]->S.data(),-offspring[i]->getCost());
-			}
-			replacement();
-			struct timeval currentTime;
-			gettimeofday(&currentTime, NULL);
-			cTime = (double) (currentTime.tv_sec) + (double) (currentTime.tv_usec) / 1.0e6;
-			elapsedTime = cTime - initialTime;
-			if (generation == 0) {
+	do {
+		//Iteration of the MA: selection, crossover, intensification, replacement
+		selectParents();
+		crossover();
+		//intensify();
+		___nevals += intensify();//VALENTINO
+		for (int i = 0; i < offspring.size(); i++){
+			//CHIAMARE QUI UPDATE SET ... offspring[i]->S offspring[i]->cost //VALENTINO
+			archive.update(offspring[i]->S.data(),-offspring[i]->getCost());
+		}
+		replacement();
+		struct timeval currentTime;
+		gettimeofday(&currentTime, NULL);
+		cTime = (double) (currentTime.tv_sec) + (double) (currentTime.tv_usec) / 1.0e6;
+		elapsedTime = cTime - initialTime;
+		if (generation == 0) {
+			bestCost = population[0]->getCost();
+		} else {
+			if (population[0]->getCost() < bestCost) {
 				bestCost = population[0]->getCost();
-			} else {
-				if (population[0]->getCost() < bestCost) {
-					bestCost = population[0]->getCost();
-				}
 			}
-			generation++;
-		}while (cTime - initialTime < finalTime);
-		//print best solution
-		//population[0]->print("orginal-result.txt");
-		archive.print(
-			outputFile,
-			"MS-MA-EDM", 
-			instanceFile,
-			italians_nevals
-		);
-	}else{
-		int maxIterations = 1000*N*N;
-		do {
-			//Iteration of the MA: selection, crossover, intensification, replacement
-			selectParents();
-			crossover();
-			//intensify();
-			italians_nevals += intensify();//VALENTINO
-			for (int i = 0; i < offspring.size(); i++){
-				//CHIAMARE QUI UPDATE SET ... offspring[i]->S offspring[i]->cost //VALENTINO
-				archive.update(offspring[i]->S.data(),-offspring[i]->getCost());
-			}
-			replacement();
-			struct timeval currentTime;
-			gettimeofday(&currentTime, NULL);
-			cTime = (double) (currentTime.tv_sec) + (double) (currentTime.tv_usec) / 1.0e6;
-			elapsedTime = cTime - initialTime;
-			if (generation == 0) {
-				bestCost = population[0]->getCost();
-			} else {
-				if (population[0]->getCost() < bestCost) {
-					bestCost = population[0]->getCost();
-				}
-			}
-			generation++;
-		}while (italians_nevals < maxIterations);
-		//print best solution
-		//population[0]->print("orginal-result.txt");
-		archive.print(
-			outputFile,
-			"MS-MA-EDM", 
-			instanceFile,
-			italians_nevals
-		);
-	}
+		}
+		generation++;
+		//cout << ___nevals << " " << archive.n_local_optima << " " << finalTime << " " << elapsedTime << endl; //debug
+	} while ((finalTime == 0 && archive.n_local_optima < MAX_LOCAL_OPTIMA) || (finalTime>0 && elapsedTime < finalTime));
+	//} while (cTime - initialTime < finalTime);
+	//print best solution
+	//population[0]->print("orginal-result.txt");
+	archive.print(
+		outputFile,
+		"MS-MA-EDM", 
+		instanceFile,
+		___nevals
+	);
 }

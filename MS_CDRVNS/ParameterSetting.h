@@ -48,7 +48,7 @@ int time_execution = 0;
  */
 void usage(char *progname)
 {
-    printf("Usage: VNSforLOP -i <instance_name>  -o <results_filename> -s <seed> -m <archive_size>\n");
+    printf("Usage: CDRVNS -i <instance_name>  -o <results_filename> -s <seed> -m <archive_size> [-t <max_time>]\n");
     printf("   -i File name of the instance.\n");
     printf("   -o Name of the file to store the results.\n");
     printf("   -s Seed used for pseudo-random numbers generator.\n");
@@ -56,7 +56,7 @@ void usage(char *progname)
     //printf("   -g Number of chains in the destruction procedure.\n");
     //printf("   -b Destruction strategy.\n");
 	printf("   -m Archive size.\n");
-    printf("   -t seconds of execution.\n");
+    printf("   -t Seconds of execution. IF NOT PASSED, A HARD-CODED NUMBER OF VISITED LOCAL OPTIMA (NOT NECESSARILY DISTINCT) IS USED AS STOPPING CRITERION.\n");
 }
 
 /*

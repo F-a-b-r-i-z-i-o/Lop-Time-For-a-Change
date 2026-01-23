@@ -17,13 +17,14 @@ struct Archive {
 	clock_t start_time;	//time when constructor called
 	unsigned long seed;	//seed for the random number generator
 	mt19937 rng;		//random number generator used for tie-breaks
+	unsigned long n_local_optima;
 	int* rnd_perm;		//random permutation used for tie-breaks
-	unsigned long n_local_optimal;
-	Archive(int m_, int n_, int seed_);
+	
+	Archive(int m_, int n_, int seed_),
 	~Archive();
-
+	
 	void update(int* x, unsigned long fx);
 	
-	void print(string filename, string algname, string instance, int nevals) ;
+	void print(string filename, string algname, string instance, unsigned long nevals);
 	
 };

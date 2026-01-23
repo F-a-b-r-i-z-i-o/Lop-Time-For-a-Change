@@ -55,6 +55,8 @@ Archive::Archive(int m_, int n_, int seed_): m(m_), n(n_), seed(seed_), rng(seed
 	//initialize random permutation to identity
 	for (int i=0; i<m+1; i++)
 		rnd_perm[i] = i;
+	//init number of local optima
+	n_local_optima = 0;
 	//done
 }
 
@@ -79,11 +81,12 @@ Archive::~Archive() {
 
 void Archive::update(int* x, unsigned long fx) {
 	//x,fx is the new solution,fitness candidate to enter the archive
+	//(0) count number of local optima considered by update
+	n_local_optima++;
 	//(1) if x already exists in the archive, take no action
 	for (int i=0; i<size; i++)
 		if (are_these_permutations_equal(x, sol[i], n))
 			return;
-	n_local_optimal;
 	//(2) add x,fx in the last position of the archive (size)
 	memcpy(sol[size], x, n*sizeof(int));
 	fit[size] = fx;
@@ -142,7 +145,7 @@ void Archive::update(int* x, unsigned long fx) {
 
 
 
-void Archive::print(string filename, string algname, string instance, unsigned long seed, int nevals) {
+void Archive::print(string filename, string algname, string instance, unsigned long nevals) {
 
 	clock_t end_time = clock();
 	unsigned long millis = (unsigned long)(1000. * double(end_time - start_time) / CLOCKS_PER_SEC);
@@ -193,7 +196,7 @@ void Archive::print(string filename, string algname, string instance, unsigned l
 
 	ofstream f(filename, ios::app);
 
-	f << "seed;algname;m;instance;n;nevals;millis;sol_set;fit_set,optimal_number\n";
+	f << "seed;algname;m;instance;n;nevals;millis;sol_set;fit_set;local_optima\n";
 
 	f << seed << ";"
 	  << algname << ";"
@@ -204,7 +207,7 @@ void Archive::print(string filename, string algname, string instance, unsigned l
 	  << millis << ";"
 	  << sol_set << ";"
 	  << fit_set << ";"
-	  << n_local_optimal << "\n";
+	  << n_local_optima << "\n";
 	  
 }
 

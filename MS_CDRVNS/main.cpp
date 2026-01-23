@@ -1,10 +1,10 @@
 //
 //  main.cpp
-//  CDRVNSforLOP
+//  CDRVNS
 //
-//  Created by Josu Ceberio Uribe on 09/01/2019.
-//  Copyright © 2019 University of the Basque Country. All rights reserved.
+//  Created by Josu Ceberio Uribe on 09/01/2019 and modified by Santucci & Fagiolo on 22/01/2026.
 //
+
 #include "ParameterSetting.h"
 #include "LOP.h"
 #include <iostream>
@@ -17,287 +17,142 @@
 #include <stdlib.h>
 #include "Archive.h"
 
-void Compile_Precedences (long ** memory, int n, int * solution){
-    int i,j;
-    for (i=0;i<n-1;i++){
-        for (j=i+1;j<n;j++){
-            memory[solution[i]][solution[j]]++;
-        }
-    }
+
+void Compile_Precedences (long** memory, int n, int* solution) {
+	int i,j;
+	for (i=0; i<n-1; i++)
+		for (j=i+1; j<n; j++)
+			memory[solution[i]][solution[j]]++;
 }
 
 
-int main(int argc, char * argv[]) {
-    
-    //0. Get parameters from command line
-    if(!GetParameters(argc,argv))
-        return -1;
-    
-    //1. Start timing.
-    struct timeval tim;
-    gettimeofday(&tim, NULL);
-    double t1=tim.tv_sec+(tim.tv_usec/1000000.0);
- #ifdef VERBOSE
-    cout<<"Reading instance..."<<endl;
-#endif
-    //1. Read LOP instance
-    LOP * lop= new LOP();
-    
-    int n=lop->Read(INSTANCE_FILENAME);
-    
-    //calculate the sparsity of the algorithm
-    int i;
-    if (n<=3000){
-        lop->m_max_evaluations=(long long int)1000*n*n;
-    }else{
-        lop->m_max_evaluations=(long long int)10*1000*1000*1000;
-    }
+
+int main(int argc, char* argv[]) {
+	//Get parameters from command line
+	if ( !GetParameters(argc, argv) )
+		return -1;
+	//Read LOP instance
+	LOP * lop = new LOP();
+	int n = lop->Read(INSTANCE_FILENAME);
+	//Variables, modification and initialization for MultiSolution version
+	lop->m_max_evaluations = LLONG_MAX; //to deactivate previous stopping criterion
+	int MAX_LOCAL_OPTIMA = 20000; //new stopping criterion based on number of visited local optima (not necessarily different)
+	double time_elapsed; //required by the time-based stopping criterion
 	Archive archive(archive_m, n, SEED);
-    
-
-#ifdef VERBOSE
-    cout<<"Stopping criteria..."<<endl;
-    cout<<"Evals: "<<lop->m_max_evaluations<<endl;
-#endif
-    initRand(SEED);
- #ifdef VERBOSE
-    cout<<"Initializing valentinos code..."<<endl;
-#endif
-    //create precedences memory
-    int compiled_solutions=0;
-    long ** memory= new long*[n];
-    for (i=0;i<n;i++)
-    {
-        memory[i]=new long[n];
-        fill_n(memory[i],lop->m_problem_size,0);
-    }
-
-    int * arrayLOP= new int[n*n];
-    for (int i=0;i<n*n;i++)arrayLOP[i]=-1;
-    lop->GetMatrixAsArray(arrayLOP);
-    //PrintArray(arrayLOP,n*n);
-    PSolution::setLOPMatrix(arrayLOP, n);
-    PSolution psol(n);
-    psol.makeEmpty();
-    initRand(SEED);
- #ifdef VERBOSE
-    cout<<"Calculating restricted matrix..."<<endl;
-#endif
-    //2. Compute sparsity matrix
-    lop->CalculateSparsityMatrix();
-
-    // 3. Declare variables for optimization
-    bool improvement=false;
-    int * solution= new int[n];
-    int * best_solution= new int[n];
-    long int fitness=0;
-    long int best_fitness=0;
-    long int fit=0;
-    float factor=0;
-  
-#ifdef VERBOSE
-    cout<<"Running constructive algorithm..."<<endl;
-#endif
-    //3. Construct initial solution (Valentino)
-    int * prev_solution= new int[n];
-    Q=urand()*0.1+0.9; //according to Valentino it should be set in the range [0.9,1].
-    psol.construct(Q);
-    psol.toPermutation(solution);
-    fitness=psol.fit;
-    lop->m_evaluations++;
-    
-    memcpy(best_solution,solution,sizeof(int)*n);
-    best_fitness=fitness;
-    
-    Compile_Precedences(memory, n, solution);
-    compiled_solutions++;
-    
-#ifdef VERBOSE
-    PrintArray(solution,n);
-    printf("fitness. %ld   evals rem. %lld\n",best_fitness,lop->m_max_evaluations-lop->m_evaluations);
-    cout<<"Running VNS..."<<endl;
-#endif
-     if (time_execution>0){
-        //4. Run VNS with time limit
-        double t2;
-        do{
-            improvement=false;
-            do{
-                //4.1. Efficient local search on the insert neighbourhood
-                fitness=GreedyLocalSearch_Insert(solution,fitness,lop);
-                
-                //4.2. One Greedy step in the interchange neighbourhood
-                fit=Best_IntechangeStep_Efficient(solution, fitness, lop);
-
-                if (fit>fitness){
-                    fitness=fit;
-                    improvement=true;
-                }
-                
-                gettimeofday(&tim, NULL);
-                t2=tim.tv_sec+(tim.tv_usec/1000000.0);
-                
-            }while (improvement && (t2 - t1) <= time_execution);
-            
-            archive.update(solution,fitness);
-
-            Compile_Precedences(memory, n, solution);
-            compiled_solutions++;
-            
-            //4.3. Update best solution if it is the case.
-            if (fitness>best_fitness){
-                memcpy(best_solution, solution, sizeof(int)*n);
-                best_fitness=fitness;
-                gettimeofday(&tim, NULL);
-                t2=tim.tv_sec+(tim.tv_usec/1000000.0);
-                cout<<"Time elapsed: "<<(t2-t1)<<" seconds, fitness: "<<best_fitness<<endl;
-            }
-            else{
-                memcpy(solution, best_solution, sizeof(int)*n);
-            }
-            
-            gettimeofday(&tim, NULL);
-            t2=tim.tv_sec+(tim.tv_usec/1000000.0);
-            
-            if ((t2 - t1) < time_execution){
-                //4.4. Destruction-Construction procedure on 'solution' vector
-                memcpy(prev_solution,solution,sizeof(int)*n);
-                psol.fromPermutation(solution);
-                do{
-                    Q=urand()*0.1+0.9;
-                    gettimeofday(&tim, NULL);
-                    t2=tim.tv_sec+(tim.tv_usec/1000000.0);
-                    factor=(t2 - t1) / time_execution;
-                    R=1-(factor*0.9);
-                    psol.destruct_sorted(memory,R);
-                    psol.construct(Q);
-                    psol.toPermutation(solution);
-                } while(memcmp(prev_solution, solution, sizeof(int)*n)==0 );
-                
-                fitness=psol.eval();
-                lop->m_evaluations++;
-                
-                if (fitness>best_fitness){
-                    memcpy(best_solution, solution, sizeof(int)*n);
-                    best_fitness=fitness;
-                    gettimeofday(&tim, NULL);
-                    t2=tim.tv_sec+(tim.tv_usec/1000000.0);
-                    cout<<"Time elapsed (repair): "<<(t2-t1)<<" seconds, fitness: "<<best_fitness<<" R: "<<R<<endl;
-                }
-            }
-            
-            gettimeofday(&tim, NULL);
-            t2=tim.tv_sec+(tim.tv_usec/1000000.0);
-
-        }while((t2 - t1) <= time_execution);
-        
-        cout<<"Exiting loop - Time elapsed: "<<(t2-t1)<<" seconds (limit: "<<time_execution<<")"<<endl;
-    // //6. Write results in file.
-    // FILE *result_file;
-    }else{
-        //4. Run VNS
-        do{
-        // cout<<"my code"<<endl;
-            improvement=false;
-            do{
-                //4.1. Efficient local search on the insert neighbourhood
-                
-                fitness=GreedyLocalSearch_Insert(solution,fitness,lop);
-                
-                //4.2. One Greedy step in the interchange neighbourhood
-                fit=Best_IntechangeStep_Efficient(solution, fitness, lop);
-
-                if (fit>fitness){
-                    fitness=fit;
-                    improvement=true;
-                }
-            }while (improvement && lop->m_evaluations<lop->m_max_evaluations);
-            archive.update(solution,fitness);//VALENTINO
-
-        // cout<<"compile precendences"<<endl;
-            Compile_Precedences(memory, n, solution);
-            compiled_solutions++;
-        // PrintArray(memory[0], n);
-            
-            //4.3. Update best solution if it is the case.
-            if (fitness>best_fitness){
-                memcpy(best_solution, solution, sizeof(int)*n);
-                best_fitness=fitness;
-            #ifdef VERBOSE
-                        printf("fitness. %ld   evals rem. %lld\n",best_fitness,lop->m_max_evaluations-lop->m_evaluations);
-                        //PrintArray(best_solution, n);
-            #endif
-            }
-            else{
-                memcpy(solution, best_solution, sizeof(int)*n);
-            }
-            
-            if (lop->m_evaluations<lop->m_max_evaluations){
-            //  cout<<"valentinos code"<<endl;
-            //4.4. Destruction-Construction procedure on 'solution' vector
-            memcpy(prev_solution,solution,sizeof(int)*n);
-            psol.fromPermutation(solution);
-            do{
-                Q=urand()*0.1+0.9; //according to Valentino it should be set in the range [0.9,1].
-                factor=((float)lop->m_evaluations)/((float)lop->m_max_evaluations);
-                R=1-(factor*0.9);
-                psol.destruct_sorted(memory,R);
-                psol.construct(Q);
-                psol.toPermutation(solution);
-            } while(memcmp(prev_solution, solution, sizeof(int)*n)==0 );
-            
-            fitness=psol.eval();
-            lop->m_evaluations++;
-            
-            if (fitness>best_fitness){
-                memcpy(best_solution, solution, sizeof(int)*n);
-                best_fitness=fitness;
-        #ifdef VERBOSE
-                    printf("fitness repair. %ld   evals rem. %lld R: %g\n",best_fitness,lop->m_max_evaluations-lop->m_evaluations,R);
-        #endif
-                }
-                }
-
-        }while(lop->m_evaluations<lop->m_max_evaluations);
-        #ifdef VERBOSE
-            cout<<"out of the loop"<<endl;
-        #endif
-    //5. Calculate consumed time.
-    gettimeofday(&tim, NULL);
-    double t2=tim.tv_sec+(tim.tv_usec/1000000.0);
-    }
-#ifndef RUNNING_ON_CLUSTER
-    FILE * test;
-    test= fopen("/Users/Josu/Desktop/results.csv","r");
-    result_file= fopen("/Users/Josu/Desktop/results.csv","a+");
-    if (test==NULL){
-        fprintf(result_file,"\"Instance\";\"Repetition\";\"Algorithm\";\"Fitness\";\"Time\"\n");
-    }
-     fprintf(result_file,"\"%s\";%d;\"%s\";%ld;%.3f\n",INSTANCE_FILENAME,SEED,"CDRVNS",best_fitness,t2-t1);
-    
-#else
-    //result_file= fopen("./scratch_results.csv","a+");
-    //fprintf(result_file,"\"%s\";%d;\"%s\";%ld;%.3f\n",INSTANCE_FILENAME,SEED,"CDRVNS",best_fitness,t2-t1);
-    archive.print(
-        RESULTS_FILENAME,
-        "MS-CDRVNS",
-        INSTANCE_FILENAME, 
-        lop->m_evaluations
-    );
-
-#endif
-    //fclose(result_file);
-    
-    // Free memory
-    delete lop;
-    delete [] solution;
-    delete [] best_solution;
-    for (int i=0;i<n;i++)
-        delete [] memory[i];
-    delete [] memory;
-    delete [] prev_solution;
-    delete [] arrayLOP;
-	
-    return 0;
+	//Init random number generator
+	initRand(SEED);
+	//Create precedences memory (for construction/destruction)
+	int i;
+	int compiled_solutions = 0;
+	long** memory = new long*[n];
+	for (i=0; i<n; i++) {
+		memory[i] = new long[n];
+		fill_n(memory[i], lop->m_problem_size, 0);
+	}
+	int* arrayLOP = new int[n*n];
+	for (int i=0; i<n*n; i++)
+		arrayLOP[i] = -1;
+	lop->GetMatrixAsArray(arrayLOP);
+	PSolution::setLOPMatrix(arrayLOP, n);
+	PSolution psol(n);
+	psol.makeEmpty();
+	//Calculate restricted matrix
+	lop->CalculateSparsityMatrix();
+	//Declare variables for optimization
+	bool improvement = false;
+	int* solution = new int[n];
+	int* best_solution = new int[n];
+	long int fitness = 0;
+	long int best_fitness = 0;
+	long int fit = 0;
+	float factor = 0;
+	//Construct initial solution with construction heuristic
+	int* prev_solution = new int[n];
+	Q = urand()*0.1 + 0.9; //according to paper it should be set in the range [0.9,1].
+	psol.construct(Q);
+	psol.toPermutation(solution);
+	fitness = psol.fit;
+	lop->m_evaluations++;
+	memcpy(best_solution, solution, sizeof(int)*n);
+	best_fitness = fitness;
+	Compile_Precedences(memory, n, solution);
+	compiled_solutions++;
+	//Main loop
+	do {
+		//Run VNS
+		improvement = false;
+		do {
+			//Efficient local search on the insert neighbourhood
+			fitness = GreedyLocalSearch_Insert(solution, fitness, lop);
+			//One Greedy step in the interchange neighbourhood
+			fit = Best_IntechangeStep_Efficient(solution, fitness, lop);
+			//Update fitness if the case
+			if (fit>fitness) {
+				fitness = fit;
+				improvement = true;
+			}
+		} while (improvement && lop->m_evaluations < lop->m_max_evaluations);
+		//We have a local optimum, so update the archive for multisolutions version of LOP
+		archive.update(solution, fitness);
+		//Compile the precedences for VNS<->Constr/Destr
+		Compile_Precedences(memory, n, solution);
+		compiled_solutions++;
+		//Update best solution if it is the case.
+		if (fitness>best_fitness) {
+			memcpy(best_solution, solution, sizeof(int)*n);
+			best_fitness = fitness;
+		} else {
+			memcpy(solution, best_solution, sizeof(int)*n);
+		}
+		//Run destruction-construction if evaluations not exhausted (but deactivated for multisolutions version)
+		if (lop->m_evaluations < lop->m_max_evaluations) {
+			//Destruction-Construction procedure on 'solution' vector
+			memcpy(prev_solution, solution, sizeof(int)*n);
+			psol.fromPermutation(solution);
+			do {
+				Q = urand()*0.1 + 0.9; //according to paper it should be set in the range [0.9,1].
+				//factor = ((float)lop->m_evaluations)/((float)lop->m_max_evaluations); //original code
+				//percentage of execution calculated based on the two different stopping criterion for new experiments
+				if (time_execution==0) //max number of local optima as stopping criterion
+					factor = archive.n_local_optima / (double)MAX_LOCAL_OPTIMA;
+				else { //max execution time as stopping criterion
+					time_elapsed = double(clock() - archive.start_time) / CLOCKS_PER_SEC;
+					factor = time_elapsed / (double)time_execution;
+				}
+				if (factor>1.)
+					factor = 1.;
+				R = 1 - factor*0.9;
+				psol.destruct_sorted(memory,R);
+				psol.construct(Q);
+				psol.toPermutation(solution);
+			} while( memcmp(prev_solution, solution, sizeof(int)*n)==0 );
+			fitness = psol.eval();
+			lop->m_evaluations++;
+			if (fitness > best_fitness) {
+				memcpy(best_solution, solution, sizeof(int)*n);
+				best_fitness = fitness;
+			}
+		}
+		time_elapsed = double(clock() - archive.start_time) / CLOCKS_PER_SEC;
+		cout << lop->m_evaluations << " " << archive.n_local_optima << " " << factor << "\n"; //debug
+	//} while (lop->m_evaluations < lop->m_max_evaluations); //original code
+	} while ( (time_execution==0 && archive.n_local_optima < MAX_LOCAL_OPTIMA) || (time_execution>0 && time_elapsed < time_execution) );
+	//Print results to file
+	archive.print(
+		RESULTS_FILENAME,
+		"MS-CDRVNS",
+		INSTANCE_FILENAME,
+		lop->m_evaluations
+	);
+	//Free memory (archive destructor is called automatically)
+	delete lop;
+	delete[] solution;
+	delete[] best_solution;
+	for (int i=0; i<n; i++)
+		delete[] memory[i];
+	delete[] memory;
+	delete[] prev_solution;
+	delete[] arrayLOP;
+	//Done
+	return 0;
 }
-

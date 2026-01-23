@@ -1,12 +1,9 @@
 CXXFLAGS = -O2
 
-debug: CXXFLAGS = -O0 -g -DDEBUG
-debug: clean main
-
 release: CXXFLAGS = -O2
-release: clean main
+release: clean MAEDM
 
-main: main.cpp crossoverCX.o crossoverOB.o getDistance.o intensify.o print.o utils.o evaluate.o initialize_heuristic.o MA.o Problem.o Individual.o Archive.o
+MAEDM: main.cpp crossoverCX.o crossoverOB.o getDistance.o intensify.o print.o utils.o evaluate.o initialize_heuristic.o MA.o Problem.o Individual.o Archive.o
 	g++ $(CXXFLAGS) -o $@ $^
 
 Individual.o: Individual.h Individual.cpp
@@ -46,4 +43,4 @@ utils.o: utils.cpp utils.h
 	g++ $(CXXFLAGS) -c -o $@ utils.cpp
 
 clean:
-	rm -f main *.o
+	rm -f MAEDM *.o

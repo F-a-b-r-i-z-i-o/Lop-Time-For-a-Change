@@ -1,9 +1,9 @@
 CC = g++ -O3 -Wno-deprecated -ftree-vectorize
 
-all: CDRVNSforLOP
+all: CDRVNS
 
-CDRVNSforLOP: main.o LOP.o Tools.o PSolution.o random.o SFMT.o Archive.o
-	$(CC) main.o LOP.o Tools.o PSolution.o random.o SFMT.o Archive.o -lstdc++ -lm -o CDRVNSforLOP
+CDRVNS: main.o LOP.o Tools.o PSolution.o random.o SFMT.o Archive.o
+	$(CC) main.o LOP.o Tools.o PSolution.o random.o SFMT.o Archive.o -lstdc++ -lm -o CDRVNS
 
 main.o: main.cpp Tools.hpp ParameterSetting.h LOP.h PSolution.h random.h
 	$(CC) -c main.cpp
@@ -27,5 +27,5 @@ Archive.o: Archive.cpp Archive.h
 	$(CC) -c Archive.cpp
 
 clean:
-	rm -f core *.o CDRVNSforLOP
+	rm -f core *.o CDRVNS
 

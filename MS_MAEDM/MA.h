@@ -28,12 +28,12 @@ class MA {
 
 		//Basic procedures of MA
 		//void initPopulation();
-		int initPopulation();//VALENTINO
+		unsigned long initPopulation();//VALENTINO
 		void initDI();
 		void selectParents();
 		void crossover();
 		//void intensify();
-		int intensify();//VALENTINO
+		unsigned long intensify();//VALENTINO
 		void replacement();
 
 		//Internal attributes of MA
