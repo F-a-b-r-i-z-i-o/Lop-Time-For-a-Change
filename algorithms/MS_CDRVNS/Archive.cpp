@@ -150,9 +150,18 @@ void Archive::print(string filename, string algname, string instance, unsigned l
 	clock_t end_time = clock();
 	unsigned long millis = (unsigned long)(1000. * double(end_time - start_time) / CLOCKS_PER_SEC);
 
+	int k = size;                 // Number of ACTUALLY stored (valid) solutions in the archive (0 <= k <= m)
+
+	// The archive may contain fewer than m valid solutions (k < m).
+	// explicitly initialize the unused slots with "worst" fitness and a placeholder solution.
+	for (int i = k; i < m; i++) {
+		fit[i] = 0;               // Worst fitness for maximization 
+		for (int j = 0; j < n; j++)
+			sol[i][j] = -1;       // Placeholder for an empty/unused solution slot
+	}
 
 	//create index array
-	int indices[m];
+	vector<int> indices(m);
 	for (int i=0; i<m; i++)
 		indices[i] = i;
 
