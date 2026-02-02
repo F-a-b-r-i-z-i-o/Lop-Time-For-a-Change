@@ -1,7 +1,5 @@
 import pymrio
 import numpy as np
-import sys
-import pandas as pd
 import os
 import shutil
 import json
@@ -179,7 +177,7 @@ for reg in ios.regions:
     P, _ = build_lop_instance(P)
     pool = P[ P>0 ] #pool is an array with positive entries of P
     A = np.random.choice(pool, size=(size,size), replace=True)
-    A, _ = build_lop_instance(A) #reverse map not required here, because instance are "real-life like" and not real-world
+    A -= np.minimum(A,A.T)
     out_filename = f'{typ}_{reg.lower()}_{year}_n{A.shape[0]}'
     save_lop_matrix(f'{outdir}/{typ}/{out_filename}', A)
     print(f'* {out_filename} DONE.')
