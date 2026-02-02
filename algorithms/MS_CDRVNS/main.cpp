@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
 		lop->m_max_evaluations = LLONG_MAX; //to deactivate previous stopping criterion
 	else
 		lop->m_max_evaluations = nevals_factor*n*n; //nevals_factor*(n^2)
-	int MAX_LOCAL_OPTIMA = 20000; //new stopping criterion based on number of visited local optima (not necessarily different)
+	int MAX_LOCAL_OPTIMA = 100*n; //new stopping criterion based on number of visited local optima (not necessarily different)
 	double time_elapsed; //required by the time-based stopping criterion
 	Archive archive(archive_m, n, SEED);
 	//Init random number generator

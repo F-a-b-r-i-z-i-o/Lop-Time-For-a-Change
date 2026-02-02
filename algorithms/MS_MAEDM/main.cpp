@@ -33,7 +33,7 @@ void usage(char *progname) {
 	printf("   -t Seconds of execution.\n");
 	printf("   -e Factor to multiply n^2 for number of evaluations.\n");
 	printf("Termination criterion:\n");
-	printf("   * If neither -t nor -e are passed, the termination criterion is a hard-coded number of visited local optima (not necessarily distinct).\n");
+	printf("   * If neither -t nor -e are passed, the termination criterion is a hard-coded number of visited local optima 100*sizeInstance (not necessarily distinct).\n");
 	printf("   * If only -t is passed, the execution terminates after the given number of seconds.\n");
 	printf("   * If only -e is passed, the execution terminates after given_factor*(n^2) evaluations have been performed.\n");
 	printf("   * Unpredictable behaviour if both -t and -e are passed.\n");

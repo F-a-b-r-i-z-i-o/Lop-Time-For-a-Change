@@ -210,7 +210,7 @@ bool term(int n_local_optima, double time_elapsed, unsigned long nevals, int MAX
 
 void MA::run() {
 	//modified to consider the three termination criteria
-	int MAX_LOCAL_OPTIMA = 20000;
+	int MAX_LOCAL_OPTIMA = 100*N;
 	int _n = Individual::problem->problemDimension;
 	unsigned long _nevals = 0; //added
 	//initPopulation();
