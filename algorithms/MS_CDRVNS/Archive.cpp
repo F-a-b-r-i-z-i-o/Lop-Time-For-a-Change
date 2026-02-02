@@ -150,25 +150,16 @@ void Archive::print(string filename, string algname, string instance, unsigned l
 	clock_t end_time = clock();
 	unsigned long millis = (unsigned long)(1000. * double(end_time - start_time) / CLOCKS_PER_SEC);
 
-	int k = size;                 // Number of ACTUALLY stored (valid) solutions in the archive (0 <= k <= m)
-
-	// The archive may contain fewer than m valid solutions (k < m).
-	// explicitly initialize the unused slots with "worst" fitness and a placeholder solution.
-	for (int i = k; i < m; i++) {
-		fit[i] = 0;               // Worst fitness for maximization 
-		for (int j = 0; j < n; j++)
-			sol[i][j] = -1;       // Placeholder for an empty/unused solution slot
-	}
 
 	//create index array
-	vector<int> indices(m);
-	for (int i=0; i<m; i++)
+	vector<int> indices(size);
+	for (int i=0; i<size; i++)
 		indices[i] = i;
 
 	//selection sort: find max and put in position i
-	for (int i=0; i<m-1; i++) {
+	for (int i=0; i<size-1; i++) {
 		int max_idx = i;
-		for (int j=i+1; j<m; j++) {
+		for (int j=i+1; j<size; j++) {
 			if (fit[indices[j]] > fit[indices[max_idx]]) {
 				max_idx = j;
 			}
@@ -181,14 +172,14 @@ void Archive::print(string filename, string algname, string instance, unsigned l
 
 	//build string for the solution set (ordered by fitness)
 	ostringstream oss;
-	for (int i=0; i<m; i++) {
+	for (int i=0; i<size; i++) {
 		int idx = indices[i];
 		for (int j=0; j<n; j++) {
 			oss << sol[idx][j];
 			if (j < n-1)
 				oss << " ";
 		}
-		if (i<m-1)
+		if (i<size-1)
 			oss << ",";
 	}
 	string sol_set = oss.str();
@@ -196,9 +187,9 @@ void Archive::print(string filename, string algname, string instance, unsigned l
 	//build string for the fitness set (ordered) ;
 	oss.str("");
 	oss.clear();
-	for (int i=0; i<m; i++) {
+	for (int i=0; i<size; i++) {
 		oss << fit[indices[i]];
-		if (i < m-1)
+		if (i < size-1)
 			oss << ",";
 	}
 	string fit_set = oss.str();
@@ -219,4 +210,3 @@ void Archive::print(string filename, string algname, string instance, unsigned l
 	  << n_local_optima << "\n";
 	  
 }
-
