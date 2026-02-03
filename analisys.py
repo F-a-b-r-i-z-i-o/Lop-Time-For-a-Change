@@ -1,43 +1,22 @@
 import pandas as pd 
-from diversipy import indicator
-import re
 import numpy as np 
-from scipy.stats import kendalltau
 
 df = pd.read_csv(
-    "results.csv",
+    "results_MS_combined_sorted.csv",
     sep=";",
 )
 
-# Clean column names 
-df.columns = [c.strip() for c in df.columns]
-
-# convert to numerics
-df["seed"] = pd.to_numeric(df["seed"], errors="coerce")
-df["m"] = pd.to_numeric(df["m"], errors="coerce")
-
-# Keep only seeds 1..30
-df_1_30 = df[df["seed"].between(1, 30)].copy()
-
-# m == 5 
-m5 = df_1_30[df_1_30["m"] == 5].copy()
-
-# mean for row
-fit_means = []
-
-for s in m5["fit_set"]:
-    vals = str(s).split(",")        # clean data
-    vals = [float(x) for x in vals] # convert to number 
-    mean = sum(vals) / len(vals)   # mean for rows
-    fit_means.append(mean)
-
-# Local mean 
-m5["fit_set_mean"] = fit_means
-
-# Global mean 
-global_mean = m5["fit_set_mean"].mean()
-
-print(m5[["fit_set", "fit_set_mean"]])
-print("Global:", global_mean)
-
-
+df["instance_set"] = "rxr"
+fit_max = df["fit_set"].str.split(",").str[0].astype(int).max()
+df["best_fit"] = fit_max
+best_fit_for_set = df["fit_set"].str.split(",").apply(lambda xs: max(map(int, xs)))
+df["best_fit_for_set"] = best_fit_for_set
+rpd_fitness =  (fit_max - df["best_fit_for_set"]) / fit_max # change respect to formula latex
+df["rpd_fitness"] = rpd_fitness
+lens = df["fit_set"].str.split(",").str.len()
+df["set_size"] = lens
+prec_set = df["set_size"] / df["m"] # Probably n 
+avg_fit = df["fit_set"].apply(lambda s: np.fromstring(s, sep=",").mean())
+df["fit_set_mean"] = avg_fit
+best_avg_fit = df["fit_set_mean"].max()
+df["rpd_avg"] = (best_avg_fit - avg_fit) / best_avg_fit

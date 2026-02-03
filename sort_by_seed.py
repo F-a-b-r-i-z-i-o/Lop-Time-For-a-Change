@@ -1,6 +1,6 @@
 import csv
-input_file = "results_rxr/results_MS_CDRVNS.csv"
-output_file = "results_MS_CDRVNS.csv"
+input_file = "results_rxr/results_MS_combined.csv"
+output_file = "results_MS_combined_sorted.csv"
 
 with open(input_file, newline="", encoding="utf-8") as f:
     reader = csv.reader(f, delimiter=";")
