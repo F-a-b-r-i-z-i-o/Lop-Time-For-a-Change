@@ -133,7 +133,7 @@ def delta_nn_from_kendall_matrix(D):
     np.fill_diagonal(D2, np.inf)
 
     nn = np.min(D2, axis=1)  # nearest-neighbor distance for each solution
-    return float(np.sum(nn))
+    return float(np.sum(nn)) # probably /D.shape[0]
 
 
 df["delta_nn"] = [delta_nn_from_kendall_matrix(D) for D in kendall_matrices]
@@ -159,6 +159,8 @@ def solow_polasky_from_kendall_matrix(kendall_matrix):
     correlation_matrix = np.exp(-theta * kendall_matrix)
 
     inverse_matrix = np.linalg.pinv(correlation_matrix)
+ 
     return float(inverse_matrix.sum() / m)
 
 df["delta_sp"] = [solow_polasky_from_kendall_matrix(D) for D in kendall_matrices]
+    
