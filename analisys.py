@@ -2,20 +2,20 @@ import pandas as pd
 import numpy as np 
 
 df = pd.read_csv(
-    "results_rxr/results_MS_combined_sorted.csv",
+    "results_pxp/results_MS_combined_sorted.csv",
     sep=";",
 )
 
 # Name of instance set 
 df["instance_set"] = "rxr"
 
-# Find overall best-fitness
-fit_max = df["fit_set"].str.split(",").str[0].astype(int).max()
-df["best_fit"] = fit_max
-
 # Find set best-fitness
 best_fit_for_set = df["fit_set"].str.split(",").apply(lambda xs: max(map(int, xs)))
 df["best_fit_for_set"] = best_fit_for_set
+
+# Overall best-fitness
+fit_max = best_fit_for_set.max()
+df["best_fit"] = fit_max
 
 # Calculate rpd (relative percentage deviation) 
 rpd_fitness =  (fit_max - df["best_fit_for_set"]) / fit_max # change respect to formula latex
@@ -30,10 +30,11 @@ prec_set = df["set_size"] / df["n"] # change respect to latex formula
 
 # Find mean-fitness for set 
 avg_fit = df["fit_set"].apply(lambda s: np.fromstring(s, sep=",").mean())
-df["fit_set_mean"] = avg_fit
+df["fit_set_mean_for_set"] = avg_fit
 
-# Overall best-fitness
-best_avg_fit = df["fit_set_mean"].max()
+# Overall avg best-fitness
+best_avg_fit = df["fit_set_mean_for_set"].max()
+df["best_avg_fit"] = best_avg_fit
 
 # Calculate mean rpd (relative percentage deviation) 
 df["rpd_avg_fit"] = (best_avg_fit - avg_fit) / best_avg_fit
