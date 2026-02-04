@@ -84,9 +84,6 @@ def kendall_distance_matrix(perms):
     Build the m×m Kendall distance matrix for a set of m permutations.
 
     D[i, j] = kendall_tau(perms[i], perms[j])
-    Properties:
-      - symmetric
-      - diagonal is 0
     """
     m = len(perms)
     D = np.zeros((m, m), dtype=np.int32)
@@ -126,14 +123,13 @@ def delta_nn_from_kendall_matrix(D):
     Definition:
       Delta_NN(S) = sum_i  min_{j != i} D[i, j]
 
-    Intuition:
       - low value => solutions are clustered (each has a very close neighbor)
       - high value => solutions are spread out
     """
     D = np.asarray(D, dtype=float)
     D2 = D.copy()
 
-    # Exclude self-distance (diagonal) so the min is taken over other solutions only.
+    # Exclude self-distance (diagonal) 
     np.fill_diagonal(D2, np.inf)
 
     nn = np.min(D2, axis=1)  # nearest-neighbor distance for each solution
@@ -153,9 +149,8 @@ def solow_polasky_from_kendall_matrix(kendall_matrix):
       2) Compute the pseudoinverse F^+
       3) Return sum(F^+) / m  (m = number of solutions in the set)
 
-    Note:
       - here 'm' is the number of permutations in the set (matrix size)
-      - theta is hard-coded as m(m-1)/4 in this version
+      - theta is hard-coded as m(m-1)/4 
     """
     m = len(kendall_matrix)
     theta = m * (m - 1) / 4
