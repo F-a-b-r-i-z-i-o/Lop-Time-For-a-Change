@@ -11,7 +11,7 @@ filename_in = sys.argv[1]
 filename_out = sys.argv[2]
 '''
 filename_in = 'all_results.csv'
-
+filename_out = "results.pickle"
 
 # Read csv
 df = pd.read_csv( filename_in, sep=";" )
@@ -183,6 +183,91 @@ df['delta_sp_norm'] = df.delta_sp / df.m
 
 
 # ACCURACY PER FITNESS = quante fitness del set stanno nelle migliori m fitness mai trovate per l'istanza (normalizzato con m)
+
+# Parse the fitness set cell into a list of lists 
+df["fit_list"] = df["fit_set"].map(parse_sol_set_cell)
+
+# Flatten list[list[int]] -> list[int].
+df["fit_list"] = (
+    df["fit_set"]
+    .map(parse_sol_set_cell)                          # [[10], [20], [30]]
+    .map(lambda xs: [v for sub in xs for v in sub])   # [10, 20, 30]
+)
+
+# Collect all fitness values ever seen for each instance 
+fit_all = df[["instance", "fit_list"]].explode("fit_list").dropna() # 1 fitness for row 
+fit_all["fit_list"] = fit_all["fit_list"].astype(int)
+
+# For each instance, we may need up to max(m) values (precomputed fot not do after)
+m_max = df.groupby("instance")["m"].max().astype(int)
+
+# Build a dict: instance -> list of the top max(m) fitness values ever observed for that instance.
+top_values = (
+    fit_all.groupby("instance")["fit_list"]
+    .apply(lambda s: s.nlargest(int(m_max.loc[s.name])).tolist())
+    .to_dict()
+)
+
+def set_hits(fit_list: list[int], top_m: list[int]) -> int:
+    """
+    Count how many values in fit_list can be matched against top_m, respecting duplicates.    
+      fit_list = [100, 100, 100, 90]
+      top_m    = [100, 100, 90]
+      hits = 3  
+    """
+    # Build available copies inventory for top_m 
+    counts = {}
+    for v in top_m:
+        counts[v] = counts.get(v, 0) + 1
+
+    hits = 0
+    for v in fit_list:
+        remaining = counts.get(v, 0)
+        if remaining > 0:
+            counts[v] = remaining - 1  # consume one available match
+            hits += 1
+    return hits
+
+def acc_fit_row(row) -> float:
+    """
+    Row accuracy = (set hits between row fitness set and instance top-m) / m.
+    Normalization by m makes scores comparable across different set sizes.
+    """
+    m = int(row["m"])
+    # Use the instance-wide benchmark and slice to the row-specific m.
+    top_m = top_values.get(row["instance"], [])[:m]
+    # Count matches with proper duplicate handling, then normalize.
+    hits = set_hits(row["fit_list"], top_m)
+    return hits / m
+
+
+df["acc_fit"] = df.apply(acc_fit_row, axis=1)
+
+
+# For each instance, define m* as the maximum m observed across all runs for that instance.
+m_target = df.groupby('instance')['m'].max()
+
+# Build a table with DISTINCT solutions per instance:
+# Sort by instance and descending fitness so the best occurrences come first.
+# For each (instance, sol_set), keep only the first row => the one with the highest fit.
+best_per_solution = (df.sort_values(['instance', 'fit'], ascending=[True, False])
+                       .drop_duplicates(['instance', 'sol_set'], keep='first'))
+
+# For each instance, select the top m* solutions among the distinct ones:
+# Sort by instance and descending fitness.
+# Group by instance.
+# For each instance group g, take the first m_target[instance] rows (highest-fit solutions).
+global_top = (best_per_solution
+              .sort_values(['instance', 'fit'], ascending=[True, False])
+              .groupby('instance', group_keys=False)
+              .apply(lambda g: g.head(int(m_target.loc[g.name]))))
+
+# Keep only the fitness values of the global top solutions, as a LIST (duplicates allowed).
+global_fit_list = global_top.groupby('instance')['fit'].apply(list)
+
+
+
+
 '''
 df['sol_fit_dict'] = df.apply(
                         lambda row: dict(zip(row['sol_set'].split(','), [int(s) for s in row['fit_set'].split(',')])),

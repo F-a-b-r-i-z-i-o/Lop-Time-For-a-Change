@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from scipy.stats import mannwhitneyu
-
+from pathlib import Path
 
 def compute_statistics(df: pd.DataFrame) -> pd.DataFrame:
     # Adjust name of the instance
@@ -38,29 +38,26 @@ def compute_statistics(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def plot_boxen_m5(df: pd.DataFrame, out_pdf: str) -> None:
-    sns.set_theme(style="whitegrid")
-
-    # df only for m == 5
     df_ss = df[df["m"] == 5].copy()
 
-    g = df_ss.groupby("instance")["rpd"].ngroups
-    plt.figure(figsize=(max(12, 0.35 * g), 6))
+    fig, ax = plt.subplots(figsize=(18, 18)) 
 
-    ax = sns.boxenplot(
+    sns.boxenplot(
         data=df_ss,
         x="instance",
         y="rpd",
         hue="algname",
+        ax=ax
     )
 
     ax.set_ylim(0, 0.58)
-    ax.tick_params(axis="x", rotation=90, labelsize=8)
-
-    plt.tight_layout()
-
-    plt.savefig(out_pdf, format="pdf")
+    ax.tick_params(axis="x", rotation=90, labelsize=10)
+    fig.subplots_adjust(bottom=0.35)
+    fig.savefig(out_pdf, format="pdf")
     plt.show()
-
+    plt.close(fig)
+    plt.show()
+    plt.close(fig)
 
 def mann_whitney_test(df: pd.DataFrame) -> pd.DataFrame:
     # Stats test 
@@ -103,8 +100,16 @@ def mann_whitney_test(df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(rows).sort_values("instance").reset_index(drop=True)
 
 def export_df_to_latex(df: pd.DataFrame, out_tex: str) -> None:
-    with pd.option_context("display.max_rows", None, "display.max_columns", None):
-        df.to_latex(out_tex, index=False, escape=False, longtable=True)
+    out_path = Path(out_tex)
+    max_cols = int(df.shape[1]) + 1
+
+    with pd.option_context(
+        "display.max_columns", max_cols,
+        "display.max_colwidth", None,
+    ):
+        latex = df.to_latex(index=False, escape=False, longtable=True)
+
+    out_path.write_text(latex, encoding="utf-8")
 
 def main() -> None:
     parser = argparse.ArgumentParser()
@@ -118,7 +123,11 @@ def main() -> None:
     df = compute_statistics(df)
 
     if args.out_tex:
-        df.drop(columns=["fit", "sol_set"], inplace=True)
+        df.drop(columns=["fit", "sol_set", "seed", "fit_set", "n", "nevals", "millis", "n_local_optima"], inplace=True)
+        # Reorder columns: instance, algname, m, then the rest
+        first = ["instance", "algname", "m"]
+        rest = [c for c in df.columns if c not in first]
+        df = df[first + rest]
         export_df_to_latex(df, args.out_tex)
         exit()
 
