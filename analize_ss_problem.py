@@ -135,11 +135,11 @@ g.set_axis_labels("delta_nn", "phi")
 g.set_titles(col_template="{col_name}")
 g.tight_layout()
 plt.show()
-plt.close(g)
+plt.close()
 
 
 def mann_whitney_test(df: pd.DataFrame) -> pd.DataFrame:
-    ALG_A = "CDRVNS"
+    ALG_A = "CD-RVNS"
     ALG_B = "MA-EDM"
     value_col = "fit"
     alpha = 0.05
