@@ -10,11 +10,13 @@ if len(sys.argv)<3:
 filename_in = sys.argv[1]
 filename_out = sys.argv[2]
 '''
-filename_in = 'all_results.csv'
-filename_out = "results.pickle"
+filename_in = 'results/results.csv'
+filename_out = 'results/stats.pickle'
 
 # Read csv
 df = pd.read_csv( filename_in, sep=";" )
+
+df["algname"] = df["algname"].replace("MS-CDRVNS", "MS-CD-RVNS")
 
 # Adjust name of the instance
 df['instance'] = df.apply(
@@ -46,15 +48,15 @@ df["set_size"] = df.apply(
 df['set_size_perc'] = df['set_size'] / df['m']
 
 # Find mean-fitness for set 
-df['avg_fit'] = df.apply(
+df['phi'] = df.apply(
                 lambda row: np.mean([ int(s) for s in row['fit_set'].split(',') ]),
                 axis=1 )
 
 # Instance avg best-fitness
-df['best_avg'] = df.groupby('instance')['avg_fit'].transform('max')
+df['best_phi'] = df.groupby('instance')['phi'].transform('max')
 
 # Calculate rpd on avg best fitness (relative percentage deviation)
-df['rpd_avg'] = 100 * (df['best_avg'] - df['avg_fit']) / df['best_avg'] 
+df['rpd_phi'] = 100 * (df['best_phi'] - df['phi']) / df['best_phi'] 
 
 # Kendall-tau distance
 def kendall_tau(x, y):
@@ -70,31 +72,6 @@ def kendall_tau(x, y):
             if pos_in_y[xi] > pos_in_y[x[j]]:
                 tau += 1
     return tau
-
-# Function to parse a permutation
-def parse_perm(s):
-    """
-    Parse a single permutation from a string.
-
-    Expected format:
-      - integers separated by spaces
-      - example: "0 1 2 3 4"
-    """
-    return [int(p) for p in str(s).split()]
-
-# Function to parse a set of permutations
-def parse_sol_set_cell(sol_set_str):
-    """
-    Parse one dataframe cell that contains multiple permutations.
-
-    Expected format:
-      - permutations separated by commas
-      - within each permutation, integers separated by spaces
-    Returns:
-      - list[list[int]] where each inner list is one permutation
-    """
-    parts = [p.strip() for p in str(sol_set_str).split(",") if p.strip()]
-    return [parse_perm(p) for p in parts]
 
 # Function to build Kendall tau distance matrix from a set of permutations
 def kendall_distance_matrix(perms):
@@ -112,26 +89,12 @@ def kendall_distance_matrix(perms):
             D[j, i] = d
     return D
 
-# Calculate one Kendall tau matrix for each row of the dataframe
-def series_of_kendall_matrices(df, sol_col="sol_set"):
-    """
-    Compute one Kendall distance matrix per dataframe row.
-
-    Each row contains a "solution set" (sol_set) encoded as:
-      - m permutations separated by commas
-
-    Returns:
-      - list[np.ndarray], same order as df rows
-      - result[i] is the Kendall matrix for df.iloc[i]
-    """
-    matrices = []
-    for idx in df.index:
-        perms = parse_sol_set_cell(df.at[idx, sol_col])
-        matrices.append(kendall_distance_matrix(perms))
-    return matrices
-
-# Series of kendall matrices
-kendall_matrices = series_of_kendall_matrices(df)
+# List of kendall matrices (THIS PART IS SLOW!!!)
+kendall_matrices = []
+for idx in df.index:
+    perms = [ [ int(i) for i in p.split(' ') ] for p in df.at[idx,'sol_set'].split(',') ]
+    KM = kendall_distance_matrix(perms)
+    kendall_matrices.append(KM)
 
 # Function to calculate Delta_NN (unnormalized)
 def delta_nn_from_kendall_matrix(D):
@@ -151,11 +114,11 @@ def delta_nn_from_kendall_matrix(D):
     return int(np.sum(nn))
 
 # Delta_NN unnormalized and normalized
-df["delta_nn"] = [ delta_nn_from_kendall_matrix(D) for D in kendall_matrices ]
+df["delta_nn"] = [ delta_nn_from_kendall_matrix(KM) for KM in kendall_matrices ]
 df['delta_nn_norm'] = df["delta_nn"] / ( df.m * df.n * (df.n-1) / 2 )
 
 # Function to calculate Solow Polasky diversity
-def solow_polasky_from_kendall_matrix(kendall_matrix, n):
+def solow_polasky_from_kendall_matrix(kendall_matrix, theta=1.):
     """
     Solow–Polasky diversity computed from a Kendall distance matrix.
 
@@ -166,139 +129,62 @@ def solow_polasky_from_kendall_matrix(kendall_matrix, n):
       3) Return sum(F^-1)
 
       - here 'n' is the length of a permutation
-      - theta is hard-coded
+      - theta is the sensibility parameter
     """
-    #theta = 1
-    #theta = 0.5
-    #theta = np.log(2) / (n*(n-1)/4) #midpoint anchoring #Theta was chosen so that permutations differing on half of all pairwise comparisons had similarity 0.5. #Half of the maximum Kendall disagreement corresponds to 50% similarity
-    #theta = np.log(0.01) / (n*(n-1)/2) #maxdistance anchoring
-    theta = np.log(2) / ( 0.005 * (n*(n-1)/2) ) #midpoint anchoring to typical value (experimentally computed)
+    #theta = np.log(2) / ( 0.005 * (n*(n-1)/2) ) #midpoint anchoring to typical value (experimentally computed)
     C = np.exp(-theta*kendall_matrix)
     C_inv = np.linalg.inv(C)
     return C_inv.sum()
 
+# Calculate theta (for Solow-Polasky) using midpoint anchoring to the median of the normalized Kendall distances (considering only off-diagonals, i.e., non-zero distances)
+# ... in this way 0.5 similarity is assigned to the median normalized Kendall distance
+norm_distances = np.array([ KM/(KM.shape[0]*(KM.shape[0]-1)/2) for KM in kendall_matrices ]).ravel()
+theta = np.log(2) / np.median(norm_distances[norm_distances>0])
+
 # Delta_SP unnormalized and normalized
-df["delta_sp"] = [ solow_polasky_from_kendall_matrix(D,n) for D,n in zip(kendall_matrices,df['n']) ]
-df['delta_sp_norm'] = df.delta_sp / df.m
-
-
-# ACCURACY PER FITNESS = quante fitness del set stanno nelle migliori m fitness mai trovate per l'istanza (normalizzato con m)
-
-# Parse the fitness set cell into a list of lists 
-df["fit_list"] = df["fit_set"].map(parse_sol_set_cell)
-
-# Flatten list[list[int]] -> list[int].
-df["fit_list"] = (
-    df["fit_set"]
-    .map(parse_sol_set_cell)                          # [[10], [20], [30]]
-    .map(lambda xs: [v for sub in xs for v in sub])   # [10, 20, 30]
-)
-
-# Collect all fitness values ever seen for each instance 
-fit_all = df[["instance", "fit_list"]].explode("fit_list").dropna() # 1 fitness for row 
-fit_all["fit_list"] = fit_all["fit_list"].astype(int)
-
-# For each instance, we may need up to max(m) values (precomputed fot not do after)
-m_max = df.groupby("instance")["m"].max().astype(int)
-
-# Build a dict: instance -> list of the top max(m) fitness values ever observed for that instance.
-top_values = (
-    fit_all.groupby("instance")["fit_list"]
-    .apply(lambda s: s.nlargest(int(m_max.loc[s.name])).tolist())
-    .to_dict()
-)
-
-def set_hits(fit_list: list[int], top_m: list[int]) -> int:
-    """
-    Count how many values in fit_list can be matched against top_m, respecting duplicates.    
-      fit_list = [100, 100, 100, 90]
-      top_m    = [100, 100, 90]
-      hits = 3  
-    """
-    # Build available copies inventory for top_m 
-    counts = {}
-    for v in top_m:
-        counts[v] = counts.get(v, 0) + 1
-
-    hits = 0
-    for v in fit_list:
-        remaining = counts.get(v, 0)
-        if remaining > 0:
-            counts[v] = remaining - 1  # consume one available match
-            hits += 1
-    return hits
-
-def acc_fit_row(row) -> float:
-    """
-    Row accuracy = (set hits between row fitness set and instance top-m) / m.
-    Normalization by m makes scores comparable across different set sizes.
-    """
-    m = int(row["m"])
-    # Use the instance-wide benchmark and slice to the row-specific m.
-    top_m = top_values.get(row["instance"], [])[:m]
-    # Count matches with proper duplicate handling, then normalize.
-    hits = set_hits(row["fit_list"], top_m)
-    return hits / m
-
-
-df["acc_fit"] = df.apply(acc_fit_row, axis=1)
-
-
-# For each instance, define m* as the maximum m observed across all runs for that instance.
-m_target = df.groupby('instance')['m'].max()
-
-# Build a table with DISTINCT solutions per instance:
-# Sort by instance and descending fitness so the best occurrences come first.
-# For each (instance, sol_set), keep only the first row => the one with the highest fit.
-best_per_solution = (df.sort_values(['instance', 'fit'], ascending=[True, False])
-                       .drop_duplicates(['instance', 'sol_set'], keep='first'))
-
-# For each instance, select the top m* solutions among the distinct ones:
-# Sort by instance and descending fitness.
-# Group by instance.
-# For each instance group g, take the first m_target[instance] rows (highest-fit solutions).
-global_top = (best_per_solution
-              .sort_values(['instance', 'fit'], ascending=[True, False])
-              .groupby('instance', group_keys=False)
-              .apply(lambda g: g.head(int(m_target.loc[g.name]))))
-
-# Keep only the fitness values of the global top solutions, as a LIST (duplicates allowed).
-global_fit_list = global_top.groupby('instance')['fit'].apply(list)
+df["delta_sp"] = [ solow_polasky_from_kendall_matrix(KM,theta) for KM in kendall_matrices ]
+df['delta_sp_norm'] = (df.delta_sp-1.) / (df.m-1) #in [0,1]
 
 
 
-
-'''
+###BEGIN CALCULATION ACCURACY FOR FITNESS
+# To calculate accuracy for fitness, I need to create a dictionary {solution:fitness}
 df['sol_fit_dict'] = df.apply(
-                        lambda row: dict(zip(row['sol_set'].split(','), [int(s) for s in row['fit_set'].split(',')])),
+                        lambda row: dict( zip(row['sol_set'].split(','), [int(f) for f in row['fit_set'].split(',')]) ),
                         axis=1 )
-def merge_dicts(dicts):
-    result = {}
+# Function to be used with groupby ... transform
+def top_fits_from_distinct_solutions(dicts):
+    #merge all dictionaries into one
+    all_sol_fit = {}
     for d in dicts:
-        result.update(d)
-    return result
+        all_sol_fit.update(d)
+    #now all fitnesses belong to different solutions, so just take the top Q
+    Q = 15
+    top_fits = sorted(all_sol_fit.values(), reverse=True)[:Q]
+    #return string version of top_fits otherwise transform() complains
+    return ','.join([ str(f) for f in top_fits ])
+# Add column top_fits which contains the top m fitnesses (of the instance) in each row
+df['top_fits'] = df.groupby('instance')['sol_fit_dict'].transform(top_fits_from_distinct_solutions)
+df['top_fits'] = df.apply(
+                        lambda row: [ int(f) for f in row.top_fits.split(',')[:row.m] ],
+                        axis = 1 )
+# Now calculate accuracy as the number of fitnesses in fit_set that belong to top_fits
+def calc_acc_fit(row):
+    #fitnesses as int
+    fits = [ int(f) for f in row.fit_set.split(',') ]
+    #count how many fitnesses are in top_fits
+    cnt = len([ f for f in fits if f in row.top_fits ])
+    #return accuracy
+    return cnt / row.m
+df['acc_fit'] = df.apply( calc_acc_fit, axis=1 )
+# Remove columns which are no more useful
+df.drop(columns=["sol_fit_dict"], inplace=True)
+df.drop(columns=["top_fits"], inplace=True)
+###END CALCULATION ACCURACY FOR FITNESS
 
-
-
-all_fits = df.groupby('instance')['fit_set'].transform(','.join)
-all_fits = [ s.split(',') for s in all_fits ]
-all_fits = [ sorted([ int(s) for s in l ], reverse=True) for l in all_fits ]
-df['all_fits'] = all_fits
-def accuracy(row):
-    all_fits = row.all_fits
-    fit_set = [ int(s) for s in row.fit_set.split(',') ]
-    m = row.m
-    cnt = 0
-    for fit in fit_set:
-        if fit in all_fits[:m]:
-            cnt += 1
-    return cnt/m
-df['accuracy'] = df.apply( accuracy, axis=1 )
-df.drop(columns=["all_fits"], inplace=True)
-'''
-
-# Remove sol_set column to save memory
+# Remove sol_set and fit_set columns to save memory
 df.drop(columns=["sol_set"], inplace=True)
+df.drop(columns=["fit_set"], inplace=True)
 
 # Save to pickle file
 df.to_pickle(filename_out)
