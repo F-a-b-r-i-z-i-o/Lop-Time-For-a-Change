@@ -13,7 +13,7 @@ filename_in = "stats.pickle"
 df = pd.read_pickle(filename_in)
 
 
-# df["algname"] = df["algname"].str.replace(r"^MS-", "", regex=True)
+df["algname"] = df["algname"].str.replace(r"^MS-", "", regex=True)
 
 # df["fit"] = df["fit_set"].apply(lambda s: np.max([int(x) for x in str(s).split(",")]))
 # df["best_obj_value"] = df.groupby(["instance", "m"])["fit"].transform("max")
@@ -25,7 +25,7 @@ df = pd.read_pickle(filename_in)
 # df["rpd_p90"] = g.transform(lambda s: s.quantile(0.90))
 
 
-#Create the boxplot
+# Create the boxplot
 plt.figure(figsize=(8, 6))
 ax = sns.boxplot(
     data        = df,
@@ -93,18 +93,25 @@ plt.show()
 plt.close()
 
 
+# Sacatter plot
+selected_instances = [
+    "rxr_2021_n49",
+    "rxr_2020_n49",
+    "rxr_2019_n49",
+    "pxp_kr_2022_n149",
+    "pxp_ch_2022_n141",
+    "pxp_pl_2022_n166",
+    "os300_wa_2022_n300",
+    "os300_bg_2022_n300",
+    "os300_cn_2022_n300",
+]
 
-### scatter plot 
-plt.figure(figsize=(8, 6))
-metrics = ["phi", "delta_sp"]
+metrics = ["phi"]
 
-inst0 = df["instance"].iloc[0]
-df_i = df[df["instance"] == inst0].copy()
+df_sel = df[df["instance"].isin(selected_instances)].copy()
 
-
-
-df_long = df_i.melt(
-    id_vars=["instance_set", "algname", "m"],
+df_long = df_sel.melt(
+    id_vars=["instance_set", "instance", "algname", "m", "delta_nn"],
     value_vars=metrics,
     var_name="metric",
     value_name="value",
@@ -112,24 +119,23 @@ df_long = df_i.melt(
 
 g = sns.relplot(
     data=df_long,
-    col="metric",
-    x="m",
-    y="value",
+    col="instance",
+    col_wrap=3,              # 3x3
+    x="delta_nn",
+    y="value",               # phi
     hue="algname",
+    style="m",           # marker for m
     kind="scatter",
-    alpha=0.6,
-    facet_kws={"sharey": False},
+    alpha=0.7,
+    col_order=selected_instances,
+    facet_kws={"sharex": False, "sharey": False},
 )
 
-
-for ax in g.axes.flat:
-    ax.set_yscale("symlog") 
-
-g.set_axis_labels("m", "value")
+g.set_axis_labels("delta_nn", "phi")
+g.set_titles(col_template="{col_name}")
 g.tight_layout()
 plt.show()
 plt.close(g)
-
 
 
 def mann_whitney_test(df: pd.DataFrame) -> pd.DataFrame:
@@ -200,5 +206,3 @@ print(
 print(mwu_by_instance["winner_sig"].value_counts())
 
 
-# export_df_to_latex(mwu_by_instance, "mann_whitney_by_instance.tex")
-# mwu_by_instance.to_csv("mann_whitney_by_instance.csv", index=False)
