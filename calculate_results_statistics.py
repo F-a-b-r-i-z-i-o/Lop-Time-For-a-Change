@@ -91,13 +91,11 @@ def kendall_distance_matrix(perms):
 
 # List of kendall matrices (THIS PART IS SLOW!!!)
 kendall_matrices = []
-sol_set_arr = df["sol_set"].to_numpy()
-
-for sol_set in sol_set_arr:
-    perms = [np.fromstring(p, sep=" ", dtype=np.int32) for p in sol_set.split(",")]
+for idx in df.index:
+    perms = [ [ int(i) for i in p.split(' ') ] for p in df.at[idx,'sol_set'].split(',') ]
     KM = kendall_distance_matrix(perms)
     kendall_matrices.append(KM)
-
+    
 # Function to calculate Delta_NN (unnormalized)
 def delta_nn_from_kendall_matrix(D):
     """
