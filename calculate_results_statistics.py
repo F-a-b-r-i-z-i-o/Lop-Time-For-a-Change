@@ -10,8 +10,8 @@ if len(sys.argv)<3:
 filename_in = sys.argv[1]
 filename_out = sys.argv[2]
 '''
-filename_in = 'results/results.csv'
-filename_out = 'results/stats.pickle'
+filename_in = 'all_results.csv'
+filename_out = 'stats.pickle'
 
 # Read csv
 df = pd.read_csv( filename_in, sep=";" )
@@ -91,8 +91,10 @@ def kendall_distance_matrix(perms):
 
 # List of kendall matrices (THIS PART IS SLOW!!!)
 kendall_matrices = []
-for idx in df.index:
-    perms = [ [ int(i) for i in p.split(' ') ] for p in df.at[idx,'sol_set'].split(',') ]
+sol_set_arr = df["sol_set"].to_numpy()
+
+for sol_set in sol_set_arr:
+    perms = [np.fromstring(p, sep=" ", dtype=np.int32) for p in sol_set.split(",")]
     KM = kendall_distance_matrix(perms)
     kendall_matrices.append(KM)
 
@@ -138,7 +140,9 @@ def solow_polasky_from_kendall_matrix(kendall_matrix, theta=1.):
 
 # Calculate theta (for Solow-Polasky) using midpoint anchoring to the median of the normalized Kendall distances (considering only off-diagonals, i.e., non-zero distances)
 # ... in this way 0.5 similarity is assigned to the median normalized Kendall distance
-norm_distances = np.array([ KM/(KM.shape[0]*(KM.shape[0]-1)/2) for KM in kendall_matrices ]).ravel()
+norm_distances = np.concatenate(
+    [ (KM / (KM.shape[0] * (KM.shape[0] - 1) / 2)).ravel() for KM in kendall_matrices ]
+)
 theta = np.log(2) / np.median(norm_distances[norm_distances>0])
 
 # Delta_SP unnormalized and normalized

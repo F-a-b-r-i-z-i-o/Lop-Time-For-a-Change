@@ -4,24 +4,25 @@ import pandas as pd
 import seaborn as sns
 from scipy.stats import mannwhitneyu
 from pathlib import Path
+import matplotlib.ticker as mticker
 
 
-filename_in = "all_results.csv"
+filename_in = "stats.pickle"
 
 # ---- Load & preprocess ----
-df = pd.read_csv(filename_in, sep=";")
+df = pd.read_pickle(filename_in)
 
-df["instance"] = df["instance"].apply(lambda s: str(s).split("/")[-1])
-df["algname"] = df["algname"].str.replace(r"^MS-", "", regex=True)
 
-df["fit"] = df["fit_set"].apply(lambda s: np.max([int(x) for x in str(s).split(",")]))
-df["best_obj_value"] = df.groupby(["instance", "m"])["fit"].transform("max")
-df["rpd"] = 100 * (df["best_obj_value"] - df["fit"]) / df["best_obj_value"]
+# df["algname"] = df["algname"].str.replace(r"^MS-", "", regex=True)
 
-g = df.groupby(["instance", "m"])["rpd"]
-df["median_rpd"] = g.transform("median")
-df["rpd_p10"] = g.transform(lambda s: s.quantile(0.10))
-df["rpd_p90"] = g.transform(lambda s: s.quantile(0.90))
+# df["fit"] = df["fit_set"].apply(lambda s: np.max([int(x) for x in str(s).split(",")]))
+# df["best_obj_value"] = df.groupby(["instance", "m"])["fit"].transform("max")
+# df["rpd"] = 100 * (df["best_obj_value"] - df["fit"]) / df["best_obj_value"]
+
+# g = df.groupby(["instance", "m"])["rpd"]
+# df["median_rpd"] = g.transform("median")
+# df["rpd_p10"] = g.transform(lambda s: s.quantile(0.10))
+# df["rpd_p90"] = g.transform(lambda s: s.quantile(0.90))
 
 
 #Create the boxplot
@@ -57,8 +58,77 @@ ax.set_ylim(-1e-3, 1.0)
 plt.legend(loc='upper left')
 plt.tight_layout()
 #plt.show()
-plt.savefig('graphs/fig_ss_boxplot.pdf')
+plt.savefig('fig_ss_boxplot.pdf')
 plt.close()
+
+### box for boxplot 
+plt.figure(figsize=(8, 6))
+metrics = ["rpd_phi", "delta_nn", "delta_sp"]
+
+df_long = df.melt(
+    id_vars=["instance_set", "algname", "m"],
+    value_vars=metrics,
+    var_name="metric",
+    value_name="value",
+)
+
+g = sns.catplot(
+    data=df_long,
+    row="instance_set",
+    col="metric",
+    x="m",
+    y="value",
+    hue="algname",
+    kind="box",
+    row_order=["rxr", "pxp", "os300"],
+    col_order=metrics,
+    sharey=False
+)
+
+g.set_axis_labels("m", "RPD")
+g.set_titles(row_template="{row_name}", col_template="{col_name}")
+g.tight_layout()
+plt.show()
+#g.fig.savefig("fig_metrics_by_set.pdf")
+plt.close()
+
+
+
+### scatter plot 
+plt.figure(figsize=(8, 6))
+metrics = ["phi", "delta_sp"]
+
+inst0 = df["instance"].iloc[0]
+df_i = df[df["instance"] == inst0].copy()
+
+
+
+df_long = df_i.melt(
+    id_vars=["instance_set", "algname", "m"],
+    value_vars=metrics,
+    var_name="metric",
+    value_name="value",
+)
+
+g = sns.relplot(
+    data=df_long,
+    col="metric",
+    x="m",
+    y="value",
+    hue="algname",
+    kind="scatter",
+    alpha=0.6,
+    facet_kws={"sharey": False},
+)
+
+
+for ax in g.axes.flat:
+    ax.set_yscale("symlog") 
+
+g.set_axis_labels("m", "value")
+g.tight_layout()
+plt.show()
+plt.close(g)
 
 
 
