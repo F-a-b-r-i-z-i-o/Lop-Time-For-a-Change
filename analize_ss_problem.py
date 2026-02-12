@@ -2,11 +2,13 @@ import numpy as np
 import pandas as pd
 from scipy.stats import mannwhitneyu
 from pathlib import Path
-
+import matplotlib.pyplot as plt 
+import seaborn as sns 
+import matplotlib.ticker as mticker
 
 filename_in = "stats.pickle"
 
-out2 = "tab2.tex"
+out2 = "results-ss-table.tex"
 
 df = pd.read_pickle(filename_in)
 
@@ -18,6 +20,47 @@ g = df.groupby(["instance", "m"])["rpd"]
 df["median_rpd"] = g.transform("median")
 df["rpd_p10"] = g.transform(lambda s: s.quantile(0.10))
 df["rpd_p90"] = g.transform(lambda s: s.quantile(0.90))
+
+df["m"] = pd.to_numeric(df["m"], errors="coerce")
+
+df_m5 = df[df["m"] == 5].copy()
+
+# Create the boxplot
+plt.figure(figsize=(8, 6))
+ax = sns.boxplot(
+    data        = df,
+    x           = 'instance_set',
+    y           = 'rpd',
+    hue         = 'algname',
+    order       = [ 'rxr', 'pxp', 'os300' ],
+    gap         = 0.05,
+    fliersize   = 1.50,
+    #linewidth   = 0.05,
+)
+ax.set_xlabel(r'Instance Set')
+ax.set_ylabel('Relative Percentage Deviation')
+ax.legend(title='Algorithm')
+ax.set_yscale('symlog', linthresh=1e-2)
+ax.yaxis.set_major_locator(
+    mticker.SymmetricalLogLocator(
+        base=10,
+        linthresh=1e-2
+    )
+)
+ax.yaxis.set_minor_locator(
+    mticker.SymmetricalLogLocator(
+        base=10,
+        linthresh=1e-2,
+        subs=[1,2,3,4,5,6,7,8,9]
+    )
+)
+ax.set_ylim(-1e-3, 1.0)
+plt.legend(loc='upper left')
+plt.tight_layout()
+#plt.show()
+plt.savefig('fig_ss_boxplot.pdf')
+plt.close()
+
 
 # Best of m 
 tab = (
