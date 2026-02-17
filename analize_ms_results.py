@@ -7,7 +7,7 @@ from pathlib import Path
 
 
 # =========================
-# 1) Long table
+#  Long table
 # =========================
 
 filename_in = "stats.pickle"
@@ -50,7 +50,7 @@ Path(out).write_text(latex, encoding="utf-8")
 print(f"Wrote: {out}")
 
 # =========================
-# 1) BOXPLOT
+# BOXPLOT
 # =========================
 sns.set_theme(style="whitegrid", font_scale=1.5)
 
@@ -114,7 +114,7 @@ for txt in leg.get_texts() + [leg.get_title()]:
 plt.close()
 
 # =========================
-# 2) SCATTER
+# SCATTER
 # =========================
 sns.set_theme(style="whitegrid", font_scale=1.2)
 
