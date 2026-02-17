@@ -5,15 +5,12 @@ from pathlib import Path
 import matplotlib.pyplot as plt 
 import seaborn as sns 
 import matplotlib.ticker as mticker
+from matplotlib.ticker import ScalarFormatter
+import matplotlib.patheffects as pe
 
-
-import numpy as np
-import pandas as pd
-from scipy.stats import mannwhitneyu
-from pathlib import Path
-import matplotlib.pyplot as plt 
-import seaborn as sns 
-import matplotlib.ticker as mticker
+# =========================
+#  Long table
+# =========================
 
 filename_in = "stats.pickle"
 out = "results-ss-table.tex"
@@ -99,8 +96,42 @@ plt.savefig('fig_ss_boxplot.pdf')
 plt.close()
 
 
+# =========================
+# Isic lineplot
+# =========================
+
+df_isic = pd.read_pickle("isic_exp2.pickle")
+
+df_plot = df_isic.copy()
+df_plot["instance"] = "isic"
+
+g = sns.relplot(
+    data=df_plot,
+    x="sparsity",
+    y="nopt",
+    kind="line",
+    hue="instance",
+    palette=["tab:red"],
+    legend=True,
+)
+
+ax = g.ax
+ax.set(xlabel="Sparsity", ylabel="Numbers of Optima")
+ax.ticklabel_format(axis="both", style="plain", useOffset=False)
+
+sns.move_legend(g, "upper center", title="Instance")
 
 
+g.figure.tight_layout()
+g.figure.savefig("fig_isic_lineplot.pdf", bbox_inches="tight")
+plt.show()
+plt.close(g.figure)
+
+
+
+# =========================
+# mann_whitney TEST
+# =========================
 
 def mann_whitney_test(df: pd.DataFrame) -> pd.DataFrame:
     ALG_A = "CD-RVNS"
