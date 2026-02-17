@@ -15,31 +15,20 @@ out = "results-ms-table.tex"
 
 df = pd.read_pickle(filename_in)
 
+# Compute per-(instance, algname) RPD statistics and broadcast them to each row
+grp = df.groupby(["instance", "algname"])["rpd"]
+df["median_rpd"] = grp.transform("median")
+df["q1_rpd"] = grp.transform(lambda s: s.quantile(0.25))
+df["q3_rpd"] = grp.transform(lambda s: s.quantile(0.75))
+df["IQR_RPD"] = df["q3_rpd"] - df["q1_rpd"]
 
-# stats RPD per (instance, algname) on all run on all m 
-g = df.groupby(["instance", "algname"])["rpd"]
-stats = g.agg(
-    median_rpd="median",
-    q1=lambda s: s.quantile(0.25),
-    q3=lambda s: s.quantile(0.75),
-).reset_index()
-
-stats["IQR_RPD"] = stats["q3"] - stats["q1"]
-stats = stats.drop(columns=["q1", "q3"])
-
-
-# one row for instance: best run for m 
+# Keep only one row per instance: the run with maximum fit
 idx = df.groupby("instance")["fit"].idxmax()
 
-tab = df.loc[idx, ["instance_set", "instance", "algname", "m",
-                   "fit", "rpd"]].copy()
-
+tab = df.loc[idx, ["instance_set", "instance", "algname", "m", "fit", "median_rpd", "IQR_RPD"]].copy()
 tab = tab.rename(columns={"fit": "best_obj_values"})
 
-# Unisco median e IQR dell'algoritmo vincente su quell'istanza
-tab = tab.merge(stats, on=["instance", "algname"], how="left")
-
-# Order
+# Order instance sets
 tab["instance_set"] = pd.Categorical(
     tab["instance_set"],
     ["rxr", "pxp", "os300", "other"],
@@ -48,9 +37,8 @@ tab["instance_set"] = pd.Categorical(
 
 tab = tab.sort_values(["instance_set", "instance"]).reset_index(drop=True)
 
-print("Rows table:", len(tab))  
+print("Rows table:", len(tab))
 
-# export latex
 latex = tab.to_latex(
     index=False,
     escape=False,
