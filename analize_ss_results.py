@@ -6,24 +6,61 @@ import matplotlib.pyplot as plt
 import seaborn as sns 
 import matplotlib.ticker as mticker
 
-filename_in = "stats.pickle"
 
-out2 = "results-ss-table.tex"
+import numpy as np
+import pandas as pd
+from scipy.stats import mannwhitneyu
+from pathlib import Path
+import matplotlib.pyplot as plt 
+import seaborn as sns 
+import matplotlib.ticker as mticker
+
+filename_in = "stats.pickle"
+out = "results-ss-table.tex"
 
 df = pd.read_pickle(filename_in)
-
 df["algname"] = df["algname"].str.replace(r"^MS-", "", regex=True)
-df["best_obj_value"] = df.groupby(["instance", "m"])["fit"].transform("max")
+
+# best per (instance,m) and RPD
+df["best_obj_value"] = df.groupby(["instance","m"])["fit"].transform("max")
 df["rpd"] = 100 * (df["best_obj_value"] - df["fit"]) / df["best_obj_value"]
 
-g = df.groupby(["instance", "m"])["rpd"]
+# median e IQR of RPD per (instance,m)
+g = df.groupby(["instance","m"])["rpd"]
 df["median_rpd"] = g.transform("median")
-df["rpd_p10"] = g.transform(lambda s: s.quantile(0.10))
-df["rpd_p90"] = g.transform(lambda s: s.quantile(0.90))
+df["rpd_iqr"] = g.transform(lambda s: s.quantile(0.75) - s.quantile(0.25))
 
-df["m"] = pd.to_numeric(df["m"], errors="coerce")
+#  one row per (instance, algname, m): fit max 
+tab = df.loc[
+    df.groupby(["instance","algname","m"])["fit"].idxmax(),
+    ["instance_set","instance","algname","m","fit",
+     "best_obj_value","rpd","median_rpd","rpd_iqr"]
+].copy()
 
-df_m5 = df[df["m"] == 5].copy()
+# order 
+tab["instance_set"] = pd.Categorical(tab["instance_set"],
+                                     ["rxr","pxp","os300","other"],
+                                     ordered=True)
+
+
+# best for m for (instance, algname)
+best_per_alg = tab.loc[tab.groupby(["instance","algname"])["fit"].idxmax()].copy()
+
+# best for 2 algo 
+best = best_per_alg.loc[best_per_alg.groupby("instance")["fit"].idxmax()].copy()
+
+# order and save
+best = (best.sort_values(["instance_set","instance"])
+            .reset_index(drop=True))
+
+print("Rows table:", len(best))  
+
+Path(out).write_text(
+    best.to_latex(index=False, escape=False, longtable=True,
+                  float_format="{:.3f}".format),
+    encoding="utf-8"
+)
+print(f"Wrote: {out}")
 
 # Create the boxplot
 plt.figure(figsize=(8, 6))
@@ -62,31 +99,6 @@ plt.savefig('fig_ss_boxplot.pdf')
 plt.close()
 
 
-# Best of m 
-tab = (
-    df.loc[df.groupby(["instance", "algname", "m"])["fit"].idxmax(),
-           ["instance_set", "seed", "instance", "algname", "m",
-            "fit", "best_obj_value", "rpd", "median_rpd", "rpd_p10", "rpd_p90"]]
-    .reset_index(drop=True)
-)
-
-# best-of-best su m: 1 rows
-best_all_m = (
-    tab.loc[tab.groupby(["instance", "algname"])["fit"].idxmax()]
-       .rename(columns={"m": "best_m", "fit": "best_fit"})
-       .reset_index(drop=True)
-)
-
-best_all_m["instance_set"] = pd.Categorical(best_all_m["instance_set"], ["rxr","pxp","os300","other"], ordered=True)
-best_all_m["_m_sort"] = pd.to_numeric(best_all_m["best_m"])
-best_all_m = (best_all_m.sort_values(["instance_set","instance","seed","algname","_m_sort"])
-                        .drop(columns=["_m_sort","instance_set", "seed", "best_m", "best_fit"])
-                        .reset_index(drop=True))
-
-
-latex2 = best_all_m.to_latex(index=False, escape=False, longtable=True, float_format="{:.3f}".format)
-Path(out2).write_text(latex2, encoding="utf-8")
-print(f"Wrote: {out2}")
 
 
 
