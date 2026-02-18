@@ -10,4 +10,5 @@ Dataset/
 *.exe
 *.out
 a.out
-__pycache__*
+__pycache__*results.csv
+results.csv
