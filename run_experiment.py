@@ -127,7 +127,7 @@ def main() -> None:
         append_csv(sorted(set(tmp_outputs)), FINAL_CSV)
         print(f"Updated final CSV after: {file_path}", flush=True)
 
-        # delete tmp files for this input to save disk space
+    # delete tmp files for this input to save disk space
     for p in set(tmp_outputs):
         try:
             os.remove(p)

@@ -10,7 +10,7 @@ from pathlib import Path
 #  Long table
 # =========================
 
-filename_in = "stats.pickle"
+filename_in = "results/stats.pickle"
 out = "results-ms-table.tex"
 
 df = pd.read_pickle(filename_in)

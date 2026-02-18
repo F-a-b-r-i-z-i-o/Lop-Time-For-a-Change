@@ -1,62 +1,54 @@
 import numpy as np
 import pandas as pd
-from scipy.stats import mannwhitneyu
+from scipy.stats import mannwhitneyu, false_discovery_control
 from pathlib import Path
 import matplotlib.pyplot as plt 
 import seaborn as sns 
 import matplotlib.ticker as mticker
-from matplotlib.ticker import ScalarFormatter
-import matplotlib.patheffects as pe
+
 
 # =========================
 #  Long table
 # =========================
 
-filename_in = "stats.pickle"
+filename_in = "results/stats.pickle"
 out = "results-ss-table.tex"
 
 df = pd.read_pickle(filename_in)
 df["algname"] = df["algname"].str.replace(r"^MS-", "", regex=True)
 
-# best per (instance,m) and RPD
-df["best_obj_value"] = df.groupby(["instance","m"])["fit"].transform("max")
-df["rpd"] = 100 * (df["best_obj_value"] - df["fit"]) / df["best_obj_value"]
+# Compute per-(instance, algname) RPD statistics and broadcast them to each row
+grp = df.groupby(["instance", "algname"])["rpd"]
+df["median_rpd"] = grp.transform("median")
+df["q1_rpd"] = grp.transform(lambda s: s.quantile(0.25))
+df["q3_rpd"] = grp.transform(lambda s: s.quantile(0.75))
+df["IQR_RPD"] = df["q3_rpd"] - df["q1_rpd"]
 
-# median e IQR of RPD per (instance,m)
-g = df.groupby(["instance","m"])["rpd"]
-df["median_rpd"] = g.transform("median")
-df["rpd_iqr"] = g.transform(lambda s: s.quantile(0.75) - s.quantile(0.25))
+# Keep only one row per instance: the run with maximum fit
+idx = df.groupby("instance")["fit"].idxmax()
 
-#  one row per (instance, algname, m): fit max 
-tab = df.loc[
-    df.groupby(["instance","algname","m"])["fit"].idxmax(),
-    ["instance_set","instance","algname","m","fit",
-     "best_obj_value","rpd","median_rpd","rpd_iqr"]
-].copy()
+tab = df.loc[idx, ["instance_set", "instance", "algname", "fit", "median_rpd", "IQR_RPD"]].copy()
+tab = tab.rename(columns={"fit": "best_obj_values"})
 
-# order 
-tab["instance_set"] = pd.Categorical(tab["instance_set"],
-                                     ["rxr","pxp","os300","other"],
-                                     ordered=True)
-
-
-# best for m for (instance, algname)
-best_per_alg = tab.loc[tab.groupby(["instance","algname"])["fit"].idxmax()].copy()
-
-# best for 2 algo 
-best = best_per_alg.loc[best_per_alg.groupby("instance")["fit"].idxmax()].copy()
-
-# order and save
-best = (best.sort_values(["instance_set","instance"])
-            .reset_index(drop=True))
-
-print("Rows table:", len(best))  
-
-Path(out).write_text(
-    best.to_latex(index=False, escape=False, longtable=True,
-                  float_format="{:.3f}".format),
-    encoding="utf-8"
+# Order instance sets
+tab["instance_set"] = pd.Categorical(
+    tab["instance_set"],
+    ["rxr", "pxp", "os300", "other"],
+    ordered=True
 )
+
+tab = tab.sort_values(["instance_set", "instance"]).reset_index(drop=True)
+
+print("Rows table:", len(tab))
+
+latex = tab.to_latex(
+    index=False,
+    escape=False,
+    longtable=True,
+    float_format="{:.3f}".format
+)
+
+Path(out).write_text(latex, encoding="utf-8")
 print(f"Wrote: {out}")
 
 # Create the boxplot
@@ -100,7 +92,7 @@ plt.close()
 # Isic lineplot
 # =========================
 
-df_isic = pd.read_pickle("isic_exp2.pickle")
+df_isic = pd.read_pickle("results/isic_exp2.pickle")
 
 df_plot = df_isic.copy()
 df_plot["instance"] = "isic"
@@ -124,7 +116,7 @@ sns.move_legend(g, "upper center", title="Instance")
 
 g.figure.tight_layout()
 g.figure.savefig("fig_isic_lineplot.pdf", bbox_inches="tight")
-plt.show()
+#plt.show()
 plt.close(g.figure)
 
 
@@ -142,47 +134,43 @@ def mann_whitney_test(df: pd.DataFrame) -> pd.DataFrame:
     rows = []
     sub = df[df["algname"].isin([ALG_A, ALG_B])]
 
-    for inst, gg in sub.groupby("instance"):
+    for inst, gg in sub.groupby("instance", sort=True):
         x = gg.loc[gg["algname"] == ALG_A, value_col].to_numpy()
         y = gg.loc[gg["algname"] == ALG_B, value_col].to_numpy()
+      
+        res = mannwhitneyu(x, y, alternative="two-sided", method="auto")
 
-        if x.size == 0 or y.size == 0:
-            continue
+        U = float(res.statistic)
+        mid = (x.size * y.size) / 2.0
 
-        res = mannwhitneyu(x, y)
-
-        med_a = float(np.median(x))
-        med_b = float(np.median(y))
-        delta = med_a - med_b
-
-        winner_median = ALG_A if delta > 0 else (ALG_B if delta < 0 else "tie")
-        winner_sig = winner_median if res.pvalue < alpha else "ns"
-
+        winner_dir = (
+            ALG_A if U > mid else
+            ALG_B if U < mid else
+            "tie"
+        )
+        
         rows.append(
             {
                 "instance": inst,
-                "n_CDRVNS": int(x.size),
-                "n_MA_EDM": int(y.size),
-                "median_CDRVNS": med_a,
-                "median_MA_EDM": med_b,
-                "delta_median": delta,
                 "U": float(res.statistic),
                 "pvalue": float(res.pvalue),
-                "winner_median": winner_median,
-                "winner_sig": winner_sig,
+                "winner_dir": winner_dir,
             }
         )
 
-    return pd.DataFrame(rows).sort_values("instance").reset_index(drop=True)
+    out = pd.DataFrame(rows).sort_values("instance").reset_index(drop=True)
+
+    # FDR correction (Benjamini-Hochberg)
+    out["pvalue_fdr"] = false_discovery_control(out["pvalue"].to_numpy(), method="bh")
+
+    # winner SOLO se significativo (altrimenti ns)
+    out["winner_sig"] = np.where(out["pvalue_fdr"] < alpha, out["winner_dir"], "ns")
+    return out
 
 
 mwu_by_instance = mann_whitney_test(df)
 
-print(
-    mwu_by_instance[
-        ["instance", "median_CDRVNS", "median_MA_EDM", "delta_median", "pvalue", "winner_sig"]
-    ]
-)
+print(mwu_by_instance[["instance", "pvalue", "pvalue_fdr", "winner_sig"]])
 print(mwu_by_instance["winner_sig"].value_counts())
 
 
