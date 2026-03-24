@@ -37,3 +37,9 @@ python run_isic_experiment2.py
 
 #Create graphs/tables for isic (small) instances
 python analyze_isic_results.py
+
+#Create graphs/tables for single solution instances
+python analyze_ss_results.py
+
+#Create graphs/tables for multi-solution instances
+python analyze_ms_results.py

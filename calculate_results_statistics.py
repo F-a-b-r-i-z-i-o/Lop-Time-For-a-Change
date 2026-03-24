@@ -10,8 +10,8 @@ if len(sys.argv)<3:
 filename_in = sys.argv[1]
 filename_out = sys.argv[2]
 '''
-filename_in = 'all_results.csv'
-filename_out = 'stats.pickle'
+filename_in = 'results/results.csv'
+filename_out = 'results/stats.pickle'
 
 # Read csv
 df = pd.read_csv( filename_in, sep=";" )

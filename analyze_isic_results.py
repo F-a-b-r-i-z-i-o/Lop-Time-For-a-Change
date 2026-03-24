@@ -1,33 +1,23 @@
-import pandas as pd 
-import seaborn as sns 
-import matplotlib.pyplot as plt 
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
-# =========================
-# Isic lineplot
-# =========================
+plt.style.use("graphs/style.mplstyle")
 
-df_isic = pd.read_pickle("results/isic_exp2.pickle")
+df = pd.read_pickle("results/isic_exp2.pickle")
 
-df_plot = df_isic.copy()
-df_plot["instance"] = "isic"
-df_plot = df_plot[df_plot["nopt"] > 0]
-g = sns.relplot(
-    data=df_plot,
-    x="sparsity",
-    y="nopt",
-    kind="line",
-    hue="instance",
-    palette=["tab:red"],
-    legend=True,
+fig,ax = plt.subplots(1,1)
+ax = sns.lineplot(
+    data      = df,
+    x         = 'sparsity',
+    y         = 'nopt',
+    estimator = 'mean',
+    errorbar  = ('ci', 95),
+    ax        = ax,
 )
-ax = g.ax
-ax.set(xlabel="Sparsity", ylabel="Numbers of Optima", yscale="log")
-#ax.ticklabel_format(axis="both", style="plain", useOffset=False)
-
-sns.move_legend(g, "upper center", title="Instance")
-
-
-g.figure.tight_layout()
-g.figure.savefig("fig_isic_lineplot.pdf", bbox_inches="tight")
-#plt.show()
-plt.close(g.figure)
+ax.set_xlabel('Instance Sparsity')
+ax.set_ylabel(r'# Global Optima')
+ax.set_yscale('log')
+plt.tight_layout()
+plt.savefig('graphs/fig_isic_lineplot.pdf')
+plt.close(fig)

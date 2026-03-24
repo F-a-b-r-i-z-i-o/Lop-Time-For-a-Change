@@ -210,3 +210,4 @@ void Archive::print(string filename, string algname, string instance, unsigned l
 	  << n_local_optima << "\n";
 	  
 }
+
