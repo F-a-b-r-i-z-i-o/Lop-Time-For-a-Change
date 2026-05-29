@@ -1,0 +1,14 @@
+.venv 
+Compact-data/
+Dataset/
+*.o
+*.obj
+*.a
+*.so
+*.dll
+*.dylib
+*.exe
+*.out
+a.out
+__pycache__*results.csv
+results.csv

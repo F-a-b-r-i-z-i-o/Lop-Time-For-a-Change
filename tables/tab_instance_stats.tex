@@ -1,0 +1,32 @@
+\begin{table}[t]
+\setlength{\tabcolsep}{0.2cm}
+\centering
+\caption{Structural statistics for the \texttt{EXIOBASE} and \texttt{LOLIB} benchmark suites.}
+\label{tab:bench_stats}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{llcccccc}
+\toprule
+ &  & \multicolumn{2}{c}{\textbf{Sparsity}} & \multicolumn{2}{c}{\textbf{Variation Coef.}} & \multicolumn{2}{c}{\textbf{Skewness}} \\
+\textbf{Suite} & \textbf{Set} & Median & [Min,Max] & Median & [Min,Max] & Median & [Min,Max] \\
+\midrule
+\multirow[t]{4}{*}{\texttt{EXIOBASE}} & \texttt{isic} & $0.00$ & $[0.00, 0.04]$ & $1.23$ & $[0.89, 2.86]$ & $2.14$ & $[0.74, 5.88]$ \\
+ & \texttt{rxr} & $0.00$ & $[0.00, 0.01]$ & $1.85$ & $[1.77, 2.30]$ & $4.67$ & $[4.07, 10.02]$ \\
+ & \texttt{pxp} & $0.17$ & $[0.03, 0.45]$ & $5.19$ & $[3.03, 8.26]$ & $16.01$ & $[7.88, 27.17]$ \\
+ & \texttt{os300} & $0.01$ & $[0.00, 0.02]$ & $3.62$ & $[2.20, 6.20]$ & $10.14$ & $[5.83, 16.69]$ \\
+\cline{2-8}
+ & \textbf{Overall} & $0.01$ & $[0.00, 0.45]$ & $2.92$ & $[0.89, 8.26]$ & $8.70$ & $[0.74, 27.17]$ \\
+\cline{1-8}
+\multirow[t]{8}{*}{\texttt{LOLIB}} & \texttt{IO} & $0.18$ & $[0.05, 0.71]$ & $3.74$ & $[2.59, 9.22]$ & $10.54$ & $[4.95, 23.67]$ \\
+ & \texttt{SGB} & $0.10$ & $[0.08, 0.12]$ & $6.48$ & $[6.42, 6.78]$ & $17.02$ & $[16.64, 17.65]$ \\
+ & \texttt{RandA1} & $0.01$ & $[0.01, 0.01]$ & $0.71$ & $[0.69, 0.73]$ & $0.56$ & $[0.53, 0.62]$ \\
+ & \texttt{RandA2} & $0.08$ & $[0.00, 0.12]$ & $0.75$ & $[0.73, 0.79]$ & $0.94$ & $[0.77, 1.09]$ \\
+ & \texttt{RandB} & $0.01$ & $[0.00, 0.02]$ & $0.57$ & $[0.52, 0.61]$ & $0.07$ & $[-0.05, 0.47]$ \\
+ & \texttt{MB} & $0.02$ & $[0.01, 0.06]$ & $0.72$ & $[0.70, 0.77]$ & $0.49$ & $[0.43, 0.63]$ \\
+ & \texttt{xLOLIB} & $0.12$ & $[0.05, 0.65]$ & $3.87$ & $[3.19, 11.60]$ & $9.81$ & $[7.17, 30.89]$ \\
+ & \texttt{xLOLIB2} & $0.34$ & $[0.26, 0.73]$ & $4.18$ & $[3.56, 12.35]$ & $9.88$ & $[7.53, 27.81]$ \\
+\cline{2-8}
+ & \textbf{Overall} & $0.10$ & $[0.00, 0.73]$ & $3.42$ & $[0.52, 12.35]$ & $7.87$ & $[-0.05, 30.89]$ \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
