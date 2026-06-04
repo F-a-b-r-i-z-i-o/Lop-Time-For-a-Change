@@ -1,5 +1,5 @@
 This is the repository of the paper titled "Linear Ordering Problem: Time for a Change" and contains:
-- the EXIOBASE benchmark suite for the LOP in the directory `exiobase`,
+- the EXIOBASE benchmark suite for the LOP in the directory `exiobase` or in `exiobase.zip`,
 - the PDF document of the supplementary material,
 - the reproducibility programs and scripts.
 
