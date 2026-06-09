@@ -28,7 +28,7 @@ pillow==12.2.0
 prompt_toolkit==3.0.52
 ptyprocess==0.7.0
 pure_eval==0.2.3
-pyarrow==22.0.0
+pyarrow==23.0.1
 Pygments==2.20.0
 pymrio==0.6.3
 pyparsing==3.3.1
