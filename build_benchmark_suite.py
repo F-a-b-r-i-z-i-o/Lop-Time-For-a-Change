@@ -71,7 +71,7 @@ np.random.seed(42)
 ##### ixi and pxp instances #####
 #################################
 year = 2022 #last year available
-for typ in ['ixi', 'pxp']:
+for typ in ['pxp']: #['ixi', 'pxp']:
     os.mkdir(f'{outdir}/{typ}')
     in_filename = f'{indir}/IOT_{year}_{typ}.zip'
     ios = pymrio.parse_exiobase3(in_filename)
@@ -113,6 +113,7 @@ for year in range(from_year,to_year+1):
 
 
 
+'''
 #################################
 ##### cxc instances (8x8) #######
 #################################
@@ -135,11 +136,11 @@ for reg in ios.regions:
     with open(f'{outdir}/revmap/revmap_{out_filename}','w') as f:
         json.dump(indices_reverse_map,f)
     print(f'* {out_filename} DONE.')
-
+'''
 
 
 #################################
-##### isic instances (12x12) ####
+##### isic instances (10x10) ####
 #################################
 year = 2022 #last year available
 typ = 'isic'
@@ -155,6 +156,7 @@ ios.calc_all()
 for reg in ios.regions:
     A = ios.A.loc[reg,reg].to_numpy()
     A, indices_reverse_map = build_lop_instance(A)
+    A = A[:10,:10] #top-left 10x10 part
     out_filename = f'{typ}_{reg.lower()}_{year}_n{A.shape[0]}'
     save_lop_matrix(f'{outdir}/{typ}/{out_filename}', A)
     with open(f'{outdir}/revmap/revmap_{out_filename}','w') as f:
@@ -181,11 +183,6 @@ for reg in ios.regions:
     out_filename = f'{typ}_{reg.lower()}_{year}_n{A.shape[0]}'
     save_lop_matrix(f'{outdir}/{typ}/{out_filename}', A)
     print(f'* {out_filename} DONE.')
-
-
-
-
-
 
 
 
